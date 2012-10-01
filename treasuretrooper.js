@@ -1,5 +1,4 @@
 (function() {
-    alert('ok');
     var
         /**
          * Class Strings
@@ -20,20 +19,20 @@
         offerPricesEl = $(offerPriceClassStr),
 
         /**
-         * List of whitelist regexes/filters
-         * If any of these values don't match to an offer, just skip!
+         * List of whitelist/blacklist regexes/filters
          * @type {Array}
          */
         offerDescFilterWhitelistArr = [
             'accurate information',
             'survey'
         ],
+        offerDescFilterBlackListArr = [],
 
-        /**
-         * 
-         * @type {Array}
-         */
+        offerTitleFilterWhitelistArr = [
+
+        ],
         offerTitleFilterBlacklistArr = [
+
         ],
 
         /**
