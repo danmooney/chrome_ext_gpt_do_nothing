@@ -1,23 +1,31 @@
 {
-    "name": "My First Extension",
+    "name": "GPT Do Nothing",
     "version": "1.0",
     "manifest_version": 2,
-    "description": "The first extension that I made.",
-    "browser_action": {
-        "default_icon": "icon.png",
-        "default_popup": "popup.html"
+    "description": "Get paid to be lazy.",
+    "page_action": {
+        "default_icon": "icon.png"
+    },
+    "background": {
+        "page": "background.html",
+        "persistent": false
     },
     "content_scripts": [
         {
             "matches": ["http://*/*"],
-            "js": ["jquery.js"]
-        },
-        {
-            "matches": ["http://www.treasuretrooper.com/members/earn/offers*"],
-            "js": ["treasuretrooper.js"]
+            "js": [
+                "js/vendor/jquery.js",
+                "js/Evt.js",
+                "js/Registry.js",
+                "js/Url.js",
+                "init.js"
+            ]
         }
     ],
     "permissions": [
+        "tabs",
+        "history",
+        "storage",
         "http://*/*"
     ]
 }
