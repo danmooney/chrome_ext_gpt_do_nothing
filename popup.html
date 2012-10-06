@@ -4,6 +4,9 @@
     <link rel="stylesheet" type="text/css" href="css/popup.css" />
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/drm.js"></script>
+    <script src="js/setup.js"></script>
+    <script src="js/Evt/Bus.js"></script>
+    <script src="js/Locale.js"></script>
     <script src="js/Evt.js"></script>
     <script src="js/Url.js"></script>
     <script src="js/Page.js"></script>
@@ -16,10 +19,8 @@
         <h1 id="logo-text">GPT Do Nothing</h1>
     </div>
     <div id="status-container">
-        <h2>Status: </h2>
-        <p id="status-text">
-
-        </p>
+        <h2 id="status-heading" data-i18n="popupStatusHeading"></h2>
+        <p id="status-text" class="not-ready" data-i18n="popupStatus"></p>
     </div>
     <div class="hr clr"></div>
     <a href="options.html" target="_blank">Options</a>

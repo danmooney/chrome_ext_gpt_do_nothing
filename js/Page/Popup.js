@@ -4,16 +4,13 @@
 (function() {
     'use strict';
     $$.klass(function PagePopup () {
-        /**
-         * Format popup page based on status/locale, etc.
-         */
-        this.formatHTML = function () {
-            $$.instance('Url').getCurrentUrl();
+        this.setLogo = function (iconPathStr) {
+
         };
     }, {
         _static: true,
         init: function () {
-            this.formatHTML();
+            this.listen('ICON_SET', this.setLogo);
         }
     }).inheritFrom('Page');
 }());

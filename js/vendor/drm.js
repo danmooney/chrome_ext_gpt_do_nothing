@@ -756,6 +756,7 @@
                 splitStrArr,
                 currKeyStr,
                 firstCharStr,
+                camelCaseStr,
                 newArr = Util.isArray(arr)
                     ? []
                     : {},
@@ -770,7 +771,7 @@
                 currKeyStr = i.toLowerCase();
                 if (currKeyStr.indexOf('_') === -1 &&
                     currKeyStr.indexOf('-') === -1
-                    ) {
+                ) {
                     newArr[i] = arr[i];
                     continue;
                 }
@@ -779,22 +780,29 @@
                     ? '_'
                     : '-';
 
-                splitStrArr = currKeyStr.split(strToSplitAt);
-                j = splitStrArr.length;
+                camelCaseStr = Util.convertStrToCamelCase(currKeyStr, strToSplitAt);
 
-                while (--j >= 0) {
-                    if (0 === j) {  // camel case doesn't capitalize first letter!
-                        continue;
-                    }
-                    firstCharStr = splitStrArr[j].charAt(0).toUpperCase();
-                    splitStrArr[j] = firstCharStr + splitStrArr[j].substr(1);
-                }
-
-                newArr[splitStrArr.join('')] = arr[i];
+                newArr[camelCaseStr] = arr[i];
             }
             return newArr;
         };
 
+
+        Util.convertStrToCamelCase = function (str, strToSplitAt) {
+            var splitStrArr = str.split(strToSplitAt),
+                firstCharStr,
+                j = splitStrArr.length;
+
+            while (--j >= 0) {
+                if (0 === j) {  // camel case doesn't capitalize first letter!
+                    continue;
+                }
+                firstCharStr = splitStrArr[j].charAt(0).toUpperCase();
+                splitStrArr[j] = firstCharStr + splitStrArr[j].substr(1);
+            }
+
+            return splitStrArr.join('');
+        };
         /**
          * Deep copy an array or object, returning a brand new copy
          * @param {Object|Array} obj

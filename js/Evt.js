@@ -11,7 +11,6 @@
          * @param evtTypeStr
          * @param chromeStr
          * @param callback
-         * @return {Boolean}
          */
         this.setEvent = function (evtTypeStr, chromeStr, callback) {
             eventsArr.push({
@@ -19,9 +18,11 @@
                 chromeStr: chromeStr,
                 callback: callback
             });
-            return true;
         };
 
+        /**
+         * @return {Array}
+         */
         this.listEvents = function () {
             return eventsArr;
         };

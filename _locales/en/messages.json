@@ -7,7 +7,7 @@
         "description": "This is the description of the extension.",
         "message": "Get paid to be lazy."
     },
-    "popupStatus": {
+    "popupStatusHeading": {
         "descripton": "This is the placeholder template for the status inside the popup.",
         "message": "Status:"
     },
@@ -21,6 +21,18 @@
     },
     "popupStatusWorking": {
         "description": "This is the status text that appears in the popup when extension is working.",
+        "message": "Working..."
+    },
+    "popupTitleNotReady" : {
+        "description": "This is the popup title that appears when extension is not ready.",
+        "message": "This page is not registered as a GPT starting point."
+    },
+    "popupTitleReady" : {
+        "description": "This is the popup title that appears when extension is ready.",
+        "message": "This page is registered as a GPT starting point."
+    },
+    "popupTitleWorking" : {
+        "description": "This is the popup title that appears when extension is working.",
         "message": "Working..."
     }
 }

@@ -37,7 +37,7 @@
             var that = this;
             this.getUrl(tab, function (url) {
                 that.currentUrlStr = url;
-                that.trigger('CURRENT_URL_SET');
+                that.trigger('CURRENT_URL_SET', tab.tabId);
             });
         },
 

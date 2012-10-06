@@ -3,7 +3,6 @@
  */
 (function() {
     $$.klass(function EvtBus () {
-        this.triggersArr = [];
         this.listenersArr = [];
 
     }, {
@@ -12,13 +11,17 @@
         /**
          * Execute function on all listeners
          * @param {String} evtTypeStr
+         * @params {*} argsList comma-separated arguments to pass to callback
          * @return {Boolean}
          */
         trigger: function (evtTypeStr) {
             var EvtBus = $$.instance('EvtBus'),
                 listenerArr = EvtBus.listenersArr[evtTypeStr],
                 listenerObj,
+                args = $$.util.arrayify(arguments),
                 i;
+
+            args = args.slice(1);
 
             if ($$.util.isUndefined(listenerArr)) {
                 return false;
@@ -28,7 +31,7 @@
 
             while (--i >= 0) {
                 listenerObj = listenerArr[i];
-                listenerObj.callback.apply(listenerObj.context, listenerObj.args);
+                listenerObj.callback.apply(listenerObj.context, args);
             }
             return true;
         },
@@ -36,14 +39,11 @@
         /**
          * Add listener for event type
          * @param {String} evtTypeStr
-         * @params {*} argsList comma-separated arguments to pass to callback
-         * @param {Function} callbackFn
+         * @param {Function} callback
          */
-        listen: function (evtTypeStr, argsList, callbackFn) {
+        listen: function (evtTypeStr, callback) {
             var EvtBus = $$.instance('EvtBus'),
-                listenerArr = EvtBus.listenersArr[evtTypeStr],
-                args = $$.util.arrayify(arguments).slice(1),
-                callback = args.pop();
+                listenerArr = EvtBus.listenersArr[evtTypeStr];
 
             if ($$.util.isUndefined(listenerArr)) {
                 EvtBus.listenersArr[evtTypeStr] = listenerArr = [];
@@ -51,7 +51,6 @@
 
             listenerArr.push({
                 context: this,
-                args: args,
                 callback: callback
             });
         }
