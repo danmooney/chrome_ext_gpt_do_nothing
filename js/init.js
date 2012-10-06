@@ -9,7 +9,9 @@
 //
 //
 //throw new GptError('Fuck you!');
-
+$(function () {
+    $$.app.namespace();
+});
 
 function checkUrl (info) {
     var browserAction;
@@ -29,14 +31,3 @@ function checkUrl (info) {
         }
     });
 }
-
-function registerPageAction () {
-    chrome.pageAction.onClicked.addListener(function (tab) {
-        alert('let\'s make some fuckin\' money!');
-    });
-}
-
-$(function () {
-    chrome.tabs.onUpdated.addListener(checkUrl);
-    chrome.tabs.onActivated.addListener(checkUrl);
-});

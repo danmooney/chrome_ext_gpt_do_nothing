@@ -1,0 +1,26 @@
+{
+    "manifestTitle": {
+        "description": "This is the title of the extension.",
+        "message": "GPT Do Nothing"
+    },
+    "manifestDescription": {
+        "description": "This is the description of the extension.",
+        "message": "Get paid to be lazy."
+    },
+    "popupStatus": {
+        "descripton": "This is the placeholder template for the status inside the popup.",
+        "message": "Status:"
+    },
+    "popupStatusNotReady": {
+        "description": "This is the status text that appears in the popup when extension is not ready.",
+        "message": "Waiting to detect a registered page."
+    },
+    "popupStatusReady": {
+        "description": "This is the status text that appears in the popup when extension is ready.",
+        "message": "Currently detecting a registered page; ready to start working."
+    },
+    "popupStatusWorking": {
+        "description": "This is the status text that appears in the popup when extension is working.",
+        "message": "Working..."
+    }
+}

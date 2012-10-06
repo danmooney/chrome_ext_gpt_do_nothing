@@ -1,0 +1,42 @@
+body {
+    background: #FFF;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    padding: 3px;
+    width: 350px;
+}
+
+#logo {
+    width: 48px;
+    height: 48px;
+    float: left;
+    margin-right: 20px;
+}
+
+#logo, #logo.not-ready {
+    background: url(../img/icon_bw_48.png) no-repeat;
+}
+
+#logo.ready {
+    background: url(../img/icon_48.png) no-repeat;
+}
+
+#logo.working {
+    background: url(../img/icon_red_48.png) no-repeat;
+}
+
+#logo-text {
+    line-height: 48px;
+}
+
+.clr {
+    clear: both;
+}
+
+.hr {
+    width: 100%;
+    height: 1px;
+    background: #CCC;
+    margin: 5px 0;
+}
