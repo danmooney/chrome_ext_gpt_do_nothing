@@ -14,14 +14,12 @@
         },
         /**
          * Return current url or url nested in optional tab argument
-         * @param {Tab} tab
+         * @param {*} tab
+         * @param {Function} callback
          * @return {String}
          */
-        getUrl: function (tab) {
-            if (!tab) {
-                return this.getCurrentUrl();
-            }
-            return tab.url;
+        getUrl: function (tab, callback) {
+            return $$.instance('Tab').getTabUrl(tab, callback);
         },
 
         /**
@@ -32,11 +30,15 @@
         },
 
         /**
-         * @param {Tab} tab
+         * @param {Object} tab data
          * @return {String}
          */
         setCurrentUrl: function (tab) {
-            this.currentUrlStr = tab.url;
+            var that = this;
+            this.getUrl(tab, function (url) {
+                that.currentUrlStr = url;
+                that.trigger('CURRENT_URL_SET');
+            });
         },
 
         /**

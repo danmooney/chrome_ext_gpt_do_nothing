@@ -9,9 +9,11 @@
 //
 //
 //throw new GptError('Fuck you!');
-$(function () {
-    $$.app.namespace();
-});
+(function() {
+    'use strict';
+    $$.app.defaultInheritance.set('EvtBus');
+    setInterval($$.app.namespace, 100);
+}());
 
 function checkUrl (info) {
     var browserAction;

@@ -1667,5 +1667,5 @@
         win.$$ = win.DRM = new DRM();
 
     }; // end of DRM.load function
-}(window, 'SC'));
+}(window, 'GPT'));
 // End library

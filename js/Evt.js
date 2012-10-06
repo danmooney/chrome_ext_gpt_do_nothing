@@ -22,10 +22,6 @@
             return true;
         };
 
-        this.getEvent = function () {
-
-        };
-
         this.listEvents = function () {
             return eventsArr;
         };
@@ -49,9 +45,18 @@
          * @param {String} evtTypeStr
          * @param {String} chromeStr nested inside chrome global
          * @param {Function} callback
+         * @param {Object} context call callback within this context
          */
-        registerEvent : function (evtTypeStr, chromeStr, callback) {
+        registerEvent : function (evtTypeStr, chromeStr, callback, context) {
             var Evt = $$.instance('Evt');
+
+            /**
+             * Force call within the context of the calling klass
+             */
+            function closureCallback () {
+                return callback.apply(context || window, arguments);
+            }
+
             if ($$.util.isUndefined(chrome[chromeStr]) ||
                 $$.util.isUndefined(chrome[chromeStr][evtTypeStr])
             ) {
@@ -63,7 +68,7 @@
                 return false;
             }
 
-            chrome[chromeStr][evtTypeStr].addListener(callback);
+            chrome[chromeStr][evtTypeStr].addListener(closureCallback);
 
             return Evt.setEvent(evtTypeStr, chromeStr, callback);
         }
