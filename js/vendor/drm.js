@@ -5,7 +5,7 @@
  * data is ever passed through this object.
  *
  * @package DRM Klass/Instance Creator
- * @version 10/72012
+ * @version 10/7/2012
  * @author Dan Mooney
  */
 ;
