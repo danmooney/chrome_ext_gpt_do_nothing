@@ -1,17 +1,19 @@
 /**
  * Icon (the browser action, or extension icon) klass
+ * // TODO - Icon is storing way too much info about the status of the app.... move these calls to App klass!
+ * // TODO - change default icon (green) to include this color in filename, i.e. icon_green_48.png
  */
 (function() {
     'use strict';
     $$.klass(function Icon () {
-        var iconObj = {
+        var /*iconObj = {
             bw: {
                 iconPathStr: 'img/icon_bw_48.png',
                 iconMessageKeyStr: 'NotReady',
                 iconClassStr: 'not-ready'
             },
             green: {
-                iconPathStr: 'img/icon_48.png',
+                iconPathStr: 'img/icon_green_48.png',
                 iconMessageKeyStr: 'Ready',
                 iconClassStr: 'ready'
             },
@@ -20,33 +22,58 @@
                 iconMessageKeyStr: 'Working',
                 iconClassStr: 'working'
             }
+        },*/
+        iconStatusObj = {
+            NotReady: {
+                iconPath: 'img/icon_bw_48.png',
+                iconColor: 'bw',
+                iconClass: 'not-ready'
+            },
+            Ready: {
+                iconPath: 'img/icon_green_48.png',
+                iconColor: 'green',
+                iconClass: 'ready'
+            },
+            Working: {
+                iconPath: 'img/icon_red_48.png',
+                iconColor: 'red',
+                iconClass: 'working'
+            }
         },
-        currentIconKeyStr = 'bw';
+//        currentIconKeyStr = 'bw',
+        currentIconStatusStr = $$.instance('App').getStatus();
 
+        /**
+         * @return {String}
+         */
         this.getIconData = function () {
-            return iconObj[currentIconKeyStr];
+            return iconStatusObj[currentIconStatusStr];
         };
 
+        /**
+         * Set image on browser action for a particular tab
+         * @param tabId
+         */
         this.setIcon = function (tabId) {
             var Url = $$.instance('Url'),
+                oldIconStatusStr = currentIconStatusStr,
                 iconPathStr = '',
                 iconObjKeyStr = '',
                 setIconOptionsObj;
 
-            // TODO - check if content scripts are working on GPT aspects
-            if (Url.isStartingUrl()) {
-                iconObjKeyStr = 'green';
-            } else {
-                iconObjKeyStr = 'bw';
-            }
+//            if (Url.isStartingUrl()) {
+//                iconObjKeyStr = 'green';
+//            } else {
+//                iconObjKeyStr = 'bw';
+//            }
 
-            if (currentIconKeyStr === iconObjKeyStr) { // icons are the same
-                return;
-            }
+            currentIconStatusStr = $$.instance('App').getStatus();
 
-            currentIconKeyStr = iconObjKeyStr;
+//            if (currentIconStatusStr === oldIconStatusStr) { // icons are the same
+//                return;
+//            }
 
-            iconPathStr = iconObj[iconObjKeyStr].iconPathStr;
+            iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
 
             setIconOptionsObj = {
                 path: iconPathStr
@@ -57,17 +84,22 @@
             }
 
             chrome.browserAction.setIcon(setIconOptionsObj);
-            this.trigger('ICON_SET', iconObjKeyStr, tabId);
+            this.trigger('ICON_SET', currentIconStatusStr, tabId);
         };
 
-        this.setTitle = function (iconObjKeyStr, tabId) {
+        /**
+         * Set title on browser action
+         * @param currentIconStatusStr
+         * @param tabId
+         */
+        this.setTitle = function (currentIconStatusStr, tabId) {
             var Url = $$.instance('Url'),
                 setTitleOptionsObj,
                 messageKeyStr,
                 titlePrefixStr = 'iconTitle',
-                titleStr = '';
+                titleStr;
 
-            messageKeyStr = iconObj[iconObjKeyStr].iconMessageKeyStr;
+            messageKeyStr = currentIconStatusStr;
 
             if (titleStr = $$.instance('Locale').getMessage(titlePrefixStr + messageKeyStr)) {
                 setTitleOptionsObj = {
@@ -85,8 +117,8 @@
     }, {
         _static: true,
         init: function () {
-            this.listen('CURRENT_URL_SET', this.setIcon);
-            this.listen('ICON_SET', this.setTitle);
+            this.listen('STATUS_CHANGED', this.setIcon);
+            this.listen('ICON_SET',       this.setTitle);
         }
     });
 }());

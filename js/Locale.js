@@ -15,9 +15,12 @@
                 classAttrArr = $$.util.isString(classAttrStr)
                     ? classAttrStr.split(' ')
                     : [],
-
                 messageStr,
                 i;
+
+            if (messageAttrStr === '') {
+                return false;
+            }
 
             // if message exists, no need to use el class attributes
             if (messageStr = this.getMessage(messageAttrStr)) {

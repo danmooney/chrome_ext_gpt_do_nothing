@@ -14,22 +14,3 @@
     $$.app.defaultInheritance.set('EvtBus');
     setInterval($$.app.namespace, 100);
 }());
-
-function checkUrl (info) {
-    var browserAction;
-    chrome.tabs.getSelected(null, function (tab) {
-        if (Url.isStartingUrl(tab.url)) {
-            browserAction = chrome.browserAction;
-            browserAction.setIcon({
-                path: 'img/icon_48.png',
-                tabId: tab.id
-            });
-            browserAction.setTitle({
-                title: 'This page is registered as a GPT starting point!',
-                tabId: tab.id
-            });
-
-            Evt.register('click', 'pageAction');
-        }
-    });
-}

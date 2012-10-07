@@ -1,5 +1,5 @@
 /**
- * Register events for tabs
+ * Register chrome events for tabs
  */
 (function() {
     $$.klass(function EvtTab () {

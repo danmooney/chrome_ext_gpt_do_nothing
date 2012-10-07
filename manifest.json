@@ -9,9 +9,9 @@
         "default_popup": "popup.html"
     },
     "icons": {
-        "16": "img/icon_16.png",
-        "48": "img/icon_48.png",
-        "128": "img/icon_128.png"
+        "16": "img/icon_green_16.png",
+        "48": "img/icon_green_48.png",
+        "128": "img/icon_green_128.png"
     },
     "background": {
         "page": "background.html",

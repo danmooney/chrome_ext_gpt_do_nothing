@@ -23,6 +23,19 @@
         "description": "This is the status text that appears in the popup when extension is working.",
         "message": "Working..."
     },
+    "popupOptionsText": {
+        "description": "",
+        "message": "Options"
+    },
+    "popupStartText": {
+        "description": "This is the text that appears in the popup for starting the extension.",
+        "message": "Start GPT Do Nothing!"
+    },
+    "popupStopText": {
+        "description": "This is the text that appears in the popup for stopping the extension.",
+        "message": "Stop Working"
+    },
+
     "iconTitleNotReady" : {
         "description": "This is the icon title that appears when extension is not ready.",
         "message": "This page is not registered as a GPT starting point."

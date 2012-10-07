@@ -7,28 +7,28 @@
         /**
          * Set logo based on current icon image
          */
-        this.setLogo = function (iconPathStr) {
+        this.setLogo = function () {
             var bg = this.getBgPage(),
                 iconObj = bg.$$.instance('Icon').getIconData();
 
-            $('#logo, #status-text').attr('class', iconObj.iconClassStr);
+            $('#logo, #status-text').attr('class', iconObj.iconClass);
         };
 
-        this.setStatus = function () {
+        /**
+         * Set popup status text
+         */
+        this.setStatusText = function () {
             var bg = this.getBgPage(),
-                Locale = $$.instance('Locale'),
-                messageHeadingStr = Locale.getMessage('popupStatusHeading'),
-                iconObj = bg.$$.instance('Icon').getIconData();
+                App = bg.$$.instance('App'),
+                status = App.getStatus();
 
-            $('#status-heading').text(messageHeadingStr);
-            $('#status-text').attr('class', iconObj.iconClassStr);
+            $('#status-text').attr('data-118n', 'popupStatus' + App.getStatus());
         }
     }, {
         _static: true,
-        init: function () {
-//            this.listen('ICON_SET', this.setLogo);
+        init: function () { // sort of an onload measure, since this is triggered everytime popup.html is loaded
             this.setLogo();
-            this.setStatus();
+            this.setStatusText();
         }
     }).inheritFrom('Page');
 }());

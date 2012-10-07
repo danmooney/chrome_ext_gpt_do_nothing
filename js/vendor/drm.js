@@ -5,7 +5,7 @@
  * data is ever passed through this object.
  *
  * @package DRM Klass/Instance Creator
- * @version 9/28/2012
+ * @version 10/7/2012
  * @author Dan Mooney
  */
 ;
@@ -771,7 +771,7 @@
                 currKeyStr = i.toLowerCase();
                 if (currKeyStr.indexOf('_') === -1 &&
                     currKeyStr.indexOf('-') === -1
-                ) {
+                    ) {
                     newArr[i] = arr[i];
                     continue;
                 }
