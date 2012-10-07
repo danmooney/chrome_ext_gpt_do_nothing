@@ -824,7 +824,7 @@
             for (i in obj) {
                 if (!obj.hasOwnProperty(i) ||
                     Util.inArray(Util.deepCopy.blacklist, i)
-                    ) {
+                ) {
                     continue;
                 }
 
