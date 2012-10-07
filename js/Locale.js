@@ -12,37 +12,43 @@
         var getMessageKeyFromEl = function (el) {
             var messageAttrStr = el.attr('data-i18n'),
                 classAttrStr = el.attr('class'),
-                classAttrArr = $$.util.isString(classAttrArr)
+                classAttrArr = $$.util.isString(classAttrStr)
                     ? classAttrStr.split(' ')
                     : [],
-                getMessage = chrome.i18n.getMessage,
+
                 messageStr,
                 i;
 
             // if message exists, no need to use el class attributes
-            if (messageStr = getMessage(messageAttrStr)) {
+            if (messageStr = this.getMessage(messageAttrStr)) {
                 return messageStr;
             }
 
             for (i = 0; i < classAttrArr.length; i += 1) {
                 classAttrStr = classAttrArr[i];
-                classAttrStr = $$.util.convertStrToCamelCase(classAttr, '-');
+                classAttrStr = $$.util.convertStrToCamelCase(classAttrStr, '-');
                 classAttrStr = classAttrStr.charAt(0).toUpperCase() + classAttrStr.slice(1);
-                if (messageStr = getMessage(messageAttrStr + classAttrStr)) {
+                if (messageStr = this.getMessage(messageAttrStr + classAttrStr)) {
                     return messageStr;
                 }
             }
             return false;
         };
 
+        this.getMessage = function (messageKeyStr) {
+            return chrome.i18n.getMessage(messageKeyStr);
+        };
+
         this.populateText = function () {
-            var els = $('[data-i18n]');
+            var els = $('[data-i18n]'),
+                that = $$.instance('Locale');
 
             els.each(function () {
                 var el = $(this),
                     messageStr;
-                if (messageStr = getMessageKeyFromEl(el)) {
-                    el.attr('text', messageStr);
+
+                if (messageStr = getMessageKeyFromEl.call(that, el)) {
+                    el.text(messageStr);
                 }
             });
         };
@@ -50,6 +56,7 @@
         _static: true,
         init: function () {
             setInterval(this.populateText, 1000);
+            this.populateText();
         }
     });
 }());

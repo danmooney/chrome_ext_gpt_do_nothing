@@ -2,6 +2,7 @@
  * Url Helper
  */
 (function() {
+    'use strict';
     $$.klass(function Url () {
         this.startingUrlArr = [
             'http://www.treasuretrooper.com/members/earn/offers'
@@ -36,6 +37,10 @@
         setCurrentUrl: function (tab) {
             var that = this;
             this.getUrl(tab, function (url) {
+                console.log(url);
+                if (!(/^http[s]?:/.test(url))) {    // if url doesn't match http(s) pattern, return
+                    return;
+                }
                 that.currentUrlStr = url;
                 that.trigger('CURRENT_URL_SET', tab.tabId);
             });

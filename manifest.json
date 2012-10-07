@@ -5,7 +5,7 @@
     "description": "__MSG_manifestDescription__",
     "browser_action": {
         "default_icon": "img/icon_bw_48.png",
-        "default_title": "__MSG_popupTitleNotReady__",
+        "default_title": "__MSG_iconTitleNotReady__",
         "default_popup": "popup.html"
     },
     "icons": {
@@ -25,7 +25,7 @@
                 "js/vendor/jquery.js",
                 "js/vendor/drm.js",
                 "js/Evt.js",
-                "js/Registry.js",
+                "js/Storage.js",
                 "js/Url.js",
                 "js/Gpt/Treasuretrooper.js"
             ]

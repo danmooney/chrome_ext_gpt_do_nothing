@@ -2,6 +2,7 @@
  * Tab Logic
  */
 (function() {
+    'use strict';
     $$.klass(function Tab () {
 
     }, {

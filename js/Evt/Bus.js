@@ -31,6 +31,7 @@
 
             while (--i >= 0) {
                 listenerObj = listenerArr[i];
+                console.log(evtTypeStr, listenerObj.context, args);
                 listenerObj.callback.apply(listenerObj.context, args);
             }
             return true;
