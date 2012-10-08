@@ -1,0 +1,7 @@
+overwrite window.alert to another function
+
+
+This actually works!  Use it to capture the string to determine what it's trying to tell you without actually alerting!
+
+window.oldalert = window.alert
+window.alert = function (str) {console.warn('working: ' + str); oldalert(str);};
