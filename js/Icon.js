@@ -6,24 +6,7 @@
 (function() {
     'use strict';
     $$.klass(function Icon () {
-        var /*iconObj = {
-            bw: {
-                iconPathStr: 'img/icon_bw_48.png',
-                iconMessageKeyStr: 'NotReady',
-                iconClassStr: 'not-ready'
-            },
-            green: {
-                iconPathStr: 'img/icon_green_48.png',
-                iconMessageKeyStr: 'Ready',
-                iconClassStr: 'ready'
-            },
-            red: {
-                iconPathStr: 'img/icon_red_48.png',
-                iconMessageKeyStr: 'Working',
-                iconClassStr: 'working'
-            }
-        },*/
-        iconStatusObj = {
+        var iconStatusObj = {
             NotReady: {
                 iconPath: 'img/icon_bw_48.png',
                 iconColor: 'bw',
@@ -40,7 +23,7 @@
                 iconClass: 'working'
             }
         },
-//        currentIconKeyStr = 'bw',
+
         currentIconStatusStr = $$.instance('App').getStatus();
 
         /**
@@ -60,12 +43,6 @@
                 iconPathStr = '',
                 iconObjKeyStr = '',
                 setIconOptionsObj;
-
-//            if (Url.isStartingUrl()) {
-//                iconObjKeyStr = 'green';
-//            } else {
-//                iconObjKeyStr = 'bw';
-//            }
 
             currentIconStatusStr = $$.instance('App').getStatus();
 

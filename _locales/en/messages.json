@@ -23,15 +23,15 @@
         "description": "This is the status text that appears in the popup when extension is working.",
         "message": "Working..."
     },
-    "popupOptionsText": {
+    "popupOptionsButton": {
         "description": "",
         "message": "Options"
     },
-    "popupStartText": {
+    "popupReadyButton": {
         "description": "This is the text that appears in the popup for starting the extension.",
         "message": "Start GPT Do Nothing!"
     },
-    "popupStopText": {
+    "popupWorkingButton": {
         "description": "This is the text that appears in the popup for stopping the extension.",
         "message": "Stop Working"
     },

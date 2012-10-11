@@ -5,9 +5,19 @@
 (function() {
     $$.klass(function App () {
         /**
+         * Just for reference
+         * @type {Array}
+         */
+        var statusArr = [
+            'NotReady',
+            'Ready',
+            'Working'
+        ],
+
+        /**
          * @type {String}
          */
-        var statusStr = '',
+            statusStr = '',
             defaultStatusStr = 'NotReady';
 
         /**
@@ -29,6 +39,18 @@
                 this.setStatus('NotReady');
             }
             this.trigger('STATUS_CHANGED', tabId);
+        };
+
+        this.isReady = function () {
+            return this.getStatus() === 'Ready';
+        };
+
+        this.isWorking = function () {
+            return this.getStatus() === 'Working';
+        };
+
+        this.isNotReady = function () {
+            return this.getStatus() === 'NotReady';
         };
 
     }, {

@@ -22,8 +22,8 @@
         {
             "matches": ["http://*/*"],
             "js": [
-                "js/vendor/jquery.js",
-                "js/vendor/drm.js",
+                "js/_vendor/jquery.js",
+                "js/_vendor/drm.js",
                 "js/Evt.js",
                 "js/Storage.js",
                 "js/Url.js",
