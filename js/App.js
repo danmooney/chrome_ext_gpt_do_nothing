@@ -28,6 +28,9 @@
         };
 
         this.setStatus = function (str) {
+            if (this.isWorking()) {
+                return;
+            }
             statusStr = str;
         };
 
