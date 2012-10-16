@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    $$.klass(function GptNatureBucks () {
+    $$.klass(function GptNaturebucks () {
         this.urlArr = [
             {
                 url: 'http://www.naturebucks.com/members/signupPTS.php(.)*',

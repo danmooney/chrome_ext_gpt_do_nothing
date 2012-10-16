@@ -14,8 +14,18 @@
         this.urlArr = [];
 
     }, {
+        _static: true,
+        /**
+         * Adds starting Url to background page's Url klass
+         * TODO - need to pass messages... can't fetch background page from content script!
+         */
         registerStartingUrl: function () {
-            var Url = $$.instance('Url');
+            var bg = $$.instance('Page').getBgPage(),
+                Url = bg.$$.instance('Url'),
+                i;
+            for (i = 0; i < this.urlArr.length; i += 1) {
+                Url.addStartingUrl(urlArr[i].url);
+            }
         },
         init: function () {
             this.verifyInterface();
@@ -25,25 +35,29 @@
          * Throw early; verify that everything is good
          */
         verifyInterface: function () {
-            var i;
+            var urlObj,
+                i;
 
             if (!$$.util.isArray(this.urlArr)) {
                 throw new AppTypeError(this.constructor.name + ' does not have urlArr');
             }
 
-            for (i in this.urlArr) {
+            for (i = 0; i < this.urlArr.length; i += 1) {
                 if (!this.urlArr.hasOwnProperty(i)) {
                     continue;
                 }
-                if (!$$.util.isObject()) {
+
+                urlObj = this.urlArr[i];
+
+                if (!$$.util.isObject(urlObj)) {
                     throw new AppTypeError(this.constructor.name + ' does not contain only objects in urlArr');
                 }
 
-                if (!$$.util.isString(urlArr[i].type)) {
+                if (!$$.util.isString(urlObj.type)) {
                     throw new AppTypeError(this.constructor.name + ' must have a string type defined in nested objects of urlArr');
                 }
 
-                if (!$$.util.isString(urlArr[i].url)) {
+                if (!$$.util.isString(urlObj.url)) {
                     throw new AppTypeError(this.constructor.name + ' must have a string url defined in nested objects of urlArr');
                 }
             }

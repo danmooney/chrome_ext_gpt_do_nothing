@@ -73,10 +73,12 @@
         },
 
         /**
-         * Fetch all the urls in GPT and
+         * Add starting url to this.startingUrlArr array
+         * // TODO - Enforce array uniqueness!
+         * @param {String} urlStr
          */
-        getStartingUrls: function () {
-            var appGlobal = $$.getApplicationGlobal();
+        addStartingUrl: function (urlStr) {
+            this.startingUrlArr.push(urlStr);
         }
     }, {
         _static: true,

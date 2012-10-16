@@ -25,7 +25,7 @@
                     return callback.call(null, tab.url);
                 });
             } else {
-                throw new TypeError('Unable to get tab url from ' + tab);
+                throw new AppTabError('Unable to get tab url from ' + tab);
             }
         }
     });

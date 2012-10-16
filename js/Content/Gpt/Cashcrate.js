@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    $$.klass(function GptCashCrate () {
+    $$.klass(function GptCashcrate () {
         this.urlArr = [
             {
                 url: 'http://www.cashcrate.com/dashboard',
