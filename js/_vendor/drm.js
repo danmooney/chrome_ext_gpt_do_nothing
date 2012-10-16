@@ -771,7 +771,7 @@
                 currKeyStr = i.toLowerCase();
                 if (currKeyStr.indexOf('_') === -1 &&
                     currKeyStr.indexOf('-') === -1
-                    ) {
+                ) {
                     newArr[i] = arr[i];
                     continue;
                 }
@@ -1633,7 +1633,7 @@
                 return (
                     typeof this.id === 'function' &&
                         InitializationArr[this.id()] === true
-                    );
+                );
             };
 
             /**
@@ -1643,7 +1643,7 @@
                 return (
                     typeof this.id === 'function' &&
                         SetupArr[this.id()] === true
-                    );
+                );
             };
 
             fn.doneWithSetup = function () {
