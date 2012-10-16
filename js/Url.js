@@ -4,9 +4,11 @@
 (function() {
     'use strict';
     $$.klass(function Url () {
-        this.startingUrlArr = [
-            'http://www.treasuretrooper.com/members/earn/offers'
-        ];
+        /**
+         * Combined urls of every GPT site
+         * @type {Array}
+         */
+        this.startingUrlArr = [];
         this.currentUrlStr = '';
     }, {
         _static: true,
@@ -43,8 +45,8 @@
 
             this.getUrl(tab, function (url) {
                 console.log('Current URL: ' + url);
-                if (!(/^http[s]?:/.test(url))) {    // if url doesn't match http(s) pattern, return
-                    return;
+                if ((/^http[s]?:/.test(url))) {    // if url matches http/https patern, set currentUrlStr
+
                 }
                 that.currentUrlStr = url;
                 that.trigger('CURRENT_URL_SET', tabId);
@@ -68,8 +70,18 @@
                 }
             }
             return false;
+        },
+
+        /**
+         * Fetch all the urls in GPT and
+         */
+        getStartingUrls: function () {
+            var appGlobal = $$.getApplicationGlobal();
         }
     }, {
-        _static: true
+        _static: true,
+        init: function () {
+            console.log($$.getApplicationGlobal());
+        }
     });
 }());
