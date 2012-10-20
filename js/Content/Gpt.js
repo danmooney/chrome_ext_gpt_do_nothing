@@ -17,11 +17,20 @@
         _static: true,
         /**
          * Adds starting Url to background page's Url klass
-         * TODO - need to pass messages... can't fetch background page from content script!
+         * TODO - could all just go to storage now probably
          */
         registerStartingUrl: function () {
-            var Message = $$.instance('Message'),
+            var Storage = $$.instance('Storage'),
+                Message = $$.instance('Message'),
+                startingUrlObj,
                 i;
+
+            if ((startingUrlObj = Storage.getItem('startingUrl')) &&
+                 startingUrlObj[this.constructor.name]
+            ) {
+                return;
+            }
+
             for (i = 0; i < this.urlArr.length; i += 1) {
                 Message.sendMessage({
                     klass: 'Url',

@@ -1,7 +1,6 @@
 /**
  * Icon (the browser action, or extension icon) klass
  * // TODO - Icon is storing way too much info about the status of the app.... move these calls to App klass!
- * // TODO - change default icon (green) to include this color in filename, i.e. icon_green_48.png
  */
 (function() {
     'use strict';
