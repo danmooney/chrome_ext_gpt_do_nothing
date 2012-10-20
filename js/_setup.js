@@ -1,3 +1,4 @@
+// background page setup
 (function() {
     'use strict';
     $$.app.defaultInheritance.set('EvtBus');

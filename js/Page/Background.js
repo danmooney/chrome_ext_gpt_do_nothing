@@ -12,6 +12,7 @@
         _static: true,
         init: function () {
             this.bgPage = chrome.extension.getBackgroundPage();
+            $$.instance('Storage').clearItems();
         }
     }).inheritFrom('Page');
 }());
