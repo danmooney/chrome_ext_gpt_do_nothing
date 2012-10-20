@@ -20,11 +20,16 @@
          * TODO - need to pass messages... can't fetch background page from content script!
          */
         registerStartingUrl: function () {
-            var bg = $$.instance('Page').getBgPage(),
-                Url = bg.$$.instance('Url'),
+            var Message = $$.instance('Message'),
                 i;
             for (i = 0; i < this.urlArr.length; i += 1) {
-                Url.addStartingUrl(urlArr[i].url);
+                Message.sendMessage({
+                    klass: 'Url',
+                    method: 'addStartingUrl',
+                    args: [
+                        this.urlArr[i].url
+                    ]
+                });
             }
         },
         init: function () {

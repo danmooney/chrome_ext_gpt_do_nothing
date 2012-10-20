@@ -3,7 +3,7 @@
     $$.klass(function GptNaturebucks () {
         this.urlArr = [
             {
-                url: 'http://www.naturebucks.com/members/signupPTS.php(.)*',
+                url: 'http://naturebucks.com/members/signupPTS.php(.)*',
                 type: 'offers'
             }
         ];

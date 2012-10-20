@@ -15,7 +15,11 @@
          * @return {Boolean}
          */
         isBgPage: function () {
-            return this.getBgPage() === window;
+            try {
+                return this.getBgPage() === window;
+            } catch (e) {
+                return false;
+            }
         }
     });
 }());

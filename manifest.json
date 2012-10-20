@@ -27,6 +27,7 @@
                 "js/App/Error.js",
                 "js/App/Type/Error.js",
                 "js/Message.js",
+                "js/Page.js",
                 "js/Content/Gpt.js",
                 "js/Content/Gpt/Cashcrate.js",
                 "js/Content/Gpt/Naturebucks.js",

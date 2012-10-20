@@ -61,11 +61,18 @@
          */
         isStartingUrl: function (url) {
             url = url || this.getCurrentUrl();
-            for (var i in this.startingUrlArr) {
+            var urlRegExp,
+                i;
+
+            for (i in this.startingUrlArr) {
                 if (!this.startingUrlArr.hasOwnProperty(i)) {
                     continue;
                 }
-                if (url.indexOf(this.startingUrlArr[i]) !== -1) {
+                urlRegExp = new RegExp(this.startingUrlArr[i]);
+                if (url.indexOf(this.startingUrlArr[i]) !== -1 ||
+                    urlRegExp.test(url) ||
+                    urlRegExp.test(url.replace('www.', ''))
+                ) {
                     return true;
                 }
             }

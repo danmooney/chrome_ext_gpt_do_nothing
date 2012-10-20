@@ -4,11 +4,15 @@
 (function() {
     'use strict';
     $$.klass(function Tab () {
-
+        this.currentlySelectedTabId = 0;
     }, {
         _static: true,
-        init: function () {
 
+        init: function () {
+            this.listen('CURRENT_URL_SET', this.setCurrentlySelectedTabId);
+        },
+        setCurrentlySelectedTabId: function (tabId) {
+            this.currentlySelectedTabId = tabId;
         },
         getTabById: function (tabId, callback) {
             return chrome.tabs.get(tabId, callback);
