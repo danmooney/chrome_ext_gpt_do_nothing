@@ -23,48 +23,25 @@
         registerStartingUrl: function () {
             var Storage = $$.instance('Storage'),
                 that = this,
-                Gpt = $$.instance('Gpt'),
-                args = $$.util.arrayify(arguments);
+                Gpt = $$.instance('Gpt');
 
             if (this.isSameInstanceAs(Gpt)) {
                 return;
             }
 
-            if (!Gpt.paused) {
-                Gpt.paused = true;
-                Storage.getItem('startingUrls', function (startingUrlObj) {
-//                Storage.setPause('startingUrls');
-
-                    startingUrlObj = startingUrlObj || {};
-                    console.log(that.constructor.name);
-                    if ($$.util.isDefined(startingUrlObj[that.constructor.name])) {
-                        return;
-                    }
-                    console.log(startingUrlObj);
-                    debugger;
-                    startingUrlObj[that.constructor.name] = that.urlArr;
-                    Storage.setItem({startingUrls: startingUrlObj}, function () {
-                        Gpt.paused = false;
-                    });
+            Storage.freezeGetOnItem('startingUrls');
+            Storage.getItem('startingUrls', function (startingUrlObj) {
+                startingUrlObj = startingUrlObj || {};
+                console.log(that.constructor.name);
+                if ($$.util.isDefined(startingUrlObj[that.constructor.name])) {
+                    return;
+                }
+                startingUrlObj[that.constructor.name] = that.urlArr;
+                Storage.setItem({startingUrls: startingUrlObj}, function () {
+                    Storage.releaseGetOnItem('startingUrls');
                 });
-            } else {
-                setTimeout(function () {
-                    console.log('setting timeout');
-                    return that.registerStartingUrl.apply(that, arguments);
-                }, 100);
-            }
+            });
 
-
-
-//            for (i = 0; i < this.urlArr.length; i += 1) {
-//                Message.sendMessage({
-//                    klass: 'Url',
-//                    method: 'addStartingUrl',
-//                    args: [
-//                        this.urlArr[i].url
-//                    ]
-//                });
-//            }
         },
         init: function () {
             this.verifyInterface();
