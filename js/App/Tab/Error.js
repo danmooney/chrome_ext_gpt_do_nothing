@@ -3,6 +3,6 @@ function AppTabError (str) {
     Error.call(this, this.message);
 }
 
-AppTabError.prototype = AppError.prototype;
+AppTabError.prototype = new AppError();
 AppTabError.prototype.constructor = AppTabError;
 AppTabError.prototype.name = 'AppTabError';

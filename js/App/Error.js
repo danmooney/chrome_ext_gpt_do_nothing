@@ -3,6 +3,6 @@ function AppError (str) {
     Error.call(this, this.message);
 }
 
-AppError.prototype = Error.prototype;
+AppError.prototype = new Error();
 AppError.prototype.constructor = AppError;
 AppError.prototype.name = 'AppError';

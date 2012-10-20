@@ -2,6 +2,7 @@
  * Chrome Events can be registered through here
  * This klass is also used to prevent duplicate events from being registered
  */
+
 (function() {
     $$.klass(function Evt () {
         var eventsArr = [];
