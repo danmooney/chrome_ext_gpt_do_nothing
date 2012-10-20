@@ -19,7 +19,6 @@
         _static: true,
         /**
          * Adds starting Url to background page's Url klass
-         * TODO - could all just go to storage now probably
          */
         registerStartingUrl: function () {
             var Storage = $$.instance('Storage'),
@@ -44,14 +43,15 @@
                     console.log(startingUrlObj);
                     debugger;
                     startingUrlObj[that.constructor.name] = that.urlArr;
-                    Storage.setItem({startingUrls: startingUrlObj});
+                    Storage.setItem({startingUrls: startingUrlObj}, function () {
+                        Gpt.paused = false;
+                    });
                 });
             } else {
                 setTimeout(function () {
                     console.log('setting timeout');
-                    Gpt.paused = false;
                     return that.registerStartingUrl.apply(that, arguments);
-                }, 2000);
+                }, 100);
             }
 
 
