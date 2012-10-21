@@ -32,7 +32,7 @@
         };
 
         this.getMessage = function (message, sender, sendResponse) {
-            console.log('Got message', message, sender, sendResponse);
+            console.log('Got message', message, sender);
             if (!$$.util.isObject(message)) {
                 throw new AppTypeError('Messages passed between pages and content scripts must be an object.');
             } else if (!$$.util.isString(message.klass) ||

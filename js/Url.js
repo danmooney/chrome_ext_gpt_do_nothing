@@ -42,8 +42,13 @@
 
             this.getUrlFromTab(tab, function (url) {
                 console.log('Current URL: ' + url);
-                that.currentUrlStr = url;
-                that.trigger('CURRENT_URL_SET', tabId);
+                if (/^http(s)?:/.test(url) &&
+                    url.indexOf('chrome-devtools') === -1 /*&&
+                    url.indexOf('chrome://chrome/' === -1)*/
+                ) {
+                    that.currentUrlStr = url;
+                    that.trigger('CURRENT_URL_SET', tabId);
+                }
             });
         },
 
@@ -57,6 +62,7 @@
         isStartingUrl: function (url, callback) {
             url = url || this.getCurrentUrl();
             var that = this,
+                Message = $$.instance('Message'),
                 i;
 
             this.fetchStartingUrlsObj(function (startingUrlsObj) {
@@ -88,7 +94,13 @@
                             urlRegExp.test(url) ||
                             urlRegExp.test(url.replace('www.', ''))
                         ) {
-                            that.trigger('GPT_KLASS_CHANGED', i);
+                            Message.sendMessage({
+                                klass: 'Gpt',
+                                method: 'setCurrentGptKlass',
+                                args: [
+                                    i
+                                ]
+                            });
                             return callback(true);
                         }
                     }

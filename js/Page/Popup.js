@@ -34,7 +34,18 @@
 
             function setEvent () {
                 $('#start-stop').click(function () {
-                    alert('ok');
+                    var q;
+                    if (App.isReady()) {
+                        q = confirm('Make sure that you are logged in to this GPT site before you proceed.');
+                        if (q === true) {
+                            App.setStatus('Working');
+                        }
+                    } else {
+                        q = confirm('Are you sure you would like to stop GPT Do Nothing?');
+                        if (q === true) {
+
+                        }
+                    }
                 });
             }
 

@@ -60,10 +60,6 @@
         init: function () {
             this.verifyInterface();
             this.registerStartingUrl();
-
-            if (this.isSameInstanceAs($$.instance('Gpt'))) {
-                this.listen('GPT_KLASS_CHANGED', this.setCurrentGptKlass);
-            }
         },
         /**
          * Throw early; verify that everything is good

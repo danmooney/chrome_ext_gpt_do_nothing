@@ -28,6 +28,8 @@
                 return this.getTabById(tabId, function (tab) {
                     return callback.call(null, tab.url);
                 });
+            } else if ($$.util.isString(tab)) {
+                return callback.call(null, tab);
             } else {
                 throw new AppTabError('Unable to get tab url from ' + tab);
             }
