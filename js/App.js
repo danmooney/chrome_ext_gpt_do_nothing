@@ -18,6 +18,7 @@
          * @type {String}
          */
             statusStr = '',
+            contentLoadedBool = false,
             defaultStatusStr = 'NotReady';
 
         /**
@@ -35,13 +36,16 @@
         };
 
         this.checkStatus = function (tabId) {
-            var Url = $$.instance('Url');
-            if (Url.isStartingUrl()) {
-                this.setStatus('Ready');
-            } else {
-                this.setStatus('NotReady');
-            }
-            this.trigger('STATUS_CHANGED', tabId);
+            var Url = $$.instance('Url'),
+                that = this;
+            Url.isStartingUrl(null, function (isStartingUrlBool) {
+                if (true === isStartingUrlBool) {
+                    that.setStatus('Ready');
+                } else {
+                    that.setStatus('NotReady');
+                }
+                that.trigger('APP_STATUS_CHANGED', tabId);
+            });
         };
 
         this.isReady = function () {
@@ -54,6 +58,18 @@
 
         this.isNotReady = function () {
             return this.getStatus() === 'NotReady';
+        };
+
+        this.setContentLoaded = function (bool) {
+            if (!$$.util.isBool(bool)) {
+                throw new AppTypeError('Argument passed to App.setLoading must be boolean');
+            }
+
+            loadedBool = bool;
+        };
+
+        this.hasContentLoaded = function () {
+            return loadedBool;
         };
 
     }, {

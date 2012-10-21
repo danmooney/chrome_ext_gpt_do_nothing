@@ -24,18 +24,20 @@
             "js": [
                 "js/_vendor/jquery.js",
                 "js/_vendor/drm.js",
+                "js/Content/_setup.js",
                 "js/App/Error.js",
                 "js/App/Type/Error.js",
+                "js/Evt/Bus.js",
                 "js/Message.js",
                 "js/Page.js",
                 "js/Storage.js",
                 "js/Content/Gpt.js",
                 "js/Content/Gpt/Cashcrate.js",
+                "js/Content/Gpt/Fusioncash.js",
                 "js/Content/Gpt/Naturebucks.js",
                 "js/Content/Gpt/Treasuretrooper.js",
                 "js/Evt.js",
-                "js/Evt/Message.js",
-                "js/Content/_setup.js"
+                "js/Evt/Message.js"
             ]
         }
     ],

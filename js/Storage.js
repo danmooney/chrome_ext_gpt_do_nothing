@@ -1,4 +1,9 @@
-// interface to chrome.storage
+/**
+ * Interface for Chrome storage API
+ *
+ * List of storage keys used throughout the app:
+ * 'startingUrls' = list of urls to register ready status with application
+ */
 (function() {
     'use strict';
     $$.klass(function Storage () {
@@ -12,7 +17,7 @@
         /**
          * @type {Number}
          */
-        this.freezeTimeoutNum = 2000;
+        this.freezeTimeoutNum = 200;
     }, {
         _static: true,
             /**

@@ -93,7 +93,7 @@
     }, {
         _static: true,
         init: function () {
-            this.listen('STATUS_CHANGED', this.setIcon);
+            this.listen('APP_STATUS_CHANGED', this.setIcon);
             this.listen('ICON_SET',       this.setTitle);
         }
     });

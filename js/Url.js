@@ -4,12 +4,9 @@
 (function() {
     'use strict';
     $$.klass(function Url () {
-        /**
-         * Combined urls of every GPT site
-         * @type {Array}
-         */
-        this.startingUrlArr = [];
+
         this.currentUrlStr = '';
+
     }, {
         _static: true,
         init: function () {
@@ -21,7 +18,7 @@
          * @param {Function} callback
          * @return {String}
          */
-        getUrl: function (tab, callback) {
+        getUrlFromTab: function (tab, callback) {
             return $$.instance('Tab').getTabUrl(tab, callback);
         },
 
@@ -43,11 +40,8 @@
                 oldUrlStr = this.getCurrentUrl(),
                 tabId = tab.tabId || tab;
 
-            this.getUrl(tab, function (url) {
+            this.getUrlFromTab(tab, function (url) {
                 console.log('Current URL: ' + url);
-                if ((/^http[s]?:/.test(url))) {    // if url matches http/https patern, set currentUrlStr
-
-                }
                 that.currentUrlStr = url;
                 that.trigger('CURRENT_URL_SET', tabId);
             });
@@ -57,26 +51,56 @@
          * Checks to see if url is contained within
          *   the startingUrlArr
          * @param {String} url
+         * @param {Function} url
          * @return {Boolean}
          */
-        isStartingUrl: function (url) {
+        isStartingUrl: function (url, callback) {
             url = url || this.getCurrentUrl();
-            var urlRegExp,
+            var that = this,
                 i;
 
-            for (i in this.startingUrlArr) {
-                if (!this.startingUrlArr.hasOwnProperty(i)) {
-                    continue;
+            this.fetchStartingUrlsObj(function (startingUrlsObj) {
+                var startingUrlsArr,
+                    startingUrlObj,
+                    urlStr,
+                    urlRegExp,
+                    j;
+
+                for (i in startingUrlsObj) {
+                    if (!startingUrlsObj.hasOwnProperty(i)) {
+                        continue;
+                    }
+                    startingUrlsArr = startingUrlsObj[i];
+
+                    if (startingUrlsArr.length === 0) {
+                        continue;
+                    }
+
+                    for (j in startingUrlsArr) {
+                        if (!startingUrlsArr.hasOwnProperty(j)) {
+                            continue;
+                        }
+                        startingUrlObj = startingUrlsArr[j];
+
+                        urlStr = startingUrlObj.url;
+                        urlRegExp = new RegExp(urlStr);
+                        if (url.indexOf(urlStr) !== -1 ||
+                            urlRegExp.test(url) ||
+                            urlRegExp.test(url.replace('www.', ''))
+                        ) {
+                            that.trigger('GPT_KLASS_CHANGED', i);
+                            return callback(true);
+                        }
+                    }
+
                 }
-                urlRegExp = new RegExp(this.startingUrlArr[i]);
-                if (url.indexOf(this.startingUrlArr[i]) !== -1 ||
-                    urlRegExp.test(url) ||
-                    urlRegExp.test(url.replace('www.', ''))
-                ) {
-                    return true;
-                }
-            }
-            return false;
+                return callback(false);
+            });
+        },
+
+        fetchStartingUrlsObj: function (callback) {
+            var Storage = $$.instance('Storage');
+            return Storage.getItem('startingUrls', callback);
         },
 
         /**

@@ -15,6 +15,12 @@
 
         this.paused = false;
 
+        this.currentGptKlassStr = '';
+
+        this.setCurrentGptKlass = function (gptKlassStr) {
+            this.currentGptKlassStr = gptKlassStr;
+        };
+
     }, {
         _static: true,
         /**
@@ -32,20 +38,23 @@
             Storage.freezeGetOnItem('startingUrls');
             Storage.getItem('startingUrls', function (startingUrlObj) {
                 startingUrlObj = startingUrlObj || {};
-                console.log(that.constructor.name);
-                if ($$.util.isDefined(startingUrlObj[that.constructor.name])) {
-                    return;
-                }
+//                if ($$.util.isDefined(startingUrlObj[that.constructor.name])) {
+//                    return Storage.releaseGetOnItem('startingUrls');
+//                }
                 startingUrlObj[that.constructor.name] = that.urlArr;
                 Storage.setItem({startingUrls: startingUrlObj}, function () {
+                    console.log('just set ' + that.constructor.name, startingUrlObj);
                     Storage.releaseGetOnItem('startingUrls');
                 });
             });
-
         },
         init: function () {
             this.verifyInterface();
             this.registerStartingUrl();
+
+            if (this.isSameInstanceAs($$.instance('Gpt'))) {
+                this.listen('GPT_KLASS_CHANGED', this.setCurrentGptKlass);
+            }
         },
         /**
          * Throw early; verify that everything is good

@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    $$.klass(function GptTreasuretrooper () {
+    $$.klass(function GptFusioncash () {
         this.urlArr = [
             {
                 url: 'http://www.fusioncash.net/offers.php*',
