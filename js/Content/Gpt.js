@@ -28,6 +28,7 @@
          */
         registerStartingUrl: function () {
             var Storage = $$.instance('Storage'),
+                Message = $$.instance('Message'),
                 that = this,
                 Gpt = $$.instance('Gpt');
 
@@ -35,19 +36,27 @@
                 return;
             }
 
-            Storage.freezeGetOnItem('startingUrls');
-            Storage.getItem('startingUrls', function (startingUrlObj) {
-                startingUrlObj = startingUrlObj || {};
-//                if ($$.util.isDefined(startingUrlObj[that.constructor.name])) {
-//                    return Storage.releaseGetOnItem('startingUrls');
-//                }
-                startingUrlObj[that.constructor.name] = that.urlArr;
-                Storage.setItem({startingUrls: startingUrlObj}, function () {
-                    console.log('just set ' + that.constructor.name, startingUrlObj);
-                    Storage.releaseGetOnItem('startingUrls');
+            Message.sendMessage({
+                klass: 'App',
+                method: 'hasContentLoaded'
+            }, function (contentLoadedBool) {
+                if (contentLoadedBool) {
+                    return;
+                }
+                Storage.freezeGetOnItem('startingUrls');
+                Storage.getItem('startingUrls', function (startingUrlObj) {
+                    console.log('just got ' + that.constructor.name, startingUrlObj, new Date());
+                    startingUrlObj = startingUrlObj || {};
+                    startingUrlObj[that.constructor.name] = that.urlArr;
+                    Storage.setItem({startingUrls: startingUrlObj}, function () {
+                        console.log('just set ' + that.constructor.name, startingUrlObj, new Date());
+                        Storage.releaseGetOnItem('startingUrls');
+                        Storage.freezeGetOnItem('startingUrls');
+                    });
                 });
             });
         },
+
         init: function () {
             this.verifyInterface();
             this.registerStartingUrl();

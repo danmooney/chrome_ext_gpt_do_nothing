@@ -60,16 +60,12 @@
             return this.getStatus() === 'NotReady';
         };
 
-        this.setContentLoaded = function (bool) {
-            if (!$$.util.isBool(bool)) {
-                throw new AppTypeError('Argument passed to App.setLoading must be boolean');
-            }
-
-            loadedBool = bool;
+        this.setContentLoaded = function () {
+            contentLoadedBool = true;
         };
 
         this.hasContentLoaded = function () {
-            return loadedBool;
+            return contentLoadedBool;
         };
 
     }, {

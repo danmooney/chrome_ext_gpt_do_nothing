@@ -7,7 +7,9 @@
     }, {
         _static: true,
         init: function () {
-            var Message = $$.instance('Message');
+            var Message = $$.instance('Message'),
+                Page = $$.instance('Page');
+
             this.registerEvent('onMessage', 'extension', Message.getMessage, Message);
         }
     }).inheritFrom('Evt');
