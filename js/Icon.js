@@ -38,12 +38,11 @@
          */
         this.setIcon = function (tabId) {
             var Url = $$.instance('Url'),
-                oldIconStatusStr = currentIconStatusStr,
-                iconPathStr = '',
-                iconObjKeyStr = '',
+                App = $$.instance('App'),
+                iconPathStr,
                 setIconOptionsObj;
 
-            currentIconStatusStr = $$.instance('App').getStatus();
+            currentIconStatusStr = App.getStatus();
 
 //            if (currentIconStatusStr === oldIconStatusStr) { // icons are the same
 //                return;
@@ -57,6 +56,8 @@
 
             if ($$.util.isNumber(tabId)) {
                 setIconOptionsObj.tabId = tabId;
+            } else {
+
             }
 
             chrome.browserAction.setIcon(setIconOptionsObj);
