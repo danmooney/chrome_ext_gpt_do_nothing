@@ -28,11 +28,13 @@
             return statusStr || defaultStatusStr;
         };
 
-        this.setStatus = function (str) {
+        this.setStatus = function (str, tabId) {
             if (this.isWorking()) {
+                this.trigger('APP_STATUS_CHANGED', /** REMOVE LATER AND TRIGGER ON ALL OPEN TABS **/tabId);
                 return;
             }
             statusStr = str;
+            this.trigger('APP_STATUS_CHANGED', tabId);
         };
 
         this.checkStatus = function (tabId) {
@@ -40,12 +42,16 @@
                 that = this;
             Url.isStartingUrl(null, function (isStartingUrlBool) {
                 if (true === isStartingUrlBool) {
-                    that.setStatus('Ready');
+                    that.setStatus('Ready', tabId);
                 } else {
-                    that.setStatus('NotReady');
+                    that.setStatus('NotReady', tabId);
                 }
-                that.trigger('APP_STATUS_CHANGED', tabId);
             });
+        };
+
+        this.stopWorking = function () {
+            statusStr = '';
+            this.checkStatus();
         };
 
         this.isReady = function () {
