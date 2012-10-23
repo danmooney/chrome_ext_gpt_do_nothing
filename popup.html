@@ -6,8 +6,9 @@
     <script src="js/_vendor/drm.js"></script>
     <script src="js/_setup.js"></script>
     <script src="js/Evt/Bus.js"></script>
-    <script src="js/Locale.js"></script>
     <script src="js/Evt.js"></script>
+    <script src="js/Locale.js"></script>
+    <script src="js/Message.js"></script>
     <script src="js/Storage.js"></script>
     <script src="js/Url.js"></script>
     <script src="js/Page.js"></script>
@@ -20,7 +21,10 @@
         <h1 id="logo-text">GPT Do Nothing</h1>
     </div>
     <div id="status-container">
-        <h2 id="status-heading" data-i18n="popupStatusHeading"></h2>
+        <h2>
+            <span id="status-heading" data-i18n="popupStatusHeading"></span>
+            <span id="status-gpt-text"></span>
+        </h2>
         <p id="status-text" class="not-ready" data-i18n="popupStatus"></p>
     </div>
     <div class="hr clr"></div>

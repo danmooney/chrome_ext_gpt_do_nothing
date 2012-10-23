@@ -6,19 +6,25 @@
         this.sendMessage = function (dataObj, callback) {
             var Page = $$.instance('Page'),
                 isBgPage = Page.isBgPage(),
-                Tab = $$.instance('Tab'),
+                Tab,
                 tabId;
 
-            // if isBgPage, send message over to content scripts
-            if (true === isBgPage) {
+            // if isBgPage or popup page, send message over to content scripts
+            if ((true === isBgPage) ||
+                (false === isBgPage && $$.util.isDefined(chrome.tabs))
+            ) {
+                Tab =  $$.instance('Tab') || Page.getBgPage().$$.instance('Tab');
                 // add currentlySelectedTabId to send message to
                 // TODO - shouldn't always be currently selected tabid....
-                tabId = Tab.currentlySelectedTabId;
-                if ($$.util.isFunc(callback)) {
-                    chrome.tabs.sendMessage(tabId, dataObj, callback);
-                } else {
-                    chrome.tabs.sendMessage(tabId, dataObj);
-                }
+
+                Tab.getCurrentlySelectedTabId(function (tabId) {
+                    if ($$.util.isFunc(callback)) {
+                        console.log('sending message to ' + tabId);
+                        chrome.tabs.sendMessage(tabId, dataObj, callback);
+                    } else {
+                        chrome.tabs.sendMessage(tabId, dataObj);
+                    }
+                });
 
             // else send message over to bgPage
             } else {
@@ -42,10 +48,9 @@
                 throw new AppError('Message passed must be object with string klass, string method and string args');
             }
 
-            var instance = $$.instance(message.klass),
-                returnData;
+            var instance = $$.instance(message.klass);
 
-            return sendResponse(instance[message.method].apply(instance, message.args));
+            return sendResponse(instance[message.method].apply(instance, message.args || []));
         };
 
     }, {

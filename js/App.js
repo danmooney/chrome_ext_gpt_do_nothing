@@ -1,5 +1,5 @@
 /**
- * App klass
+ * App klass for background page
  * Holds reference to curent status
  */
 (function() {
@@ -8,16 +8,17 @@
          * Just for reference
          * @type {Array}
          */
-        var statusArr = [
+        /*  statusArr = [
             'NotReady',
             'Ready',
             'Working'
-        ],
+        ],*/
+
 
         /**
          * @type {String}
          */
-            statusStr = '',
+        var statusStr = '',
             contentLoadedBool = false,
             defaultStatusStr = 'NotReady';
 
@@ -74,6 +75,9 @@
             return contentLoadedBool;
         };
 
+        this.getApplicationGlobal = function () {
+            return $$.getApplicationGlobal();
+        };
     }, {
         _static: true,
         init: function () {

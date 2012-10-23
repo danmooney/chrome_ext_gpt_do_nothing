@@ -7,9 +7,19 @@
         this.currentlySelectedTabId = 0;
     }, {
         _static: true,
-
         init: function () {
+            var that = this;
             this.listen('CURRENT_URL_SET', this.setCurrentlySelectedTabId);
+
+        },
+        getCurrentlySelectedTabId: function (callback) {
+            if (this.currentlySelectedTabId > 0) {
+                return callback(this.currentlySelectedTabId);
+            } else {
+                chrome.tabs.getSelected(null, function (tab) {
+                    return callback(tab.id);
+                });
+            }
         },
         setCurrentlySelectedTabId: function (tabId) {
             this.currentlySelectedTabId = tabId;

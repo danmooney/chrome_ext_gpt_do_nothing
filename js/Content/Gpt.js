@@ -21,6 +21,10 @@
             this.currentGptKlassStr = gptKlassStr;
         };
 
+        this.getCurrentGptKlass = function () {
+            return this.currentGptKlassStr;
+        };
+
     }, {
         _static: true,
         /**
@@ -29,18 +33,13 @@
         registerStartingUrl: function () {
             var Storage = $$.instance('Storage'),
                 Message = $$.instance('Message'),
-                that = this,
-                Gpt = $$.instance('Gpt');
-
-            if (this.isSameInstanceAs(Gpt)) {
-                return;
-            }
+                that = this;
 
             Message.sendMessage({
                 klass: 'App',
                 method: 'hasContentLoaded'
             }, function (contentLoadedBool) {
-                if (contentLoadedBool) {
+                if (true === contentLoadedBool) {
                     return;
                 }
                 Storage.freezeGetOnItem('startingUrls');
@@ -57,9 +56,44 @@
             });
         },
 
+        /**
+         * Store klass name in storage
+         */
+        registerGptKlass: function () {
+            var Storage = $$.instance('Storage'),
+                Message = $$.instance('Message'),
+                klassNameStr = this.constructor.name.replace('Gpt', '').toUpperCase(),
+                that = this;
+
+            Message.sendMessage({
+                klass: 'App',
+                method: 'hasContentLoaded'
+            }, function (contentLoadedBool) {
+                if (true === contentLoadedBool) {
+                    return;
+                }
+                Storage.freezeGetOnItem('gptKlasses');
+                Storage.getItem('gptKlasses', function (gptKlassObj) {
+                    console.log('just got ' + that.constructor.name, gptKlassObj, new Date());
+                    gptKlassObj = gptKlassObj || [];
+                    gptKlassObj[klassNameStr] = klassNameStr;
+                    Storage.setItem({gptKlasses: gptKlassObj}, function () {
+                        console.log('just set ' + that.constructor.name, gptKlassObj, new Date());
+                        Storage.releaseGetOnItem('gptKlasses');
+                        Storage.freezeGetOnItem('gptKlasses');
+                    });
+                });
+            });
+        },
+
         init: function () {
+            var Gpt = $$.ctor('Gpt');
+            if (this instanceof Gpt) {
+                return;
+            }
             this.verifyInterface();
             this.registerStartingUrl();
+            this.registerGptKlass();
         },
         /**
          * Throw early; verify that everything is good

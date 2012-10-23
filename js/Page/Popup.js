@@ -20,9 +20,23 @@
         this.setStatusText = function () {
             var bg = this.getBgPage(),
                 App = bg.$$.instance('App'),
+                Message = $$.instance('Message'),
                 status = App.getStatus();
 
             $('#status-text').attr('data-118n', 'popupStatus' + App.getStatus());
+
+            // add GPT klass to popup window
+            if ('Ready' === status) {
+                Message.sendMessage({
+                    klass: 'Gpt',
+                    method: 'getCurrentGptKlass'
+                }, function (currentGptKlass) {
+                    $('#status-gpt-text').text(currentGptKlass.replace('Gpt', ''));
+                });
+
+            } else {
+                $('#status-gpt-text').text('');
+            }
         };
 
         /**
@@ -39,11 +53,12 @@
                         q = confirm('Make sure that you are logged in to this GPT site before you proceed.');
                         if (q === true) {
                             App.setStatus('Working');
+
                         }
                     } else {
                         q = confirm('Are you sure you would like to stop GPT Do Nothing?');
                         if (q === true) {
-
+                            App.stopWorking();
                         }
                     }
                 });

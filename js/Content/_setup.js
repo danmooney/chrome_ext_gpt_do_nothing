@@ -2,7 +2,8 @@
     'use strict';
     $$.app.defaultInheritance.set('EvtBus');
     setInterval($$.app.namespace, 100);
-    $(function () {
+
+    $(document).ready(function () {
         var Message = $$.instance('Message');
         Message.sendMessage({
            klass: 'Url',

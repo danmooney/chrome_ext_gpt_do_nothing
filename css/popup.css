@@ -48,3 +48,7 @@ body {
 .float-r {
     float: right;
 }
+
+#status-gpt-text {
+    text-decoration: underline;
+}

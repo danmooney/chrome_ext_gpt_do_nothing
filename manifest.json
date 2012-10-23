@@ -31,6 +31,7 @@
                 "js/Message.js",
                 "js/Page.js",
                 "js/Storage.js",
+                "js/Content/App.js",
                 "js/Content/Gpt.js",
                 "js/Content/Gpt/Cashcrate.js",
                 "js/Content/Gpt/Fusioncash.js",
@@ -46,6 +47,7 @@
         "history",
         "storage",
         "management",
-        "http://*/*"
+        "http://*/*",
+        "https://*/*"
     ]
 }
