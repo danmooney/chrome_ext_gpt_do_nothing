@@ -5,7 +5,7 @@
  * data is ever passed through this object.
  *
  * @package DRM Klass/Instance Creator
- * @version 10/7/2012
+ * @version 10/24/2012
  * @author Dan Mooney
  */
 ;
@@ -742,6 +742,16 @@
             }
 
             callback(newArr);
+        };
+
+        /**
+         * Take double-dimensional array and convert
+         * to single array
+         * @param {Array} arr
+         * @return {Array}
+         */
+        Util.flattenArr = function (arr) {
+            return Array.prototype.concat.apply([], arr);
         };
 
         /**
