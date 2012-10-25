@@ -14,7 +14,6 @@
             'Working'
         ],*/
 
-
         /**
          * @type {String}
          */
@@ -29,20 +28,34 @@
             return statusStr || defaultStatusStr;
         };
 
+        /**
+         * Override for removing 'Working' status
+         */
+        this.stopWorking = function () {
+            statusStr = '';
+            this.checkStatus();
+        };
+
+        /**
+         * Set application status
+         * If app is 'Working', status will not be set!
+         * @param str
+         * @param tabId
+         */
         this.setStatus = function (str, tabId) {
-            if (this.isWorking()) {
-                this.trigger('APP_STATUS_CHANGED', /** REMOVE LATER AND TRIGGER ON ALL OPEN TABS **/tabId);
-                return;
+            if (!this.isWorking()) {
+                statusStr = str;
             }
-            statusStr = str;
+
             this.trigger('APP_STATUS_CHANGED', tabId);
         };
 
         this.checkStatus = function (tabId) {
             var Url = $$.instance('Url'),
                 that = this;
-            Url.isStartingUrl(null, function (isStartingUrlBool) {
+            Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr) {
                 if (true === isStartingUrlBool) {
+                    that.trigger('IS_STARTING_URL', gptKlassStr);
                     that.setStatus('Ready', tabId);
                 } else {
                     that.setStatus('NotReady', tabId);
@@ -50,10 +63,7 @@
             });
         };
 
-        this.stopWorking = function () {
-            statusStr = '';
-            this.checkStatus();
-        };
+
 
         this.isReady = function () {
             return this.getStatus() === 'Ready';

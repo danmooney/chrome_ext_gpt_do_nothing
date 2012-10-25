@@ -38,7 +38,7 @@
         };
 
         this.getMessage = function (message, sender, sendResponse) {
-            console.log('Got message', message, sender);
+            console.log('Got message:\n', message.klass + '.' + message.method, message.args, sender);
             if (!$$.util.isObject(message)) {
                 throw new AppTypeError('Messages passed between pages and content scripts must be an object.');
             } else if (!$$.util.isString(message.klass) ||
@@ -48,9 +48,12 @@
                 throw new AppError('Message passed must be object with string klass, string method and string args');
             }
 
-            var instance = $$.instance(message.klass);
+            var instance = $$.instance(message.klass),
+                returnValMixed = instance[message.method].apply(instance, message.args || []);
 
-            return sendResponse(instance[message.method].apply(instance, message.args || []));
+            console.log('Sending Response back:\n', returnValMixed);
+
+            return sendResponse(returnValMixed);
         };
 
     }, {

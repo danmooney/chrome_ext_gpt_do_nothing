@@ -18,7 +18,21 @@
         this.currentGptKlassStr = '';
 
         this.setCurrentGptKlass = function (gptKlassStr) {
-            this.currentGptKlassStr = gptKlassStr;
+            var Message = $$.instance('Message'),
+                Storage = $$.instance('Storage'),
+                that = this;
+            Message.sendMessage({
+                klass: 'App',
+                method: 'isWorking'
+            }, function (isWorkingBool) {
+                if (true === isWorkingBool) {
+                    return;
+                }
+
+
+                that.currentGptKlassStr = gptKlassStr;
+            });
+
         };
 
         this.getCurrentGptKlass = function () {

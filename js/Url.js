@@ -10,7 +10,17 @@
     }, {
         _static: true,
         init: function () {
-
+            // TODO - figure out better place to put this!
+            this.listen('IS_STARTING_URL', function (gptKlassStr) {
+                var Message = $$.instance('Message');
+                Message.sendMessage({
+                    klass: 'Gpt',
+                    method: 'setCurrentGptKlass',
+                    args: [
+                        gptKlassStr
+                    ]
+                });
+            });
         },
         /**
          * Return current url or url nested in optional tab argument
@@ -94,14 +104,7 @@
                             urlRegExp.test(url) ||
                             urlRegExp.test(url.replace('www.', ''))
                         ) {
-                            Message.sendMessage({
-                                klass: 'Gpt',
-                                method: 'setCurrentGptKlass',
-                                args: [
-                                    i
-                                ]
-                            });
-                            return callback(true);
+                            return callback(true, i);
                         }
                     }
 
@@ -122,11 +125,6 @@
          */
         addStartingUrl: function (urlStr) {
             this.startingUrlArr.push(urlStr);
-        }
-    }, {
-        _static: true,
-        init: function () {
-            console.log($$.getApplicationGlobal());
         }
     });
 }());

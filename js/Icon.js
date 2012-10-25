@@ -64,6 +64,10 @@
             this.trigger('ICON_SET', currentIconStatusStr, tabId);
         };
 
+        this.setIconOnAllTabs = function (tabArr) {
+
+        };
+
         /**
          * Set title on browser action
          * @param currentIconStatusStr
@@ -95,7 +99,7 @@
         _static: true,
         init: function () {
             this.listen('APP_STATUS_CHANGED', this.setIcon);
-            this.listen('ICON_SET',       this.setTitle);
+            this.listen('ICON_SET',           this.setTitle);
         }
     });
 }());

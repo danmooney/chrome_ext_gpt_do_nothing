@@ -10,7 +10,6 @@
         init: function () {
             var that = this;
             this.listen('CURRENT_URL_SET', this.setCurrentlySelectedTabId);
-
         },
         getCurrentlySelectedTabId: function (callback) {
             if (this.currentlySelectedTabId > 0) {
@@ -43,6 +42,31 @@
             } else {
                 throw new AppTabError('Unable to get tab url from ' + tab);
             }
+        },
+
+        /**
+         * @param {Number} windowId
+         * @param {Function} callback
+         */
+        getAllTabsByWindowId: function (windowId, callback) {
+            chrome.tabs.getAllInWindow(windowId, callback);
+        },
+
+        getAllTabsInAllWindows: function (callback) {
+            var Window = $$.instance('Window');
+
+            Window.getAllWindowIds(function (windowIdsArr) {
+                var allTabsArr,
+                    i;
+                for (i = 0; i < windowIdsArr.length; i += 1) {
+                    this.getAllTabsByWindowId(windowIdsArr[i], function (tabsArr) {
+                        allTabsArr.push(tabsArr);
+                    });
+                }
+                allTabsArr = $$.util.flattenArr(allTabsArr);
+                console.log(allTabsArr);
+                return callback(allTabsArr);
+            });
         }
     });
 }());
