@@ -71,7 +71,7 @@
             currentIconStatusStr = App.getStatus();
 
             if ('Working' === currentIconStatusStr) {
-
+                this.setIconOnAllTabs();
             }
 
             iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
@@ -91,7 +91,21 @@
         };
 
         this.setIconOnAllTabs = function (tabArr) {
+            var that = this;
+            $$.instance('Tab').getAllTabsInAllWindows(function (tabsArr) {
+                var iconPathStr,
+                    setIconOptionsObj,
+                    i;
 
+                for (i = 0; i < tabsArr.length; i += 1) {
+                    iconPathStr = iconStatusObj[currentIconStatusStr].iconPath,
+                    setIconOptionsObj = {
+                        path: iconPathStr,
+                        tabId: tabsArr[i].id
+                    };
+                    chrome.browserAction.setIcon(setIconOptionsObj);
+                }
+            });
         };
 
         /**
