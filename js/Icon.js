@@ -32,11 +32,7 @@
             return iconStatusObj[currentIconStatusStr];
         };
 
-        /**
-         * Set image on browser action for a particular tab
-         * @param tabId
-         */
-        this.setIcon = function (tabId) {
+        this.setIconOnTabByTabId = function (tabId) {
             var Url = $$.instance('Url'),
                 App = $$.instance('App'),
                 iconPathStr,
@@ -47,6 +43,36 @@
 //            if (currentIconStatusStr === oldIconStatusStr) { // icons are the same
 //                return;
 //            }
+
+            iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
+
+            setIconOptionsObj = {
+                path: iconPathStr
+            };
+
+            if ($$.util.isNumber(tabId)) {
+                setIconOptionsObj.tabId = tabId;
+            } else {
+
+            }
+
+            chrome.browserAction.setIcon(setIconOptionsObj);
+        };
+
+        /**
+         * Set image on browser action for a particular tab
+         * @param tabId
+         */
+        this.setIcon = function (tabId) {
+            var App = $$.instance('App'),
+                iconPathStr,
+                setIconOptionsObj;
+
+            currentIconStatusStr = App.getStatus();
+
+            if ('Working' === currentIconStatusStr) {
+
+            }
 
             iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
 

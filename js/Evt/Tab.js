@@ -8,8 +8,8 @@
         _static: true,
         init: function () {
             var Url = $$.instance('Url');
-            this.registerEvent('onUpdated',   'tabs', Url.setCurrentUrl, Url);
-            this.registerEvent('onActivated', 'tabs', Url.setCurrentUrl, Url);
+            this.registerEvent('onUpdated',   'tabs', Url.setCurrentUrlByTab, Url);
+            this.registerEvent('onActivated', 'tabs', Url.setCurrentUrlByTab, Url);
         }
     }).inheritFrom('Evt', 'Tab');
 }());

@@ -32,6 +32,7 @@
          * Override for removing 'Working' status
          */
         this.stopWorking = function () {
+            // clear status
             statusStr = '';
             this.checkStatus();
         };

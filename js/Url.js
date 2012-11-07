@@ -39,25 +39,32 @@
             return this.currentUrlStr;
         },
 
+        setCurrentUrl: function (urlStr) {
+            this.currentUrlStr = urlStr;
+        },
+
         /**
          * Sets the current Url after a tab onActivated/onUpdated event
          * Everything starts here based on the tab events registered in EvtTab
          * @param {Object|Number} tab data
          * @return {String}
          */
-        setCurrentUrl: function (tab) {
+        setCurrentUrlByTab: function (tab) {
             var that = this,
                 oldUrlStr = this.getCurrentUrl(),
                 tabId = tab.tabId || tab;
 
-            this.getUrlFromTab(tab, function (url) {
-                console.log('Current URL: ' + url);
+            this.getUrlFromTab(tab, function (urlStr) {
+                console.log('Current URL: ' + urlStr);
                 if (/^http(s)?:/.test(url) &&
-                    url.indexOf('chrome-devtools') === -1 /*&&
-                    url.indexOf('chrome://chrome/' === -1)*/
+                    urlStr.indexOf('chrome-devtools') === -1 /*&&
+                    urlStr.indexOf('chrome://chrome/' === -1)*/
                 ) {
-                    that.currentUrlStr = url;
+                    that.setCurrentUrl(urlStr);
                     that.trigger('CURRENT_URL_SET', tabId);
+                } else { // scheme is something like 'chrome://'
+                    console.warn('SETTING STATUS TO NOT READY BECAUSE SCHEME IS NOT HTTP');
+                    $$.instance('App').setStatus('NotReady');
                 }
             });
         },

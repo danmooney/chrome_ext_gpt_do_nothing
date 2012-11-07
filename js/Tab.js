@@ -56,7 +56,7 @@
             var Window = $$.instance('Window');
 
             Window.getAllWindowIds(function (windowIdsArr) {
-                var allTabsArr,
+                var allTabsArr = [],
                     i;
                 for (i = 0; i < windowIdsArr.length; i += 1) {
                     this.getAllTabsByWindowId(windowIdsArr[i], function (tabsArr) {
