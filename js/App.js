@@ -44,11 +44,18 @@
          * @param tabId
          */
         this.setStatus = function (str, tabId) {
+            var nowWorkingBool = false;
             if (!this.isWorking()) {
                 statusStr = str;
+                if ('Working' === str) {
+                    nowWorkingBool = true;
+                }
             }
 
             this.trigger('APP_STATUS_CHANGED', tabId);
+            if (true === nowWorkingBool) {
+                this.trigger('APP_STARTED_WORKING', tabId);
+            }
         };
 
         this.checkStatus = function (tabId) {

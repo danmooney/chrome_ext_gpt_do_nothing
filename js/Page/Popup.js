@@ -31,14 +31,6 @@
                 Storage.getItem('currentGptKlass', function (currentGptKlassStr) {
                     $('#status-gpt-text').text(currentGptKlassStr.replace('Gpt', ''));
                 });
-
-//                Message.sendMessage({
-//                    klass: 'Gpt',
-//                    method: 'getCurrentGptKlass',
-//                    args: [function (currentGptKlassStr) {
-//
-//                    }]
-//                });
             } else {
                 $('#status-gpt-text').text('');
             }
@@ -55,7 +47,7 @@
                 $('#start-stop').click(function () {
                     var q;
                     if (App.isReady()) {
-                        q = confirm('Make sure that you are logged in to this GPT site before you proceed.');
+                        q = confirm('Make sure that you are logged in to this GPT site before you proceed.  Also make sure you allowed GPT Do Nothing to be opened in incognito mode.');
                         if (q === true) {
                             App.setStatus('Working');
                         }

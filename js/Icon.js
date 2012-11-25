@@ -64,18 +64,22 @@
          * @param tabId
          */
         this.setIcon = function (tabId) {
+            tabId = tabId || null;
+
             var App = $$.instance('App'),
                 oldIconStatus = currentIconStatusStr;
 
             currentIconStatusStr = App.getStatus();
 
-            if ('Working' === currentIconStatusStr) {
-                this.setIconOnAllTabs();
-                this.allIconsSetBool = true;
-            } else if ('Working' === oldIconStatus) {
-                this.allIconsSetBool = false;
-                this.setIconOnAllTabs('NotReady');
-                this.allIconsSetBool = true;
+            if (null === tabId) {
+                if ('Working' === currentIconStatusStr) {
+                    this.setIconOnAllTabs();
+                    this.allIconsSetBool = true;
+                } else if ('Working' === oldIconStatus) {
+                    this.allIconsSetBool = false;
+                    this.setIconOnAllTabs('NotReady');
+                    this.allIconsSetBool = true;
+                }
             } else {
                 this.setIconOnTabByTabId(tabId);
                 this.allIconsSetBool = false;

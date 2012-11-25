@@ -25,7 +25,7 @@
              * @param {String} item
              * @param {Function} callback
              */
-        getItem: function (item, callback) {
+        getItem: function (item, callback, allData) {
             // check if frozen
             if (this.isItemFrozen(item)) {
                 this.addFetchAttemptToFrozenItem(item);
@@ -35,10 +35,13 @@
             }
 
             chrome.storage.local.get(item, function (data) {
+                var dataToReturn = (true === allData)
+                    ? data
+                    : data[item];
                 if ($$.util.isFunc(callback)) {
-                    return callback(data[item]);
+                    return callback(dataToReturn);
                 } else {
-                    return data[item];
+                    return dataToReturn;
                 }
             });
         },

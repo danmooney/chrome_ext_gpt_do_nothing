@@ -8,8 +8,16 @@
     }, {
         _static: true,
         init: function () {
-            var that = this;
-            this.listen('CURRENT_URL_SET', this.setCurrentlySelectedTabId);
+            var that = this,
+                ctor = $$.ctor('Tab');
+            if (this instanceof ctor) {
+                this.listen('CURRENT_URL_SET',     this.setCurrentlySelectedTabId);
+                this.listen('APP_STARTED_WORKING', this.storeGptKlassTabId);
+            }
+        },
+        storeGptKlassTabId: function (tabId) {
+            var Storage = $$.instance('Storage');
+            Storage.setItem('currentGptTabId', tabId);
         },
         getCurrentlySelectedTabId: function (callback) {
             if (this.currentlySelectedTabId > 0) {

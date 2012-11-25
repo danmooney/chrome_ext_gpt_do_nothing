@@ -18,7 +18,28 @@
                 return callback(idsArr);
             });
         };
+
+        this.openIncognitoWindow = function () {
+            var Tab = $$.instance('Tab'),
+                windowCreateObj = {
+                    incognito: true,
+                    focused: /*false*/ true
+                };
+
+            Tab.getCurrentlySelectedTabId(function (tabId) {
+                windowCreateObj.tabId = tabId;
+                chrome.windows.create(windowCreateObj, function (window) {
+                    console.log(window);
+                    var Storage = $$.instance('Storage');
+                    Storage.setItem('currentGptWindowId', window.id);
+                });
+            });
+
+        };
     }, {
-        _static: true
+        _static: true,
+        init: function () {
+            this.listen('APP_STARTED_WORKING', this.openIncognitoWindow);
+        }
     });
 }());
