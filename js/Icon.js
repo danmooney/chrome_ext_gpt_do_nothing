@@ -65,13 +65,16 @@
          */
         this.setIcon = function (tabId) {
             var App = $$.instance('App'),
-                iconPathStr,
-                setIconOptionsObj;
+                oldIconStatus = currentIconStatusStr;
 
             currentIconStatusStr = App.getStatus();
 
             if ('Working' === currentIconStatusStr) {
                 this.setIconOnAllTabs();
+                this.allIconsSetBool = true;
+            } else if ('Working' === oldIconStatus) {
+                this.allIconsSetBool = false;
+                this.setIconOnAllTabs('NotReady');
                 this.allIconsSetBool = true;
             } else {
                 this.setIconOnTabByTabId(tabId);
@@ -81,7 +84,7 @@
             this.trigger('ICON_SET', currentIconStatusStr, tabId);
         };
 
-        this.setIconOnAllTabs = function () {
+        this.setIconOnAllTabs = function (iconStatusStr) {
             if (true === this.allIconsSetBool) {
                 return;
             }
@@ -94,7 +97,7 @@
                     i;
 
                 for (i = 0; i < tabsArr.length; i += 1) {
-                    iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
+                    iconPathStr = iconStatusObj[currentIconStatusStr].iconPath || iconStatusObj[iconStatusStr].iconPath;
                     setIconOptionsObj = {
                         path: iconPathStr,
                         tabId: tabsArr[i].id

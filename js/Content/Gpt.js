@@ -18,7 +18,7 @@
 
         this.pausedBool = false;
 
-        this.currentGptKlassStr = '';
+//        this.currentGptKlassStr = '';
 
         this.getCurrentRegisteredGptKlassesNum = function () {
             return currentRegisteredGptKlassesNum;
@@ -48,12 +48,20 @@
                     return;
                 }
 
-                that.currentGptKlassStr = gptKlassStr;
+                Storage.setItem({
+                    currentGptKlass: gptKlassStr
+                });
+
+//                that.currentGptKlassStr = gptKlassStr;
             });
         };
 
-        this.getCurrentGptKlass = function () {
-            return this.currentGptKlassStr;
+        this.getCurrentGptKlass = function (callback) {
+            var Storage = $$.instance('Storage');
+            Storage.getItem('currentGptKlass', function (gptKlassStr) {
+                console.log(gptKlassStr);
+                callback(gptKlassStr);
+            });
         };
 
     }, {

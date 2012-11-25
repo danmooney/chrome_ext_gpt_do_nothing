@@ -21,19 +21,24 @@
             var bg = this.getBgPage(),
                 App = bg.$$.instance('App'),
                 Message = $$.instance('Message'),
+                Storage = $$.instance('Storage'),
                 status = App.getStatus();
 
             $('#status-text').attr('data-118n', 'popupStatus' + App.getStatus());
 
             // add GPT klass to popup window
             if (App.isReady() || App.isWorking()) {
-                Message.sendMessage({
-                    klass: 'Gpt',
-                    method: 'getCurrentGptKlass'
-                }, function (currentGptKlass) {
-                    $('#status-gpt-text').text(currentGptKlass.replace('Gpt', ''));
+                Storage.getItem('currentGptKlass', function (currentGptKlassStr) {
+                    $('#status-gpt-text').text(currentGptKlassStr.replace('Gpt', ''));
                 });
 
+//                Message.sendMessage({
+//                    klass: 'Gpt',
+//                    method: 'getCurrentGptKlass',
+//                    args: [function (currentGptKlassStr) {
+//
+//                    }]
+//                });
             } else {
                 $('#status-gpt-text').text('');
             }
