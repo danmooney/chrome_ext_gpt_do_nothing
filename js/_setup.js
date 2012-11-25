@@ -6,8 +6,6 @@
 
     // register starting urls
     $(document).ready(function () {
-
-
         var Message = $$.instance('Message');
 
         Message.sendMessage({
@@ -23,7 +21,5 @@
                 }
             }
         });
-
-
     });
 }());

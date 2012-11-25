@@ -4,6 +4,9 @@
         // this acts as an interface (or more like abstract klass)
         // and helps to build a solid structure
 
+        var currentRegisteredGptKlassesNum = 0,
+            gptKlassesNum = 4;  // TODO - this seems like it has to be hardcoded, the whole prog is so async
+
         /**
          * List of starting urls to register on
          * Contents can only be of type object and must contain the following keys
@@ -13,9 +16,25 @@
          */
         this.urlArr = [];
 
-        this.paused = false;
+        this.pausedBool = false;
 
         this.currentGptKlassStr = '';
+
+        this.getCurrentRegisteredGptKlassesNum = function () {
+            return currentRegisteredGptKlassesNum;
+        };
+
+        this.addOneToCurrentRegisteredGptKlassesNum = function () {
+            currentRegisteredGptKlassesNum += 1;
+        };
+
+        this.setGptKlassesNum = function (gptKlassesNumArg) {
+            gptKlassesNum = gptKlassesNumArg;
+        };
+
+        this.getGptKlassesNum = function () {
+            return gptKlassesNum;
+        };
 
         this.setCurrentGptKlass = function (gptKlassStr) {
             var Message = $$.instance('Message'),
@@ -29,10 +48,8 @@
                     return;
                 }
 
-
                 that.currentGptKlassStr = gptKlassStr;
             });
-
         };
 
         this.getCurrentGptKlass = function () {
@@ -47,6 +64,7 @@
         registerStartingUrl: function () {
             var Storage = $$.instance('Storage'),
                 Message = $$.instance('Message'),
+                Gpt = $$.instance('Gpt'),
                 that = this;
 
             Message.sendMessage({
@@ -56,6 +74,16 @@
                 if (true === contentLoadedBool) {
                     return;
                 }
+
+                Gpt.addOneToCurrentRegisteredGptKlassesNum();
+                if (Gpt.getCurrentRegisteredGptKlassesNum() === Gpt.getGptKlassesNum()) {
+                    Message.sendMessage({
+                        klass: 'App',
+                        method: 'setContentLoaded',
+                        args: [true]
+                    });
+                }
+
                 Storage.freezeGetOnItem('startingUrls');
                 Storage.getItem('startingUrls', function (startingUrlObj) {
                     console.log('just got ' + that.constructor.name, startingUrlObj, new Date());

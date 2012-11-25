@@ -53,19 +53,24 @@
         },
 
         getAllTabsInAllWindows: function (callback) {
-            var Window = $$.instance('Window');
+            var Window = $$.instance('Window'),
+                that = this;
 
             Window.getAllWindowIds(function (windowIdsArr) {
                 var allTabsArr = [],
                     i;
                 for (i = 0; i < windowIdsArr.length; i += 1) {
-                    this.getAllTabsByWindowId(windowIdsArr[i], function (tabsArr) {
+                    that.getAllTabsByWindowId(windowIdsArr[i], function (tabsArr) {
                         allTabsArr.push(tabsArr);
+                        if (allTabsArr.length === windowIdsArr.length) {  // time to return
+                            console.log('ALL TABS BEFORE FLATTEN: ' + allTabsArr);
+                            allTabsArr = $$.util.flattenArr(allTabsArr);
+                            console.log('ALL TABS: ' + allTabsArr);
+                            return callback(allTabsArr);
+                        }
                     });
                 }
-                allTabsArr = $$.util.flattenArr(allTabsArr);
-                console.log(allTabsArr);
-                return callback(allTabsArr);
+//                return callback(allTabsArr);
             });
         }
     });

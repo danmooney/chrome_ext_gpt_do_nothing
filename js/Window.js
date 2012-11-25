@@ -10,7 +10,7 @@
             chrome.windows.getAll(function (windows) {
                 var idsArr = [],
                     i;
-
+                console.log('ALL WINDOWS: ' + windows);
                 for (i = 0; i < windows.length; i += 1) {
                     idsArr.push(windows[i].id);
                 }
@@ -20,5 +20,5 @@
         };
     }, {
         _static: true
-    })
+    });
 }());

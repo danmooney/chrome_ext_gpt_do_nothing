@@ -25,6 +25,8 @@
 
         currentIconStatusStr = $$.instance('App').getStatus();
 
+        this.allIconsSetBool = false;
+
         /**
          * @return {String}
          */
@@ -52,8 +54,6 @@
 
             if ($$.util.isNumber(tabId)) {
                 setIconOptionsObj.tabId = tabId;
-            } else {
-
             }
 
             chrome.browserAction.setIcon(setIconOptionsObj);
@@ -72,37 +72,34 @@
 
             if ('Working' === currentIconStatusStr) {
                 this.setIconOnAllTabs();
-            }
-
-            iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
-
-            setIconOptionsObj = {
-                path: iconPathStr
-            };
-
-            if ($$.util.isNumber(tabId)) {
-                setIconOptionsObj.tabId = tabId;
+                this.allIconsSetBool = true;
             } else {
-
+                this.setIconOnTabByTabId(tabId);
+                this.allIconsSetBool = false;
             }
 
-            chrome.browserAction.setIcon(setIconOptionsObj);
             this.trigger('ICON_SET', currentIconStatusStr, tabId);
         };
 
-        this.setIconOnAllTabs = function (tabArr) {
+        this.setIconOnAllTabs = function () {
+            if (true === this.allIconsSetBool) {
+                return;
+            }
+
             var that = this;
+
             $$.instance('Tab').getAllTabsInAllWindows(function (tabsArr) {
                 var iconPathStr,
                     setIconOptionsObj,
                     i;
 
                 for (i = 0; i < tabsArr.length; i += 1) {
-                    iconPathStr = iconStatusObj[currentIconStatusStr].iconPath,
+                    iconPathStr = iconStatusObj[currentIconStatusStr].iconPath;
                     setIconOptionsObj = {
                         path: iconPathStr,
                         tabId: tabsArr[i].id
                     };
+                    console.log('setting browser icon', setIconOptionsObj);
                     chrome.browserAction.setIcon(setIconOptionsObj);
                 }
             });

@@ -4,9 +4,7 @@
 (function() {
     'use strict';
     $$.klass(function Url () {
-
         this.currentUrlStr = '';
-
     }, {
         _static: true,
         init: function () {
@@ -54,9 +52,17 @@
                 oldUrlStr = this.getCurrentUrl(),
                 tabId = tab.tabId || tab;
 
+            // TODO - THIS IS A DEBUG, REMOVE
+            $$.instance('Message').sendMessage({
+                klass: 'Debug',
+                method: 'setTitleToTabId',
+                tabId: tabId,
+                args: [tabId]
+            });
+
             this.getUrlFromTab(tab, function (urlStr) {
                 console.log('Current URL: ' + urlStr);
-                if (/^http(s)?:/.test(url) &&
+                if (/^http(s)?:/.test(urlStr) &&
                     urlStr.indexOf('chrome-devtools') === -1 /*&&
                     urlStr.indexOf('chrome://chrome/' === -1)*/
                 ) {
@@ -123,15 +129,6 @@
         fetchStartingUrlsObj: function (callback) {
             var Storage = $$.instance('Storage');
             return Storage.getItem('startingUrls', callback);
-        },
-
-        /**
-         * Add starting url to this.startingUrlArr array
-         * // TODO - Enforce array uniqueness!
-         * @param {String} urlStr
-         */
-        addStartingUrl: function (urlStr) {
-            this.startingUrlArr.push(urlStr);
         }
     });
 }());

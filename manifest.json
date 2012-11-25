@@ -28,6 +28,7 @@
                 "js/App/Error.js",
                 "js/App/Type/Error.js",
                 "js/Evt/Bus.js",
+                "js/Content/Debug.js",
                 "js/Message.js",
                 "js/Page.js",
                 "js/Storage.js",
@@ -38,7 +39,8 @@
                 "js/Content/Gpt/Naturebucks.js",
                 "js/Content/Gpt/Treasuretrooper.js",
                 "js/Evt.js",
-                "js/Evt/Message.js"
+                "js/Evt/Message.js",
+                "js/Content/_ready.js"
             ]
         }
     ],

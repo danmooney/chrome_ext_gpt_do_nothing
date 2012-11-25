@@ -7,24 +7,31 @@
             var Page = $$.instance('Page'),
                 isBgPage = Page.isBgPage(),
                 Tab,
-                tabId;
+                tabId = dataObj.tabId || null;
 
             // if isBgPage or popup page, send message over to content scripts
             if ((true === isBgPage) ||
                 (false === isBgPage && $$.util.isDefined(chrome.tabs))
             ) {
                 Tab =  $$.instance('Tab') || Page.getBgPage().$$.instance('Tab');
-                // add currentlySelectedTabId to send message to
-                // TODO - shouldn't always be currently selected tabid....
 
-                Tab.getCurrentlySelectedTabId(function (tabId) {
+                /**
+                 * @param {Number} tabId
+                 */
+                function sendTabMessageCallback (tabId) {
                     if ($$.util.isFunc(callback)) {
                         console.log('sending message to ' + tabId);
                         chrome.tabs.sendMessage(tabId, dataObj, callback);
                     } else {
                         chrome.tabs.sendMessage(tabId, dataObj);
                     }
-                });
+                }
+
+                if (null === tabId) {
+                    Tab.getCurrentlySelectedTabId(sendTabMessageCallback);
+                } else {
+                    sendTabMessageCallback(tabId);
+                }
 
             // else send message over to bgPage
             } else {
@@ -51,7 +58,10 @@
             var instance = $$.instance(message.klass),
                 returnValMixed = instance[message.method].apply(instance, message.args || []);
 
-            console.log('Sending Response back:\n', returnValMixed);
+            if (typeof returnValMixed !== 'undefined') {
+                console.log('Sending Response back:\n', returnValMixed);
+            }
+
 
             return sendResponse(returnValMixed);
         };
