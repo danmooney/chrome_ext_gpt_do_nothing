@@ -54,6 +54,7 @@
 
             this.trigger('APP_STATUS_CHANGED', tabId);
             if (true === nowWorkingBool) {
+                console.warn('NOW WORKING');
                 this.trigger('APP_STARTED_WORKING', tabId);
             }
         };
@@ -62,7 +63,7 @@
             var Url = $$.instance('Url'),
                 Message = $$.instance('Message'),
                 that = this;
-            Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr) {
+            Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr, currentGptUrlObj) {
                 if (true === isStartingUrlBool) {
                     that.trigger('IS_STARTING_URL', gptKlassStr);  // nobody listening
                     // set current GPT klass
@@ -73,7 +74,15 @@
                             gptKlassStr
                         ]
                     }, function () {
-                        that.setStatus('Ready', tabId);
+                        Message.sendMessage({
+                            klass: 'Gpt',
+                            method: 'setCurrentGptUrlObj',
+                            args: [
+                                currentGptUrlObj
+                            ]
+                        }, function () {
+                            that.setStatus('Ready', tabId);
+                        });
                     });
                 } else {
                     that.setStatus('NotReady', tabId);

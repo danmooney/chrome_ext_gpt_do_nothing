@@ -105,10 +105,7 @@
                         continue;
                     }
 
-                    for (j in startingUrlsArr) {
-                        if (!startingUrlsArr.hasOwnProperty(j)) {
-                            continue;
-                        }
+                    for (j = 0; j < startingUrlsArr.length; j += 1) {
                         startingUrlObj = startingUrlsArr[j];
 
                         urlStr = startingUrlObj.url;
@@ -117,7 +114,7 @@
                             urlRegExp.test(url) ||
                             urlRegExp.test(url.replace('www.', ''))
                         ) {
-                            return callback(true, i);
+                            return callback(true, i, startingUrlObj);
                         }
                     }
 

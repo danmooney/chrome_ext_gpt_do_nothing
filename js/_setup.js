@@ -25,6 +25,6 @@
             });
         });
     }
-
-    $$.instance('Storage').clearItems(ready);
+    ready();
+//    $$.instance('Storage').clearItems(ready);
 }());

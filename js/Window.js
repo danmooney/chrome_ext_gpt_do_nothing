@@ -27,11 +27,20 @@
                 };
 
             Tab.getCurrentlySelectedTabId(function (tabId) {
+                console.warn('NEW WINDOW TAB ID: ' + tabId);
                 windowCreateObj.tabId = tabId;
                 chrome.windows.create(windowCreateObj, function (window) {
                     console.log(window);
-                    var Storage = $$.instance('Storage');
-                    Storage.setItem('currentGptWindowId', window.id);
+                    var Storage = $$.instance('Storage'),
+                        Message = $$.instance('Message');
+                    Storage.setItem({
+                        currentGptWindowId: window.id
+                    }, function () {
+                        Message.sendMessage({
+                            klass: 'GptSite',
+                            method: 'start'
+                        });
+                    });
                 });
             });
 

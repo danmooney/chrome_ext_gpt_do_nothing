@@ -36,6 +36,24 @@
             return gptKlassesNum;
         };
 
+
+        /**
+         * Set url object from current Gpt Klass
+         * @param {Object} currentGptUrlObj
+         * @param {Function} callback
+         */
+        this.setCurrentGptUrlObj = function (currentGptUrlObj, callback) {
+            var Storage = $$.instance('Storage');
+            Storage.setItem({
+                currentGptUrlObj: currentGptUrlObj
+            }, callback);
+        };
+
+        this.getCurrentGptUrlObj = function (callback) {
+            var Storage = $$.instance('Storage');
+            Storage.getItem('currentGptUrlObj', callback);
+        };
+
         this.setCurrentGptKlass = function (gptKlassStr) {
             var Message = $$.instance('Message'),
                 Storage = $$.instance('Storage'),
