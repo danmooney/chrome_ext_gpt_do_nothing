@@ -60,11 +60,21 @@
 
         this.checkStatus = function (tabId) {
             var Url = $$.instance('Url'),
+                Message = $$.instance('Message'),
                 that = this;
             Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr) {
                 if (true === isStartingUrlBool) {
-                    that.trigger('IS_STARTING_URL', gptKlassStr);
-                    that.setStatus('Ready', tabId);
+                    that.trigger('IS_STARTING_URL', gptKlassStr);  // nobody listening
+                    // set current GPT klass
+                    Message.sendMessage({
+                        klass: 'Gpt',
+                        method: 'setCurrentGptKlass',
+                        args: [
+                            gptKlassStr
+                        ]
+                    }, function () {
+                        that.setStatus('Ready', tabId);
+                    });
                 } else {
                     that.setStatus('NotReady', tabId);
                 }

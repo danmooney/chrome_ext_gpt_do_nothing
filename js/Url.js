@@ -10,14 +10,14 @@
         init: function () {
             // TODO - figure out better place to put this!
             this.listen('IS_STARTING_URL', function (gptKlassStr) {
-                var Message = $$.instance('Message');
-                Message.sendMessage({
-                    klass: 'Gpt',
-                    method: 'setCurrentGptKlass',
-                    args: [
-                        gptKlassStr
-                    ]
-                });
+//                var Message = $$.instance('Message');
+//                Message.sendMessage({
+//                    klass: 'Gpt',
+//                    method: 'setCurrentGptKlass',
+//                    args: [
+//                        gptKlassStr
+//                    ]
+//                });
             });
         },
         /**

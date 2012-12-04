@@ -121,8 +121,12 @@
         /**
          * Clears all the items in local storage
          */
-        clearItems: function () {
-            chrome.storage.local.clear();
+        clearItems: function (callback) {
+            chrome.storage.local.clear(function () {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
         }
     });
 }());

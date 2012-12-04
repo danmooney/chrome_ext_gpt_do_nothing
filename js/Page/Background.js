@@ -13,7 +13,7 @@
         init: function () {
             this.bgPage = chrome.extension.getBackgroundPage();
             if (this.isBgPage()) {
-                $$.instance('Storage').clearItems();
+//                $$.instance('Storage').clearItems();
             }
         }
     }).inheritFrom('Page');
