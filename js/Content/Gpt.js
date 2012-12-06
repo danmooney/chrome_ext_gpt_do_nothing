@@ -5,7 +5,7 @@
         // and helps to build a solid structure
 
         var currentRegisteredGptKlassesNum = 0,
-            gptKlassesNum = 4;  // TODO - this seems like it has to be hardcoded, the whole prog is so async
+            gptKlassesNum = 0;  // TODO - this seems like it has to be hardcoded, the whole prog is so async
 
         /**
          * List of starting urls to register on
@@ -101,17 +101,21 @@
                     return;
                 }
 
-                Gpt.addOneToCurrentRegisteredGptKlassesNum();
-                if (Gpt.getCurrentRegisteredGptKlassesNum() === Gpt.getGptKlassesNum()) {
+
+                if (Gpt.getCurrentRegisteredGptKlassesNum() >=
+                    Gpt.getGptKlassesNum()
+                ) {
                     Message.sendMessage({
                         klass: 'App',
                         method: 'setContentLoaded',
                         args: [true]
                     });
+                    return;
                 }
 
                 Storage.freezeGetOnItem('startingUrls');
                 Storage.getItem('startingUrls', function (startingUrlObj) {
+                    Gpt.addOneToCurrentRegisteredGptKlassesNum();
                     console.log('just got ' + that.constructor.name, startingUrlObj, new Date());
                     startingUrlObj = startingUrlObj || {};
                     startingUrlObj[that.constructor.name] = that.urlArr;
@@ -160,6 +164,8 @@
                 return;
             }
             this.verifyInterface();
+        },
+        ready: function () {
             this.registerStartingUrl();
             this.registerGptKlass();
         },

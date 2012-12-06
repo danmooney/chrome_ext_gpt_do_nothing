@@ -12,9 +12,11 @@ $(document).ready(function () {
         ]
     });
 
+    // enumerate through and add to gptKlassesNum
     for (i in Gpt) {
         if (!Gpt.hasOwnProperty(i) ||
-            i.substr(0, 1) === i.substr(0, 1).toLowerCase()
+            i.substr(0, 1) === i.substr(0, 1).toLowerCase() ||
+            'GptSite' === Gpt[i].constructor.name
         ) {
             continue;
         }
@@ -23,6 +25,21 @@ $(document).ready(function () {
     }
 
     Gpt.setGptKlassesNum(gptKlassesNum);
+
+    // enumerate through again and call ready on Gpt klass
+    // TODO - combine 2 with enumeration closure
+    for (i in Gpt) {
+        if (!Gpt.hasOwnProperty(i) ||
+            i.substr(0, 1) === i.substr(0, 1).toLowerCase() ||
+            'GptSite' === Gpt[i].constructor.name
+        ) {
+            continue;
+        }
+
+        if ($$.util.isFunc(Gpt[i].ready)) {
+            Gpt[i].ready();
+        }
+    }
 
     // send message to bg page telling it that content has loaded
 //        setTimeout(function () {

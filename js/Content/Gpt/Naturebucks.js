@@ -13,9 +13,10 @@
                     doneSelectorStr: 'input[type="submit"]',
                     nextBtnSelectorStr: 'input[value="Next"]'
                 },
+                // the language of the offer
                 language: {
                     whiteListArr: [
-                        'click'
+                        'sign up and confirm email'
                     ],
                     blacklistArr: [
 

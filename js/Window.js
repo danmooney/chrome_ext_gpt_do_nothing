@@ -36,6 +36,18 @@
                     Storage.setItem({
                         currentGptWindowId: window.id
                     }, function () {
+                        // TODO - move to tabs!  Too lazy!
+                        chrome.tabs.onRemoved.addListener(function checkIfTabIdIsGptSite (thisTabId) {
+                            if (thisTabId !== tabId) {
+                                return;
+                            } else {
+                                chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
+                                $$.instance('App').stopWorking('GPT Site tab closed');
+                            }
+                        });
+                        // END TODO
+
+
                         Message.sendMessage({
                             klass: 'GptSite',
                             method: 'start'

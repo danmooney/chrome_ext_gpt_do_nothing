@@ -31,9 +31,11 @@
         /**
          * Override for removing 'Working' status
          */
-        this.stopWorking = function () {
+        this.stopWorking = function (reasonStr) {
             // clear status
             statusStr = '';
+            // TODO - popup notification
+            this.trigger('APP_STOPPED_WORKING');
             this.checkStatus();
         };
 
@@ -55,6 +57,7 @@
             this.trigger('APP_STATUS_CHANGED', tabId);
             if (true === nowWorkingBool) {
                 console.warn('NOW WORKING');
+                // TODO - popup notification
                 this.trigger('APP_STARTED_WORKING', tabId);
             }
         };

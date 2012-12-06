@@ -23,7 +23,7 @@
                     that.currentGptUrlObj = currentGptUrlObj;
                     alert('ready, freddy!');
                     console.warn(currentGptUrlObj);
-                    that.ready();
+                    that.navigateSite();
                 });
             });
         };
@@ -31,7 +31,7 @@
         /**
          * Go through offers list
          */
-        this.ready = function () {
+        this.navigateSite = function () {
             var navigation = this.currentGptUrlObj.navigation;
             $(navigation.offerSelectorStr).each(function () {
                 console.log($(this));
