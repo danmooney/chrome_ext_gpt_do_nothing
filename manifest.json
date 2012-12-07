@@ -34,6 +34,7 @@
                 "js/Storage.js",
                 "js/Content/App.js",
                 "js/Content/Gpt.js",
+                "js/Content/Offer.js",
                 "js/Content/Gpt/Cashcrate.js",
                 "js/Content/Gpt/Fusioncash.js",
                 "js/Content/Gpt/Naturebucks.js",

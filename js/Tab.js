@@ -17,7 +17,9 @@
         },
         storeGptKlassTabId: function (tabId) {
             var Storage = $$.instance('Storage');
-            Storage.setItem('currentGptTabId', tabId);
+            Storage.setItem({
+                currentGptTabId: tabId
+            });
         },
         getCurrentlySelectedTabId: function (callback) {
             if (this.currentlySelectedTabId > 0) {

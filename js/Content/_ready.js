@@ -4,6 +4,8 @@ $(document).ready(function () {
         gptKlassesNum = 0,
         i;
 
+    $$.app.namespace();
+
     Message.sendMessage({
         klass: 'Url',
         method: 'setCurrentUrl',

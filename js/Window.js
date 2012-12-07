@@ -38,11 +38,15 @@
                     }, function () {
                         // TODO - move to tabs!  Too lazy!
                         chrome.tabs.onRemoved.addListener(function checkIfTabIdIsGptSite (thisTabId) {
-                            if (thisTabId !== tabId) {
+                            var App = $$.instance('App');
+                            if (!App.isWorking()) {
+                                chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
+                                return;
+                            } else if (thisTabId !== tabId) {
                                 return;
                             } else {
                                 chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
-                                $$.instance('App').stopWorking('notificationAppStoppedReasonTabClosed');
+                                App.stopWorking('notificationAppStoppedReasonTabClosed');
                             }
                         });
                         // END TODO

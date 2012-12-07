@@ -4,11 +4,12 @@
         /**
          * @param {String}
          */
-        var notificationMessage;
+        var notificationMessage,
+            notificationsArr = [];
 
         this.setNotificationMessage = function (msgStr, callback) {
             $$.instance('Storage').setItem({
-                notificationStorage: msgStr
+                notificationMessage: msgStr
             }, callback);
         };
 
@@ -17,11 +18,14 @@
         };
 
         this.clearNotificationMessage = function () {
-            $$.instance('Storage').clearItem('notificationMessage');
+            $$.instance('Storage').removeItem('notificationMessage');
         };
 
         this.showNotification = function (typeStr) {
             var notification = webkitNotifications.createHTMLNotification('/notifications/' + typeStr + '.html');
+
+            notificationsArr.push(notification);
+
             notification.show();
             setTimeout(function () {
                 notification.cancel();

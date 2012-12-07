@@ -58,7 +58,7 @@
     },
     "notificationAppStoppedForReason": {
         "description": "This is the notification that appears when the app has stopped working for a particular reason",
-        "message": "for the following reason:"
+        "message": "for the following reason: "
     },
     "notificationAppStoppedReasonTabClosed": {
         "description": "This is the reason that appears in app stop notification when GPT site tab gets closed",
