@@ -47,5 +47,21 @@
     "iconTitleWorking" : {
         "description": "This is the icon title that appears when extension is working.",
         "message": "Working..."
+    },
+    "notificationAppStarted": {
+        "description": "This is the notification that appears when the app has started working",
+        "message": "GPT Do Nothing has started working"
+    },
+    "notificationAppStopped": {
+        "description": "This is the notification that appears when the app has stopped working",
+        "message": "GPT Do Nothing has stopped working"
+    },
+    "notificationAppStoppedForReason": {
+        "description": "This is the notification that appears when the app has stopped working for a particular reason",
+        "message": "for the following reason:"
+    },
+    "notificationAppStoppedReasonTabClosed": {
+        "description": "This is the reason that appears in app stop notification when GPT site tab gets closed",
+        "message": "GPT Site tab closed"
     }
 }

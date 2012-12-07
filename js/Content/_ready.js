@@ -41,6 +41,28 @@ $(document).ready(function () {
         }
     }
 
+    console.warn('Global Object: ');
+    console.dir(GPT);
+
+    // TODO - Store contact info here for now
+    // obviously put somewhere better later
+    $$.instance('Storage').setItem({
+        contact_info: {
+            first_name: 'Daniel',
+            last_name: 'Mooney',
+            address: '5 Nabby Rd',
+            address2: 'Unit A12',
+            city: 'Danbury',
+            state: 'CT',
+            zip: '06811',
+            phone: {
+                home: '2032619103',
+                mobile: '2032619103'
+            },
+            email: 'doesttwork@gmail.com'
+        }
+    });
+
     // send message to bg page telling it that content has loaded
 //        setTimeout(function () {
 //            Message.sendMessage({

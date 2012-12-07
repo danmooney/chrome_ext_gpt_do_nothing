@@ -1,0 +1,1 @@
+setInterval($$.app.namespace, 100);

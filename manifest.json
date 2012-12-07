@@ -48,8 +48,9 @@
     "permissions": [
         "tabs",
         "history",
-        "storage",
         "management",
+        "notifications",
+        "storage",
         "http://*/*",
         "https://*/*"
     ]

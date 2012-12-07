@@ -53,8 +53,8 @@
             });
         },
 
-        removeItem: function (item) {
-            chrome.storage.local.remove(item);
+        removeItem: function (item, callback) {
+            chrome.storage.local.remove(item, callback);
         },
 
         /**

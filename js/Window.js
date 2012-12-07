@@ -42,7 +42,7 @@
                                 return;
                             } else {
                                 chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
-                                $$.instance('App').stopWorking('GPT Site tab closed');
+                                $$.instance('App').stopWorking('notificationAppStoppedReasonTabClosed');
                             }
                         });
                         // END TODO
