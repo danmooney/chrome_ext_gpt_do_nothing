@@ -1,6 +1,16 @@
 (function() {
     'use strict';
     $$.klass(function GptSite () {
+        var offers = [];
+
+        this.setOffers = function (offersArr) {
+            offers = offersArr;
+        };
+
+        this.getOffers = function () {
+            return offers;
+        };
+
         /**
          * @type {String}
          */
@@ -16,48 +26,63 @@
          */
         this.start = function () {
             var Gpt = $$.instance('Gpt'),
+                Navigation = $$.instance('GptSiteNavigation'),
+                Language = $$.instance('GptSiteLanguage'),
                 that = this;
+
+            function composeSubclasses () {
+                console.warn('in composeSubclasses');
+                console.warn(that.currentGptUrlObj.navigation);
+                Navigation.setNavigation(that.currentGptUrlObj.navigation);
+                Language.setLanguage(that.currentGptUrlObj.language);
+            }
+
             Gpt.getCurrentGptKlass(function (currentGptKlassStr) {
                 that.currentGptKlassStr = currentGptKlassStr;
                 Gpt.getCurrentGptUrlObj(function (currentGptUrlObj) {
                     that.currentGptUrlObj = currentGptUrlObj;
+                    composeSubclasses();
                     console.warn(currentGptUrlObj);
-                    that.navigateSite();
+                    // setTimeout is purely a debug
+                    setTimeout(function () {
+                        that.trigger('GPT_SITE_READY');
+                    }, 5000);
+
                 });
             });
         };
+    }, {
+        _static: true,
+        init: function () {
+            this.listen('GPT_SITE_DONE_NAVIGATING', this.filterOffers);
+        },
+        filterOffers: function () {
+            var Language = $$.instance('GptSiteLanguage'),
+                offers = this.getOffers(),
+                filteredOffers = [],
+                isAllowedBool,
+                i;
 
-        /**
-         * Go through offers list
-         */
-        this.navigateSite = function () {
-            var navigation = this.currentGptUrlObj.navigation,
-                offerEls = $(navigation.offerSelectorStr);
+            if ($$.util.isFunc(this.currentGptUrlObj.filterCallback)) {
+                for (i = 0; i < offers.length; i += 1) {
+                    isAllowedBool = this.currentGptUrlObj.filterCallback(offers[i]);
 
-            offerEls.each(function () {
-                console.log($(this));
-                $(this).css('background', 'red');
-            });
-            offerEls.find(navigation.nameSelectorStr).each(function () {
-                console.log($(this));
-                $(this).css('background', 'orange');
-            });
-            offerEls.find(navigation.descriptionSelectorStr).each(function () {
-                console.log($(this));
-                $(this).css('background', 'yellow');
-            });
-            offerEls.find(navigation.priceSelectorStr).each(function () {
-                console.log($(this));
-                $(this).css('background', 'green');
-            });
-            offerEls.find(navigation.doneSelectorStr).each(function () {
-                console.log($(this));
-                $(this).css('background', 'pink');
-            });
-            $(navigation.nextBtnSelectorStr).each(function () {
-                console.log($(this));
-                $(this).css('background', 'blue');
-            });
-        };
+                    if (true === isAllowedBool) {
+                        filteredOffers.push(offers[i]);
+                    }
+                }
+            }
+
+            for (i = 0; i < offers.length; i += 1) {
+                isAllowedBool = Language.filter(offers[i]);
+                if (true === isAllowedBool) {
+                    filteredOffers.push(offers[i]);
+                }
+            }
+
+            this.setOffers(filteredOffers);
+            console.warn('filteredOffersArr');
+            console.log(filteredOffers);
+        }
     });
 }());

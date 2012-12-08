@@ -10,13 +10,27 @@
                     nameSelectorStr: '.offname',
                     descriptionSelectorStr: '.offdesc',
                     priceSelectorStr:'.offamt',
-                    doneSelectorStr: '.offdone'
+                    doneSelectorStr: '.offdone input'
                 },
                 language: {
                     whiteListArr: [
                         'accurate information',
                         'survey'
                     ]
+                },
+                /**
+                 * This callback is called on every offer on the page
+                 * Returns a boolean true if offer should be filtered through
+                 * and boolean false if it should be filtered out
+                 *
+                 * @param {Object} offer
+                 * @return {Boolean}
+                 */
+                filterCallback: function (offer) {
+//                    if (offer.price.substr(0, 1) !== '$') {
+//                        return false;
+//                    }
+                    return true;
                 }
             }
         ];

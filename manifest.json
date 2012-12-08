@@ -40,6 +40,8 @@
                 "js/Content/Gpt/Naturebucks.js",
                 "js/Content/Gpt/Treasuretrooper.js",
                 "js/Content/Gpt/Site.js",
+                "js/Content/Gpt/Site/Language.js",
+                "js/Content/Gpt/Site/Navigation.js",
                 "js/Evt.js",
                 "js/Evt/Message.js",
                 "js/Content/_ready.js"

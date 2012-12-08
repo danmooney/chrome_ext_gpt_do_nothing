@@ -9,7 +9,7 @@
                     offerSelectorStr: 'form[method="POST"] > table > tbody > tr > td',
                     nameSelectorStr: 'div > div > a',
                     descriptionSelectorStr: 'div:nth-child(1) > div:nth-child(3)',
-                    priceSelectorStr: 'table > tbody > tr > td[style*="width:75%"]',
+                    priceSelectorStr: 'table tr:nth-child(1) td:nth-child(2)' /*'table > tbody > tr > td[style*="width:75%"]'*/,
                     doneSelectorStr: 'input[type="submit"]',
                     nextBtnSelectorStr: 'input[value="Next"]'
                 },

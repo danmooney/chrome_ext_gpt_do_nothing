@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    // TODO - app.setContentLoaded not working!
+
+
     var Message = $$.instance('Message'),
         Gpt = $$.instance('Gpt'),
         gptKlassesNum = 0,
@@ -17,8 +20,8 @@ $(document).ready(function () {
     // enumerate through and add to gptKlassesNum
     for (i in Gpt) {
         if (!Gpt.hasOwnProperty(i) ||
-            i.substr(0, 1) === i.substr(0, 1).toLowerCase() ||
-            'GptSite' === Gpt[i].constructor.name
+            !$$.util.isFunc(Gpt[i].isInheritingFrom) ||
+            !Gpt[i].isInheritingFrom('Gpt')
         ) {
             continue;
         }
@@ -32,8 +35,8 @@ $(document).ready(function () {
     // TODO - combine 2 with enumeration closure
     for (i in Gpt) {
         if (!Gpt.hasOwnProperty(i) ||
-            i.substr(0, 1) === i.substr(0, 1).toLowerCase() ||
-            'GptSite' === Gpt[i].constructor.name
+            !$$.util.isFunc(Gpt[i].isInheritingFrom) ||
+            !Gpt[i].isInheritingFrom('Gpt')
         ) {
             continue;
         }
@@ -64,13 +67,4 @@ $(document).ready(function () {
             email: 'doesttwork@gmail.com'
         }
     });
-
-    // send message to bg page telling it that content has loaded
-//        setTimeout(function () {
-//            Message.sendMessage({
-//                klass: 'App',
-//                method: 'setContentLoaded',
-//                args: [true]
-//            });
-//        }, 5000);
 });

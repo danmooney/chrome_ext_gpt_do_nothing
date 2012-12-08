@@ -10,6 +10,8 @@
 
         /**
          * Execute function on all listeners
+         * TODO - maybe trigger listeners on a different context (ex. background to content or vice versa)
+         *
          * @param {String} evtTypeStr
          * @params {*} argsList comma-separated arguments to pass to callback
          * @return {Boolean}
@@ -34,7 +36,13 @@
 
             while (--i >= 0) {
                 listenerObj = listenerArr[i];
-                console.log(evtTypeStr, listenerObj.context, args);
+
+                if (args.length > 0) {
+                    console.log(evtTypeStr, listenerObj.context, args);
+                } else {
+                    console.log(evtTypeStr, listenerObj.context);
+                }
+
                 listenerObj.callback.apply(listenerObj.context, args);
             }
             return true;

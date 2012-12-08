@@ -36,6 +36,8 @@
             var Notification = $$.instance('Notification'),
                 that = this;
 
+            debugger;
+
             // clear status
             statusStr = '';
 
@@ -55,8 +57,8 @@
         /**
          * Set application status
          * If app is 'Working', status will not be set!
-         * @param str
-         * @param tabId
+         * @param {String} str
+         * @param {Number} tabId
          */
         this.setStatus = function (str, tabId) {
             var Notification = $$.instance('Notification'),
@@ -66,9 +68,10 @@
                 if ('Working' === str) {
                     nowWorkingBool = true;
                 }
+                this.trigger('APP_STATUS_CHANGED', tabId);
             }
 
-            this.trigger('APP_STATUS_CHANGED', tabId);
+
             if (true === nowWorkingBool) {
                 console.warn('NOW WORKING');
                 Notification.showNotification('app_started');
@@ -77,10 +80,21 @@
             }
         };
 
+        /**
+         * Check and set status accordingly
+         * @param {Number} tabId
+         */
         this.checkStatus = function (tabId) {
             var Url = $$.instance('Url'),
                 Message = $$.instance('Message'),
                 that = this;
+
+            if (this.isWorking()) {  // just get the icon to look right
+//                this.setStatus('Working');
+                this.trigger('APP_STATUS_CHANGED', tabId);
+                return;
+            }
+
             Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr, currentGptUrlObj) {
                 if (true === isStartingUrlBool) {
                     that.trigger('IS_STARTING_URL', gptKlassStr);  // nobody listening
