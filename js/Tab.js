@@ -80,8 +80,11 @@
                         }
                     });
                 }
-//                return callback(allTabsArr);
             });
+        },
+
+        addRemovedListener: function (listenerFn) {
+            chrome.tabs.onRemoved.addListener(listenerFn);
         }
     });
 }());

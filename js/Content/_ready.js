@@ -1,8 +1,6 @@
 $(document).ready(function () {
-    // TODO - app.setContentLoaded not working!
-
-
     var Message = $$.instance('Message'),
+        Stoage = $$.instance('Storage'),
         Gpt = $$.instance('Gpt'),
         gptKlassesNum = 0,
         i;
@@ -49,7 +47,7 @@ $(document).ready(function () {
     console.warn('Global Object: ');
     console.dir(GPT);
 
-    // TODO - Store contact info here for now
+    // TODO - Storing contact info here for now
     // obviously put somewhere better later
     $$.instance('Storage').setItem({
         contact_info: {
@@ -67,4 +65,26 @@ $(document).ready(function () {
             email: 'doesttwork@gmail.com'
         }
     });
+
+    // boot up GPT if tabId is the same
+    Message.sendMessage({
+        klass: 'App',
+        method: 'isWorking'
+    }, function (appWorkingBool) {
+        if (false === appWorkingBool) {
+            return;
+        }
+        Message.sendMessage({
+            klass: 'Tab',
+            method: 'getCurrentlySelectedTabId'
+        }, function (tabId) {
+            Storage.getItem('currentGptTabId', function (gptTabId) {
+                console.warn('tabId: ' + tabId + '  gptTabId: ' + tabId);
+                if (tabId === gptTabId) {
+                    $$.instance('GptSite').start();
+                }
+            });
+        });
+    });
+
 });

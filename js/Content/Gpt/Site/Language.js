@@ -21,15 +21,27 @@
         filter: function (offer) {
             var language        = this.getLanguage(),
                 whitelistArr    = language.whitelistArr || [],
+                whitelistLen    = whitelistArr.length,
                 blacklistArr    = language.blacklistArr || [],
-                descriptionStr  = offer.description     || '';
+                blacklistLen    = blacklistArr.length,
+                descriptionStr  = offer.description     || '',
+                allowedBool,
+                i;
 
             function parseDescription (description) {
+                var regexp;
+                for (i = 0; i < blacklistLen; i += 1) {
+                    regexp = new RegExp(blacklistArr[i], 'i');
+                    if (true === regexp.test(description)) {
+                        return false;
+                    }
+                }
 
+                return true;
             }
 
-            parseDescription(descriptionStr);
-            return true;
+            allowedBool = parseDescription(descriptionStr);
+            return allowedBool;
         }
 
     });

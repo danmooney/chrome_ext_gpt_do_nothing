@@ -16,10 +16,13 @@
                 // the language of the offer
                 language: {
                     whiteListArr: [
-                        'sign up and confirm email'
+
                     ],
                     blacklistArr: [
-
+                        'facebook',
+                        'download',
+                        'sign up',
+                        'confirm email'
                     ]
                 },
                 /**
@@ -31,9 +34,9 @@
                  * @return {Boolean}
                  */
                 filterCallback: function (offer) {
-                    if (offer.price.substr(0, 1) !== '$') {
-                        return false;
-                    }
+//                    if (offer.price.substr(0, 1) !== '$') {
+//                        return false;
+//                    }
                     return true;
                 }
             }

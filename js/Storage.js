@@ -21,9 +21,9 @@
     }, {
         _static: true,
             /**
-             *
              * @param {String} item
              * @param {Function} callback
+             * @param {Boolean} allData
              */
         getItem: function (item, callback, allData) {
             // check if frozen

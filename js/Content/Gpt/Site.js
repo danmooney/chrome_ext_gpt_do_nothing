@@ -63,7 +63,7 @@
             var Language = $$.instance('GptSiteLanguage'),
                 offers = this.getOffers(),
                 filteredOffers = [],
-                filteredOfferLength = 0,
+                filteredOffersLength = 0,
                 isAllowedBool,
                 i;
 
@@ -78,16 +78,20 @@
                 }
             }
 
-            filteredOfferLength = filteredOffers.length;
+            filteredOffersLength = filteredOffers.length;
 
             // Filter based on Language white/blacklist of GPT Object
-            for (i = 0; i < filteredOfferLength; i += 1) {
-                isAllowedBool = Language.filter(filteredOffers[i]);
+            for (i = 0; i < filteredOffersLength; i += 1) {
+                isAllowedBool = Language.filter(offers[i]);
 
                 if (false === isAllowedBool) {
-                    filteredOffers.splice(i, 1);
+                    filteredOffers[i] = null;
                 }
             }
+
+            filteredOffers = filteredOffers.filter(function (element) {
+                return element;
+            });
 
             this.setOffers(filteredOffers);
             console.warn('filteredOffersArr');

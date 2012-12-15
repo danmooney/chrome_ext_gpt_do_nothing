@@ -33,11 +33,11 @@
                     console.log(window);
                     var Storage = $$.instance('Storage'),
                         Message = $$.instance('Message');
+
                     Storage.setItem({
                         currentGptWindowId: window.id
                     }, function () {
-                        // TODO - move to tabs!  Too lazy!
-                        chrome.tabs.onRemoved.addListener(function checkIfTabIdIsGptSite (thisTabId) {
+                        Tab.addRemovedListener(function checkIfTabIdIsGptSite (thisTabId) {
                             var App = $$.instance('App');
                             if (!App.isWorking()) {
                                 chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
@@ -49,7 +49,6 @@
                                 App.stopWorking('notificationAppStoppedReasonTabClosed');
                             }
                         });
-                        // END TODO
 
 
                         Message.sendMessage({
