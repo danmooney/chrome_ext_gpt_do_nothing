@@ -75,7 +75,6 @@
             if (true === nowWorkingBool) {
                 console.warn('NOW WORKING');
                 Notification.showNotification('app_started');
-
                 this.trigger('APP_STARTED_WORKING', tabId);
             }
         };

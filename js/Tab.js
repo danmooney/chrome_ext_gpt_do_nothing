@@ -12,14 +12,14 @@
                 ctor = $$.ctor('Tab');
             if (this instanceof ctor) {
                 this.listen('CURRENT_URL_SET',     this.setCurrentlySelectedTabId);
-                this.listen('APP_STARTED_WORKING', this.storeGptKlassTabId);
             }
         },
-        storeGptKlassTabId: function (tabId) {
+        storeGptKlassTabId: function (tabId, callback) {
+            console.warn("SETTING GPT TAB ID: " + tabId);
             var Storage = $$.instance('Storage');
             Storage.setItem({
                 currentGptTabId: tabId
-            });
+            }, callback);
         },
         getCurrentlySelectedTabId: function (callback) {
             if (this.currentlySelectedTabId > 0) {
@@ -29,6 +29,9 @@
                     return callback(tab.id);
                 });
             }
+        },
+        getCurrentlySelectedTabIdSync: function () {
+            return this.currentlySelectedTabId;
         },
         setCurrentlySelectedTabId: function (tabId) {
             this.currentlySelectedTabId = tabId;

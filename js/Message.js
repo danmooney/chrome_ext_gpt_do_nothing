@@ -44,8 +44,9 @@
             }
         };
 
+        // TODO - any hope for returning a response through an async method?
         this.getMessage = function (message, sender, sendResponse) {
-            console.log('Got message:\n', message.klass + '.' + message.method, message.args, sender);
+//            console.log('Got message:\n', message.klass + '.' + message.method, message.args, sender);
             if (!$$.util.isObject(message)) {
                 throw new AppTypeError('Messages passed between pages and content scripts must be an object.');
             } else if (!$$.util.isString(message.klass) ||
@@ -59,9 +60,8 @@
                 returnValMixed = instance[message.method].apply(instance, message.args || []);
 
             if (typeof returnValMixed !== 'undefined') {
-                console.log('Sending Response back:\n', returnValMixed);
+                console.log('Sending Response back:\n', message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed);
             }
-
 
             return sendResponse(returnValMixed);
         };

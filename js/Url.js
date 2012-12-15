@@ -56,7 +56,6 @@
             $$.instance('Message').sendMessage({
                 klass: 'Debug',
                 method: 'setTitleToTabId',
-                tabId: tabId,
                 args: [tabId]
             });
 

@@ -37,23 +37,24 @@
                     Storage.setItem({
                         currentGptWindowId: window.id
                     }, function () {
-                        Tab.addRemovedListener(function checkIfTabIdIsGptSite (thisTabId) {
-                            var App = $$.instance('App');
-                            if (!App.isWorking()) {
-                                chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
-                                return;
-                            } else if (thisTabId !== tabId) {
-                                return;
-                            } else {
-                                chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
-                                App.stopWorking('notificationAppStoppedReasonTabClosed');
-                            }
-                        });
+                        Tab.storeGptKlassTabId(tabId, function () {
+                            Tab.addRemovedListener(function checkIfTabIdIsGptSite (thisTabId) {
+                                var App = $$.instance('App');
+                                if (!App.isWorking()) {
+                                    chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
+                                    return;
+                                } else if (thisTabId !== tabId) {
+                                    return;
+                                } else {
+                                    chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
+                                    App.stopWorking('notificationAppStoppedReasonTabClosed');
+                                }
+                            });
 
-
-                        Message.sendMessage({
-                            klass: 'GptSite',
-                            method: 'start'
+                            Message.sendMessage({
+                                klass: 'GptSite',
+                                method: 'start'
+                            });
                         });
                     });
                 });

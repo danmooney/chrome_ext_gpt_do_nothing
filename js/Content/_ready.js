@@ -1,6 +1,6 @@
 $(document).ready(function () {
     var Message = $$.instance('Message'),
-        Stoage = $$.instance('Storage'),
+        Storage = $$.instance('Storage'),
         Gpt = $$.instance('Gpt'),
         gptKlassesNum = 0,
         i;
@@ -76,15 +76,14 @@ $(document).ready(function () {
         }
         Message.sendMessage({
             klass: 'Tab',
-            method: 'getCurrentlySelectedTabId'
+            method: 'getCurrentlySelectedTabIdSync'
         }, function (tabId) {
             Storage.getItem('currentGptTabId', function (gptTabId) {
-                console.warn('tabId: ' + tabId + '  gptTabId: ' + tabId);
+                console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
                 if (tabId === gptTabId) {
                     $$.instance('GptSite').start();
                 }
             });
         });
     });
-
 });

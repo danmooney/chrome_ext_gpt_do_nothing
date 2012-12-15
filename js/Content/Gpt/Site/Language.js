@@ -37,12 +37,18 @@
                     }
                 }
 
+                for (i = 0; i < whitelistLen; i += 1) {
+                    regexp = new RegExp(whitelistArr[i], 'i');
+                    if (false === regexp.test(description)) {
+                        return false;
+                    }
+                }
+
                 return true;
             }
 
             allowedBool = parseDescription(descriptionStr);
             return allowedBool;
         }
-
     });
 }());

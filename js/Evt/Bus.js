@@ -17,9 +17,9 @@
          * @return {Boolean}
          */
         trigger: function (evtTypeStr) {
-            if (evtTypeStr === 'APP_STARTED_WORKING') {
-                debugger;
-            }
+//            if (evtTypeStr === 'APP_STARTED_WORKING') {
+//                debugger;
+//            }
             var EvtBus = $$.instance('EvtBus'),
                 listenerArr = EvtBus.listenersArr[evtTypeStr],
                 listenerObj,
