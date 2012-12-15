@@ -20,8 +20,6 @@
          * Go through offers list
          */
         navigateSite: function () {
-            this.colorOffers(); // debug
-
             var Site = $$.instance('GptSite'),
                 offersArr = [],
                 navigation = this.getNavigation(),
@@ -61,26 +59,30 @@
         /**
          * Used purely as a debug to make sure jQuery selectors are proper
          */
-        colorOffers: function () {
+        colorOffers: function (offersArr) {
             var navigation = this.getNavigation(),
-                offerEls = $(navigation.offerSelectorStr);
+                offerEls = [],
+                i;
 
-            offerEls.css('background', 'red');
-            offerEls.find(navigation.nameSelectorStr).each(function () {
-                $(this).css('background', 'orange');
-            });
-            offerEls.find(navigation.descriptionSelectorStr).each(function () {
-                $(this).css('background', 'yellow');
-            });
-            offerEls.find(navigation.priceSelectorStr).each(function () {
-                $(this).css('background', 'green');
-            });
-            offerEls.find(navigation.doneSelectorStr).each(function () {
-                $(this).css('background', 'pink');
-            });
-            $(navigation.nextBtnSelectorStr).each(function () {
-                $(this).css('background', 'blue');
-            });
+            if ($$.util.isArray(offersArr)) {
+                for (i = 0; i < offersArr.length; i += 1) {
+                    offerEls.push(offersArr[i].offerEl[0]);
+                }
+                offerEls = $(offerEls);
+            } else {
+                offerEls = $(navigation.offerSelectorStr);
+            }
+
+            function colorOffers () {
+                offerEls.css('background', 'red');
+                offerEls.find(navigation.nameSelectorStr).css('background', 'orange');
+                offerEls.find(navigation.descriptionSelectorStr).css('background', 'yellow');
+                offerEls.find(navigation.priceSelectorStr).css('background', 'green');
+                offerEls.find(navigation.doneSelectorStr).css('background', 'pink');
+                $(navigation.nextBtnSelectorStr).css('background', 'blue');
+            }
+
+            colorOffers();
         }
     });
 }());

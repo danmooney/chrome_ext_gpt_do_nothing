@@ -114,7 +114,7 @@
                             urlRegExp.test(url) ||
                             urlRegExp.test(url.replace('www.', ''))
                         ) {
-                            return callback(true, i, startingUrlObj);
+                            return callback(true, i, j/*startingUrlObj*/); // can't store functions in local storage!! how fucking absurd!
                         }
                     }
 

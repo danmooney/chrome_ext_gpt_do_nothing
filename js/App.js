@@ -95,7 +95,7 @@
                 return;
             }
 
-            Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr, currentGptUrlObj) {
+            Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr, currentGptUrlObjIdxNum/*currentGptUrlObj*/) {
                 if (true === isStartingUrlBool) {
                     that.trigger('IS_STARTING_URL', gptKlassStr);  // nobody listening
                     // set current GPT klass
@@ -108,9 +108,9 @@
                     }, function () {
                         Message.sendMessage({
                             klass: 'Gpt',
-                            method: 'setCurrentGptUrlObj',
+                            method: 'setCurrentGptUrlObjIdxNum',
                             args: [
-                                currentGptUrlObj
+                                currentGptUrlObjIdxNum
                             ]
                         }, function () {
                             that.setStatus('Ready', tabId);

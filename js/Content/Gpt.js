@@ -41,18 +41,38 @@
          * Set url object from current Gpt Klass
          * @param {Object} currentGptUrlObj
          * @param {Function} callback
+         * @deprecated
          */
         this.setCurrentGptUrlObj = function (currentGptUrlObj, callback) {
+            throw new AppError('Gpt.setCurrentGptUrlObj is deprecated');
             var Storage = $$.instance('Storage');
             Storage.setItem({
                 currentGptUrlObj: currentGptUrlObj
             }, callback);
         };
 
+        /**
+         * @deprecated
+         */
         this.getCurrentGptUrlObj = function (callback) {
+            throw new AppError('Gpt.getCurrentGptUrlObj is deprecated');
             var Storage = $$.instance('Storage');
             Storage.getItem('currentGptUrlObj', callback);
         };
+
+        this.setCurrentGptUrlObjIdxNum = function (currentGptUrlObjIdxNum, callback) {
+            var Storage = $$.instance('Storage');
+            Storage.setItem({
+                currentGptUrlObjIdx: currentGptUrlObjIdxNum
+            }, callback);
+        };
+
+        this.getCurrentGptUrlObjIdxNum = function (callback) {
+            var Storage = $$.instance('Storage');
+            Storage.getItem('currentGptUrlObjIdx', callback);
+        };
+
+
 
         this.setCurrentGptKlass = function (gptKlassStr) {
             var Message = $$.instance('Message'),

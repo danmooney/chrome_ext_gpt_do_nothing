@@ -19,10 +19,16 @@
          * @return {Boolean}
          */
         filter: function (offer) {
-            function parseDescription () {
+            var language        = this.getLanguage(),
+                whitelistArr    = language.whitelistArr || [],
+                blacklistArr    = language.blacklistArr || [],
+                descriptionStr  = offer.description     || '';
+
+            function parseDescription (description) {
 
             }
 
+            parseDescription(descriptionStr);
             return true;
         }
 
