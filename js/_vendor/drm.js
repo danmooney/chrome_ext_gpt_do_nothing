@@ -5,7 +5,7 @@
  * data is ever passed through this object.
  *
  * @package DRM Klass/Instance Creator
- * @version 10/24/2012
+ * @version 12/15/2012
  * @author Dan Mooney
  */
 ;
@@ -1072,7 +1072,7 @@
         /**
          * Convert JSON-stringified values in object or array to JSON-parsed values
          * @param {Array|Object}
-            */
+         */
         Util.jsonParseThroughObj = function (obj) {
             var newObj = Util.isObject(obj)
                     ? {}
@@ -1096,8 +1096,8 @@
 
         /**
          * Take object or array of key-value pairs and turn into jQuery selector
-         * @param {Array|Object}
-            * @return {String}
+         * @param {Array|Object} arr
+         * @return {String}
          */
         Util.makeJQuerySelector = function (arr) {
             var selectorStr = '',
@@ -1135,8 +1135,8 @@
 
         /**
          * Remove "s" in capital words
-         * @param {String}
-            * @return {String}
+         * @param str {String}
+         * @return {String}
          */
         Util.removePluralsInStr = function (str) {
             if (!Util.isString(str)) {
@@ -1236,7 +1236,7 @@
             if (NumberOfCtors === 0 || (
                 (NumberOfCtors === NumberOfNamespacedCtors) &&
                     NumberOfInstances === NumberOfNamespacedInstances)
-                ) {
+            ) {
                 return false;
             }
             NumberOfNamespacedCtors = NumberOfCtors;
@@ -1413,7 +1413,7 @@
 
             methods.list = function () {
                 return _instances;
-            }
+            };
 
             methods.count = function () {
                 var count = 0,
@@ -1440,7 +1440,7 @@
          */
         App.abilities.masquerade = function (methods) {
             var fn = function () {},
-                i = 0;
+                i;
 
             if (!methods) {
                 return false;
@@ -1466,8 +1466,8 @@
             var log;
 
             if (typeof console === 'object' &&
-                typeof console.log === 'function')
-            {
+                typeof console.log === 'function'
+            ) {
                 App.abilities.set('console', true);
             } else {
                 App.abilities.set('console', false);
@@ -1525,11 +1525,21 @@
             return log;
         };
 
-        DRM = function () {
+        DRM = (function () {
+            var wrapperFn;  // alias to DRM.instance
+
+            wrapperFn = function Moon () {
+                return wrapperFn.instance.apply(null, arguments);
+            };
+
+            wrapperFn.ctor = function (ctorNameStr) {
+                return App.ctors.get(ctorNameStr);
+            };
+
             /**
              * Make new class
              */
-            this.klass = function (ctorFn, includeObj) {
+            wrapperFn.klass = function (ctorFn, includeObj) {
                 return Klass.apply(null, arguments);
             };
 
@@ -1538,7 +1548,7 @@
              * @param {String} ctorName
              * @return {Object|Boolean} instance of ctor or false if error occurs
              */
-            this.instance = function (ctorName) {
+            wrapperFn.instance = function (ctorName) {
                 return Instance.apply(null, arguments);
             };
 
@@ -1546,13 +1556,15 @@
              * Get application global passed as parameter to enclosing anonymous function
              * @return {String}
              */
-            this.getApplicationGlobal = function () {
+            wrapperFn.getApplicationGlobal = function () {
                 return win[applicationGlobal] || win || window;
             };
 
-            this.app = App;
-            this.util = Util;
-        };
+            wrapperFn.app = App;
+            wrapperFn.util = Util;
+
+            return wrapperFn;
+        }());
 
         DRM.prototype = (function() {
             var fn = {};
@@ -1577,6 +1589,9 @@
                 }
 
                 for (var j in includeObj) {
+                    if (!includeObj.hasOwnProperty(j)) {
+                        continue;
+                    }
                     instance[j] = includeObj[j];
                 }
 
@@ -1589,17 +1604,11 @@
 
             /**
              * Helper method for getting a a ctor by name
-             * @param {String} ctorNameStr constructor name.  If empty, will return instance's constructor.
+             * @return instance's constructor.
              * @note bound to this
              */
-            fn.ctor = function (ctorNameStr) {
-                if (this instanceof DRM &&
-                    Util.isString(ctorNameStr)
-                    ) {
-                    return App.ctors.get(ctorNameStr);
-                } else {
-                    return App.ctors.get(this.constructor.name);
-                }
+            fn.ctor = function () {
+                return App.ctors.get(this.constructor.name);
             };
 
             /**
@@ -1682,7 +1691,7 @@
         isScalar = Util.isScalar;
 
         /** Global Library Namespace **/
-        win.$$ = win.DRM = new DRM();
+        win.$$ = win.DRM = DRM;
 
     }; // end of DRM.load function
 }(window, 'GPT'));
