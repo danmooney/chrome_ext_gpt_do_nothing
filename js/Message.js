@@ -57,18 +57,37 @@
             }
 
             var instance = $$(message.klass),
-                returnValMixed = instance[message.method].apply(instance, message.args || []),
-                responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed;
+                returnValMixed,
+                responseStr,
+                methodParams = $$.util.getParamsOfFn(message.method),
+                async = methodParams.indexOf('callback') !== -1;
 
+            responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed;
             responseStr = responseStr.replace('(undefined)', '()');
 
-            if (typeof returnValMixed !== 'undefined') {
-                console.log(responseStr);
+            function done (returnVal) {
+                return sendResponse(returnVal);
             }
 
-            return sendResponse(returnValMixed);
-        };
+            if (false === async) {
+                returnValMixed = instance[message.method].apply(instance, message.args || []);
 
+                if (typeof returnValMixed !== 'undefined') {
+                    console.log(responseStr);
+                }
+
+                done(returnValMixed);
+            } else if (true === async) {
+                console.warn ("ASYNC");
+                debugger;
+
+                message.args = message.args || [];
+                if (message.args.length === (methodParams.length - 1)) {
+                    message.args.push(done);
+                }
+                instance[message.method].apply(instance, message.args)
+            }
+        };
     }, {
         _static: true,
         init: function () {
