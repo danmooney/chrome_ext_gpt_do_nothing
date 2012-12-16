@@ -8,17 +8,17 @@
             notificationsArr = [];
 
         this.setNotificationMessage = function (msgStr, callback) {
-            $$.instance('Storage').setItem({
+            $$('Storage').setItem({
                 notificationMessage: msgStr
             }, callback);
         };
 
         this.getNotificationMessage = function (callback) {
-            $$.instance('Storage').getItem('notificationMessage', callback);
+            $$('Storage').getItem('notificationMessage', callback);
         };
 
         this.clearNotificationMessage = function () {
-            $$.instance('Storage').removeItem('notificationMessage');
+            $$('Storage').removeItem('notificationMessage');
         };
 
         this.showNotification = function (typeStr) {

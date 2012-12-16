@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    var Message = $$.instance('Message'),
-        Storage = $$.instance('Storage'),
-        Gpt = $$.instance('Gpt'),
+    var Message = $$('Message'),
+        Storage = $$('Storage'),
+        Gpt = $$('Gpt'),
         gptKlassesNum = 0,
         i;
 
@@ -49,7 +49,7 @@ $(document).ready(function () {
 
     // TODO - Storing contact info here for now
     // obviously put somewhere better later
-    $$.instance('Storage').setItem({
+    $$('Storage').setItem({
         contact_info: {
             first_name: 'Daniel',
             last_name: 'Mooney',
@@ -82,7 +82,7 @@ $(document).ready(function () {
             Storage.getItem('currentGptTabId', function (gptTabId) {
                 console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
                 if (tabId === gptTabId) {
-                    $$.instance('GptSite').start();
+                    $$('GptSite').start();
                 } else {
                     Message.sendMessage({
                         klass: 'Window',
@@ -90,7 +90,7 @@ $(document).ready(function () {
                     }, function (windowId) {
                         Storage.getItem('currentGptWindowId', function (gptWindowId) {
                             if (windowId === gptWindowId) {
-                                var Offer = $$.instance('GptSiteOffer');
+                                var Offer = $$('GptSiteOffer');
                                 // Storage.getItem('currentOffer')
                             }
                         });

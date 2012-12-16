@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var Notification = $$.instance('Notification');
+    var Notification = $$('Notification');
 
     function addReason (msgStr) {
         var reasonSpan = $('<span></span>'),

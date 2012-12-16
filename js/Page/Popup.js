@@ -9,7 +9,7 @@
          */
         this.setLogo = function () {
             var bg = this.getBgPage(),
-                iconObj = bg.$$.instance('Icon').getIconData();
+                iconObj = bg.$$('Icon').getIconData();
 
             $('#logo, #status-text').attr('class', iconObj.iconClass);
         };
@@ -19,9 +19,9 @@
          */
         this.setStatusText = function () {
             var bg = this.getBgPage(),
-                App = bg.$$.instance('App'),
-                Message = $$.instance('Message'),
-                Storage = $$.instance('Storage'),
+                App = bg.$$('App'),
+                Message = $$('Message'),
+                Storage = $$('Storage'),
                 status = App.getStatus();
 
             $('#status-text').attr('data-118n', 'popupStatus' + App.getStatus());
@@ -41,7 +41,7 @@
          */
         this.setStartStop = function () {
             var bg = this.getBgPage(),
-                App = bg.$$.instance('App');
+                App = bg.$$('App');
 
             function setEvent () {
                 $('#start-stop').click(function () {

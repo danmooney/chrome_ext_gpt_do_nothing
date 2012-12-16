@@ -25,9 +25,9 @@
          * Gather information and trigger on ready
          */
         this.start = function () {
-            var Gpt = $$.instance('Gpt'),
-                Navigation = $$.instance('GptSiteNavigation'),
-                Language = $$.instance('GptSiteLanguage'),
+            var Gpt = $$('Gpt'),
+                Navigation = $$('GptSiteNavigation'),
+                Language = $$('GptSiteLanguage'),
                 that = this;
 
             function composeSubclasses () {
@@ -40,7 +40,7 @@
             Gpt.getCurrentGptKlass(function (currentGptKlassStr) {
                 that.currentGptKlassStr = currentGptKlassStr;
                 Gpt.getCurrentGptUrlObjIdxNum(function (currentGptUrlObjIdxNum) {
-                    that.currentGptUrlObj = $$.instance(currentGptKlassStr).urlArr[currentGptUrlObjIdxNum];
+                    that.currentGptUrlObj = $$(currentGptKlassStr).urlArr[currentGptUrlObjIdxNum];
                     composeSubclasses();
                     console.warn(that.currentGptUrlObj);
                     // setTimeout is purely a debug
@@ -55,8 +55,8 @@
         init: function () {
             this.listen('GPT_SITE_DONE_NAVIGATING', this.filterOffers);
             this.listen('GPT_SITE_DONE_FILTERING', function () {
-                var Navigation = $$.instance('GptSiteNavigation'),
-                    Offer = $$.instance('GptSiteOffer'),
+                var Navigation = $$('GptSiteNavigation'),
+                    Offer = $$('GptSiteOffer'),
                     offers = this.getOffers();
 
                 Navigation.colorOffers(offers);
@@ -64,7 +64,7 @@
             });
         },
         filterOffers: function () {
-            var Language = $$.instance('GptSiteLanguage'),
+            var Language = $$('GptSiteLanguage'),
                 offers = this.getOffers(),
                 filteredOffers = [],
                 filteredOffersLength = 0,

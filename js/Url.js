@@ -10,7 +10,7 @@
         init: function () {
             // TODO - figure out better place to put this!
             this.listen('IS_STARTING_URL', function (gptKlassStr) {
-//                var Message = $$.instance('Message');
+//                var Message = $$('Message');
 //                Message.sendMessage({
 //                    klass: 'Gpt',
 //                    method: 'setCurrentGptKlass',
@@ -27,7 +27,7 @@
          * @return {String}
          */
         getUrlFromTab: function (tab, callback) {
-            return $$.instance('Tab').getTabUrl(tab, callback);
+            return $$('Tab').getTabUrl(tab, callback);
         },
 
         /**
@@ -53,7 +53,7 @@
                 tabId = tab.tabId || tab;
 
             // TODO - THIS IS A DEBUG, REMOVE
-            $$.instance('Message').sendMessage({
+            $$('Message').sendMessage({
                 klass: 'Debug',
                 method: 'setTitleToTabId',
                 args: [tabId]
@@ -69,7 +69,7 @@
                     that.trigger('CURRENT_URL_SET', tabId);
                 } else { // scheme is something like 'chrome://'
 //                    console.warn('SETTING STATUS TO NOT READY BECAUSE SCHEME IS NOT HTTP');
-                    $$.instance('App').setStatus('NotReady');
+                    $$('App').setStatus('NotReady');
                 }
             });
         },
@@ -84,7 +84,7 @@
         isStartingUrl: function (url, callback) {
             url = url || this.getCurrentUrl();
             var that = this,
-                Message = $$.instance('Message'),
+                Message = $$('Message'),
                 i;
 
             this.fetchStartingUrlsObj(function (startingUrlsObj) {
@@ -123,7 +123,7 @@
         },
 
         fetchStartingUrlsObj: function (callback) {
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             return Storage.getItem('startingUrls', callback);
         }
     });

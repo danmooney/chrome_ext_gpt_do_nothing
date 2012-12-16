@@ -20,7 +20,7 @@
         },
         storeGptKlassTabId: function (tabId, callback) {
             console.warn("SETTING GPT TAB ID: " + tabId);
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             Storage.setItem({
                 currentGptTabId: tabId
             }, callback);
@@ -70,7 +70,7 @@
         },
 
         getAllTabsInAllWindows: function (callback) {
-            var Window = $$.instance('Window'),
+            var Window = $$('Window'),
                 that = this;
 
             Window.getAllWindowIds(function (windowIdsArr) {

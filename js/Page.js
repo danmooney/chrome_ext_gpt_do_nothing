@@ -8,7 +8,7 @@
     }, {
         _static: true,
         getBgPage: function () {
-            return $$.instance('PageBackground').bgPage;
+            return $$('PageBackground').bgPage;
         },
         /**
          * Compare bg page to window

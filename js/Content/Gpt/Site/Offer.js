@@ -47,8 +47,8 @@
         completeOffer: function (offer) {
             this.setCurrentOffer(offer);
 
-            var Storage = $$.instance('Storage'),
-                Message = $$.instance('Message'),
+            var Storage = $$('Storage'),
+                Message = $$('Message'),
                 tabData = {},
                 linkEl = offer.linkEl,
                 href,

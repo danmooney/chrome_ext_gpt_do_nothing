@@ -8,7 +8,7 @@
     // register starting urls
 //    function ready () {
 //        $(document).ready(function () {
-//            var Message = $$.instance('Message');
+//            var Message = $$('Message');
 //
 //            Message.sendMessage({
 //                klass: 'App',
@@ -26,5 +26,5 @@
 //        });
 //    }
 //    ready();
-//    $$.instance('Storage').clearItems(ready);
+//    $$('Storage').clearItems(ready);
 }());

@@ -45,7 +45,7 @@
          */
         this.setCurrentGptUrlObj = function (currentGptUrlObj, callback) {
             throw new AppError('Gpt.setCurrentGptUrlObj is deprecated');
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             Storage.setItem({
                 currentGptUrlObj: currentGptUrlObj
             }, callback);
@@ -56,27 +56,27 @@
          */
         this.getCurrentGptUrlObj = function (callback) {
             throw new AppError('Gpt.getCurrentGptUrlObj is deprecated');
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             Storage.getItem('currentGptUrlObj', callback);
         };
 
         this.setCurrentGptUrlObjIdxNum = function (currentGptUrlObjIdxNum, callback) {
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             Storage.setItem({
                 currentGptUrlObjIdx: currentGptUrlObjIdxNum
             }, callback);
         };
 
         this.getCurrentGptUrlObjIdxNum = function (callback) {
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             Storage.getItem('currentGptUrlObjIdx', callback);
         };
 
 
 
         this.setCurrentGptKlass = function (gptKlassStr) {
-            var Message = $$.instance('Message'),
-                Storage = $$.instance('Storage'),
+            var Message = $$('Message'),
+                Storage = $$('Storage'),
                 that = this;
             Message.sendMessage({
                 klass: 'App',
@@ -95,7 +95,7 @@
         };
 
         this.getCurrentGptKlass = function (callback) {
-            var Storage = $$.instance('Storage');
+            var Storage = $$('Storage');
             Storage.getItem('currentGptKlass', function (gptKlassStr) {
                 console.log(gptKlassStr);
                 callback(gptKlassStr);
@@ -108,9 +108,9 @@
          * Adds starting Url to background page's Url klass
          */
         registerStartingUrl: function () {
-            var Storage = $$.instance('Storage'),
-                Message = $$.instance('Message'),
-                Gpt = $$.instance('Gpt'),
+            var Storage = $$('Storage'),
+                Message = $$('Message'),
+                Gpt = $$('Gpt'),
                 that = this;
 
             Message.sendMessage({
@@ -152,8 +152,8 @@
          * Store klass name in storage
          */
         registerGptKlass: function () {
-            var Storage = $$.instance('Storage'),
-                Message = $$.instance('Message'),
+            var Storage = $$('Storage'),
+                Message = $$('Message'),
                 klassNameStr = this.constructor.name.replace('Gpt', '').toUpperCase(),
                 that = this;
 

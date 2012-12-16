@@ -44,7 +44,7 @@
 
         this.populateText = function () {
             var els = $('[data-i18n]'),
-                that = $$.instance('Locale');
+                that = $$('Locale');
 
             els.each(function () {
                 var el = $(this),

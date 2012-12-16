@@ -7,7 +7,7 @@
     }, {
         _static: true,
         init: function () {
-            var Url = $$.instance('Url');
+            var Url = $$('Url');
             this.registerEvent('onUpdated',   'tabs', Url.setCurrentUrlByTab, Url);
             this.registerEvent('onActivated', 'tabs', Url.setCurrentUrlByTab, Url);
         }

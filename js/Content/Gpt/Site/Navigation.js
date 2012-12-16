@@ -20,7 +20,7 @@
          * Go through offers list
          */
         navigateSite: function () {
-            var Site = $$.instance('GptSite'),
+            var Site = $$('GptSite'),
                 offersArr = [],
                 navigation = this.getNavigation(),
                 offerEls = $(navigation.offerSelectorStr);

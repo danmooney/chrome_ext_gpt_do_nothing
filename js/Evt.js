@@ -50,7 +50,7 @@
          * @param {Object} context call callback within this context
          */
         registerEvent : function (evtTypeStr, chromeStr, callback, context) {
-            var Evt = $$.instance('Evt');
+            var Evt = $$('Evt');
 
             /**
              * Force call within the context of the calling klass

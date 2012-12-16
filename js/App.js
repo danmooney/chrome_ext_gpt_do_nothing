@@ -33,7 +33,7 @@
          * @param {String} reasonStr used for notifying user why app stopped working
          */
         this.stopWorking = function (reasonStr) {
-            var Notification = $$.instance('Notification'),
+            var Notification = $$('Notification'),
                 that = this;
 
             debugger;
@@ -61,7 +61,7 @@
          * @param {Number} tabId Optional
          */
         this.setStatus = function (str, tabId) {
-            var Notification = $$.instance('Notification'),
+            var Notification = $$('Notification'),
                 nowWorkingBool = false;
             if (!this.isWorking()) {
                 statusStr = str;
@@ -84,9 +84,9 @@
          * @param {Number} tabId
          */
         this.checkStatus = function (tabId) {
-            var Window = $$.instance('Window'),
-                Url = $$.instance('Url'),
-                Message = $$.instance('Message'),
+            var Window = $$('Window'),
+                Url = $$('Url'),
+                Message = $$('Message'),
                 that = this;
 
             if (this.isWorking()) {  // just get the icon to look right

@@ -20,7 +20,7 @@
 //            if (evtTypeStr === 'APP_STARTED_WORKING') {
 //                debugger;
 //            }
-            var EvtBus = $$.instance('EvtBus'),
+            var EvtBus = $$('EvtBus'),
                 listenerArr = EvtBus.listenersArr[evtTypeStr],
                 listenerObj,
                 args = $$.util.arrayify(arguments),
@@ -54,7 +54,7 @@
          * @param {Function} callback
          */
         listen: function (evtTypeStr, callback) {
-            var EvtBus = $$.instance('EvtBus'),
+            var EvtBus = $$('EvtBus'),
                 listenerArr = EvtBus.listenersArr[evtTypeStr];
 
             if ($$.util.isUndefined(listenerArr)) {

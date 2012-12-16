@@ -42,7 +42,7 @@
 
         // can't do this because cookies need to persist.. user must start in incognito window!
         this.openIncognitoWindow = function () {
-            var Tab = $$.instance('Tab'),
+            var Tab = $$('Tab'),
                 that = this;
 //                windowCreateObj = {
 //                    incognito: true,
@@ -50,8 +50,8 @@
 //                };
 
             function windowCreateCallback (window) {
-                var Storage = $$.instance('Storage'),
-                    Message = $$.instance('Message');
+                var Storage = $$('Storage'),
+                    Message = $$('Message');
 
                 console.warn('CURRENT WINDOW ID: ' + window.id);
                 Storage.setItem({
@@ -70,7 +70,7 @@
 
                 Tab.storeGptKlassTabId(tabId, function () {
                     Tab.addRemovedListener(function checkIfTabIdIsGptSite (thisTabId) {
-                        var App = $$.instance('App');
+                        var App = $$('App');
                         if (!App.isWorking()) {
                             chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
                             return;

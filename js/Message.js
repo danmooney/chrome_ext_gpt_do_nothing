@@ -4,7 +4,7 @@
 (function() {
     $$.klass(function Message () {
         this.sendMessage = function (dataObj, callback) {
-            var Page = $$.instance('Page'),
+            var Page = $$('Page'),
                 isBgPage = Page.isBgPage(),
                 Tab,
                 tabId = dataObj.tabId || null;
@@ -13,7 +13,7 @@
             if ((true === isBgPage) ||
                 (false === isBgPage && $$.util.isDefined(chrome.tabs))
             ) {
-                Tab =  $$.instance('Tab') || Page.getBgPage().$$.instance('Tab');
+                Tab =  $$('Tab') || Page.getBgPage().$$('Tab');
 
                 /**
                  * @param {Number} tabId
@@ -56,7 +56,7 @@
                 throw new AppError('Message passed must be object with string klass, string method and string args');
             }
 
-            var instance = $$.instance(message.klass),
+            var instance = $$(message.klass),
                 returnValMixed = instance[message.method].apply(instance, message.args || []),
                 responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed;
 

@@ -23,7 +23,7 @@
             }
         },
 
-        currentIconStatusStr = $$.instance('App').getStatus();
+        currentIconStatusStr = $$('App').getStatus();
 
         this.allIconsSetBool = false;
 
@@ -35,8 +35,8 @@
         };
 
         this.setIconOnTabByTabId = function (tabId) {
-            var Url = $$.instance('Url'),
-                App = $$.instance('App'),
+            var Url = $$('Url'),
+                App = $$('App'),
                 iconPathStr,
                 setIconOptionsObj;
 
@@ -66,7 +66,7 @@
         this.setIcon = function (tabId) {
             tabId = tabId || null;
 
-            var App = $$.instance('App'),
+            var App = $$('App'),
                 oldIconStatus = currentIconStatusStr;
 
             currentIconStatusStr = App.getStatus();
@@ -95,7 +95,7 @@
 
             var that = this;
 
-            $$.instance('Tab').getAllTabsInAllWindows(function (tabsArr) {
+            $$('Tab').getAllTabsInAllWindows(function (tabsArr) {
                 var iconPathStr,
                     setIconOptionsObj,
                     i;
@@ -118,7 +118,7 @@
          * @param tabId
          */
         this.setTitle = function (currentIconStatusStr, tabId) {
-            var Url = $$.instance('Url'),
+            var Url = $$('Url'),
                 setTitleOptionsObj,
                 messageKeyStr,
                 titlePrefixStr = 'iconTitle',
@@ -126,7 +126,7 @@
 
             messageKeyStr = currentIconStatusStr;
 
-            if (titleStr = $$.instance('Locale').getMessage(titlePrefixStr + messageKeyStr)) {
+            if (titleStr = $$('Locale').getMessage(titlePrefixStr + messageKeyStr)) {
                 setTitleOptionsObj = {
                     title: titleStr
                 };

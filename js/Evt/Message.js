@@ -7,8 +7,8 @@
     }, {
         _static: true,
         init: function () {
-            var Message = $$.instance('Message'),
-                Page = $$.instance('Page');
+            var Message = $$('Message'),
+                Page = $$('Page');
 
             this.registerEvent('onMessage', 'extension', Message.getMessage, Message);
         }
