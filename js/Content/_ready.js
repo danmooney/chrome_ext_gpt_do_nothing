@@ -66,7 +66,8 @@ $(document).ready(function () {
         }
     });
 
-    // boot up GPT if tabId is the same
+    // boot up GPT if tabId is the same,
+    // and complete offer if windowId is the same
     Message.sendMessage({
         klass: 'App',
         method: 'isWorking'
@@ -82,6 +83,18 @@ $(document).ready(function () {
                 console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
                 if (tabId === gptTabId) {
                     $$.instance('GptSite').start();
+                } else {
+                    Message.sendMessage({
+                        klass: 'Window',
+                        method: 'getCurrentlySelectedWindowIdSync'
+                    }, function (windowId) {
+                        Storage.getItem('currentGptWindowId', function (gptWindowId) {
+                            if (windowId === gptWindowId) {
+                                var Offer = $$.instance('GptSiteOffer');
+                                // Storage.getItem('currentOffer')
+                            }
+                        });
+                    });
                 }
             });
         });

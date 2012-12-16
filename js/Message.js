@@ -57,10 +57,13 @@
             }
 
             var instance = $$.instance(message.klass),
-                returnValMixed = instance[message.method].apply(instance, message.args || []);
+                returnValMixed = instance[message.method].apply(instance, message.args || []),
+                responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed;
+
+            responseStr = responseStr.replace('(undefined)', '()');
 
             if (typeof returnValMixed !== 'undefined') {
-                console.log('Sending Response back:\n', message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed);
+                console.log(responseStr);
             }
 
             return sendResponse(returnValMixed);

@@ -33,6 +33,8 @@
                 newOffer.description = $.trim(offerEl.find(navigation.descriptionSelectorStr).text());
                 newOffer.price = $.trim(offerEl.find(navigation.priceSelectorStr).text());
 
+                newOffer.linkEl = offerEl.find('a[target="_blank"]');
+
                 newOffer.offerEl = offerEl;
 //                newOffer.priceEl = offerEl.find(navigation.priceSelectorStr);
                 newOffer.doneEl = offerEl.find(navigation.doneSelectorStr);

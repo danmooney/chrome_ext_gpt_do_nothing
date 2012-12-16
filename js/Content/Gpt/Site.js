@@ -55,8 +55,12 @@
         init: function () {
             this.listen('GPT_SITE_DONE_NAVIGATING', this.filterOffers);
             this.listen('GPT_SITE_DONE_FILTERING', function () {
-                var Navigation = $$.instance('GptSiteNavigation');
-                Navigation.colorOffers(this.getOffers());
+                var Navigation = $$.instance('GptSiteNavigation'),
+                    Offer = $$.instance('GptSiteOffer'),
+                    offers = this.getOffers();
+
+                Navigation.colorOffers(offers);
+                Offer.completeOffers(offers);
             });
         },
         filterOffers: function () {

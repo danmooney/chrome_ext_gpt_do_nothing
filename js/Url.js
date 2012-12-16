@@ -68,7 +68,7 @@
                     that.setCurrentUrl(urlStr);
                     that.trigger('CURRENT_URL_SET', tabId);
                 } else { // scheme is something like 'chrome://'
-                    console.warn('SETTING STATUS TO NOT READY BECAUSE SCHEME IS NOT HTTP');
+//                    console.warn('SETTING STATUS TO NOT READY BECAUSE SCHEME IS NOT HTTP');
                     $$.instance('App').setStatus('NotReady');
                 }
             });
@@ -78,7 +78,7 @@
          * Checks to see if url is contained within
          *   the startingUrlArr
          * @param {String} url
-         * @param {Function} url
+         * @param {Function} callback
          * @return {Boolean}
          */
         isStartingUrl: function (url, callback) {

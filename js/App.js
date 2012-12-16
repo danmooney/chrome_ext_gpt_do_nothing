@@ -58,7 +58,7 @@
          * Set application status
          * If app is 'Working', status will not be set!
          * @param {String} str
-         * @param {Number} tabId
+         * @param {Number} tabId Optional
          */
         this.setStatus = function (str, tabId) {
             var Notification = $$.instance('Notification'),
@@ -84,7 +84,8 @@
          * @param {Number} tabId
          */
         this.checkStatus = function (tabId) {
-            var Url = $$.instance('Url'),
+            var Window = $$.instance('Window'),
+                Url = $$.instance('Url'),
                 Message = $$.instance('Message'),
                 that = this;
 
@@ -93,35 +94,38 @@
                 this.trigger('APP_STATUS_CHANGED', tabId);
                 return;
             }
-
-            Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr, currentGptUrlObjIdxNum/*currentGptUrlObj*/) {
-                if (true === isStartingUrlBool) {
-                    that.trigger('IS_STARTING_URL', gptKlassStr);  // nobody listening
-                    // set current GPT klass
-                    Message.sendMessage({
-                        klass: 'Gpt',
-                        method: 'setCurrentGptKlass',
-                        args: [
-                            gptKlassStr
-                        ]
-                    }, function () {
-                        Message.sendMessage({
-                            klass: 'Gpt',
-                            method: 'setCurrentGptUrlObjIdxNum',
-                            args: [
-                                currentGptUrlObjIdxNum
-                            ]
-                        }, function () {
-                            that.setStatus('Ready', tabId);
-                        });
-                    });
-                } else {
+            Window.getCurrentlySelectedWindow(function (window) {
+                if (false === window.incognito) {
                     that.setStatus('NotReady', tabId);
+                } else {
+                    Url.isStartingUrl(null, function (isStartingUrlBool, gptKlassStr, currentGptUrlObjIdxNum/*currentGptUrlObj*/) {
+                        if (true === isStartingUrlBool) {
+                            that.trigger('IS_STARTING_URL', gptKlassStr);  // nobody listening
+                            // set current GPT klass
+                            Message.sendMessage({
+                                klass: 'Gpt',
+                                method: 'setCurrentGptKlass',
+                                args: [
+                                    gptKlassStr
+                                ]
+                            }, function () {
+                                Message.sendMessage({
+                                    klass: 'Gpt',
+                                    method: 'setCurrentGptUrlObjIdxNum',
+                                    args: [
+                                        currentGptUrlObjIdxNum
+                                    ]
+                                }, function () {
+                                    that.setStatus('Ready', tabId);
+                                });
+                            });
+                        } else {
+                            that.setStatus('NotReady', tabId);
+                        }
+                    });
                 }
             });
         };
-
-
 
         this.isReady = function () {
             return this.getStatus() === 'Ready';

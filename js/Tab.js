@@ -14,6 +14,10 @@
                 this.listen('CURRENT_URL_SET',     this.setCurrentlySelectedTabId);
             }
         },
+        createNewTab: function (tabData) {
+            tabData = tabData || {};
+            chrome.tabs.create(tabData);
+        },
         storeGptKlassTabId: function (tabId, callback) {
             console.warn("SETTING GPT TAB ID: " + tabId);
             var Storage = $$.instance('Storage');
