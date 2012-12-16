@@ -72,23 +72,23 @@
             /**
              * Constructor
              */
-                Klass,
+            Klass,
             Instance,
             include,
             /**
              * Prototype reference
              */
-                fn,
+            fn,
             /**
              * Very valuable object methods
              */
-                slice = Array.prototype.slice,
+            slice = Array.prototype.slice,
             toString = Object.prototype.toString,
 
             /**
              * Shorthand references to be used later
              */
-                log,
+            log,
             call,
             isUndefined,
             isFalsy,
@@ -314,7 +314,7 @@
         /**
          * List of props/methods not to inherit
          * @param {Array}
-            */
+         */
         Klass.inheritFrom.blacklist = [
             'constructor',
             'extended',
@@ -374,7 +374,7 @@
          */
         Klass.addProxyPrototype = function () {
             var newCtor = this;
-            function PROTOTYPE() {};
+            function PROTOTYPE() {}
             PROTOTYPE.prototype = DRM.prototype;
             newCtor.prototype = new PROTOTYPE();
             newCtor.prototype.constructor = newCtor;
@@ -461,7 +461,7 @@
 
             if (ctor.prototype._static === true &&
                 isDefined(instances)
-                ) {
+            ) {
                 return instances[0];
             }
 
@@ -480,8 +480,8 @@
             // if there is an init method defined inside newInstance as an own property or
             //   on its protoype, then execute it
             if ((typeof ctor.prototype.init === 'function' && !ctor.prototype.init._inheritedFrom) ||
-                (newInstance.hasOwnProperty('init')))
-            {
+                (newInstance.hasOwnProperty('init'))
+            ) {
                 newInstance.init();
                 InitializationArr[newInstance.id()] = true;
             }
@@ -525,8 +525,8 @@
                     continue;
                 }
                 if (ctor.prototype &&
-                    typeof ctor.prototype.init === 'function')
-                {
+                    typeof ctor.prototype.init === 'function'
+                ) {
                     ctor.prototype.init.call(this);
                     // Set initialized to true on the id
                     InitializationArr[this.id()] = true;
@@ -595,7 +595,7 @@
             if (associativeKeyAlso &&
                 typeof value === 'string' &&
                 isDefined(arr[value])
-                ) {
+            ) {
                 return true;
             } else if (true === es5Bool) {
                 return arr.indexOf(value) !== -1;
@@ -963,8 +963,8 @@
 
         /**
          * Looks for params in function's toString and returns them
-         * @param {Function}
-            * @return {Array}
+         * @param {Function} fn
+         * @return {Array}
          */
         Util.getParamsOfFn = function (fn) {
             var fnStr = fn.toString(),

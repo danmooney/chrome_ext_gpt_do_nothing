@@ -26,9 +26,10 @@
         offerTimedOut: function (offer) {
             offer = offer || this.getCurrentOffer();
 
-
-
-            this.trigger('OFFER_DONE');
+            $$('Message').sendMessage({
+                klass: 'Window',
+                method: 'removeAllTabsInWindowExceptGptTab'
+            });
         },
         /**
          * Hit the submit button on the offer
@@ -38,6 +39,8 @@
 
         },
         offerDone: function () {
+            console.warn('OFFER DONE');
+            console.log(this.getCurrentOffer());
             this.trigger('OFFER_DONE');
         },
         /**
@@ -45,8 +48,7 @@
          * @param {Object} offer
          */
         completeOffer: function (offer) {
-            this.setCurrentOffer(offer);
-
+            offer = offer || this.getCurrentOffer();
             var Storage = $$('Storage'),
                 Message = $$('Message'),
                 tabData = {},
@@ -64,7 +66,7 @@
                 this.offerDone();
             }
 
-            hasOnClick = linkEl.attr('onclick');
+            hasOnClick = $$.util.isString(linkEl.attr('onclick'));
             if (true === hasOnClick) {
                 linkEl.trigger('click');
             }
@@ -90,12 +92,23 @@
             var that = this,
                 i = 0;
 
+            function storeOffer (offer, callback) {
+                that.setCurrentOffer(offer);
+                $$('Storage').setItem({
+                    offer: offer
+                }, function () {
+                    callback.call(that);
+                })
+            }
+
             this.listen('OFFER_DONE', function () {
                 i += 1;
-                that.completeOffer(offers[i]);
+
+                storeOffer(offers[i], that.completeOffer);
             });
 
-            this.completeOffer(offers[i]);
+
+            storeOffer(offers[i], that.completeOffer);
         }
     });
 }());

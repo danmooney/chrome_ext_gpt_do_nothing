@@ -23,6 +23,31 @@
             chrome.windows.getCurrent(null, callback);
         };
 
+        this.removeAllTabsInWindowExceptGptTab = function () {
+            $$('Storage').getItem('currentGptWindowId', function (windowId) {
+                $$('Tab').getAllTabsByWindowId(windowId, function (tabs) {
+                    var tabsLength = tabs.length,
+                        i = 0,
+                        j;
+
+                    function onRemoved () {
+                        i += 1;
+                        if (i >= tabsLength) {
+                            $$('Message').sendMessage({
+                                klass: 'GptSiteOffer',
+                                method: 'trigger',
+                                args: ['OFFER_DONE']
+                            });
+                        }
+                    }
+
+                    for (j = 0; i < tabs.length; tabs += 1) {
+                        chrome.tabs.remove(tab[i].id, onRemoved);
+                    }
+                });
+            });
+        };
+
         /**
          * @param {Function} callback
          * @return {Array}
@@ -40,7 +65,7 @@
             });
         };
 
-        // can't do this because cookies need to persist.. user must start in incognito window!
+        // can't do this because cookies need to persist.. user must START in incognito window!
         this.openIncognitoWindow = function () {
             var Tab = $$('Tab'),
                 that = this;

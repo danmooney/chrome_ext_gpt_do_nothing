@@ -79,19 +79,21 @@ $(document).ready(function () {
             klass: 'Tab',
             method: 'getCurrentlySelectedTabIdSync'
         }, function (tabId) {
+            debugger;
             Storage.getItem('currentGptTabId', function (gptTabId) {
                 console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
                 if (tabId === gptTabId) {
                     $$('GptSite').start();
-                } else {
+                } else { // check if opened from gpt site
                     Message.sendMessage({
-                        klass: 'Window',
-                        method: 'getCurrentlySelectedWindowIdSync'
-                    }, function (windowId) {
+                        klass: 'Tab',
+                        method: 'getTabById',
+                        args: [tabId]
+                    }, function (tab) {
+                        var windowId = tab.windowId;
                         Storage.getItem('currentGptWindowId', function (gptWindowId) {
                             if (windowId === gptWindowId) {
-                                var Offer = $$('GptSiteOffer');
-                                // Storage.getItem('currentOffer')
+                                $$('Offer').start();
                             }
                         });
                     });
