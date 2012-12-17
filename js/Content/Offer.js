@@ -4,7 +4,7 @@
         var offer;
 
         this.start = function () {
-            $$('Storage').getItem('offer', function (offerObj) {
+            $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
             });
         };

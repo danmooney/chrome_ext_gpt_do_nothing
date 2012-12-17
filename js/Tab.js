@@ -39,6 +39,12 @@
         },
         setCurrentlySelectedTabId: function (tabId) {
             this.currentlySelectedTabId = tabId;
+
+            this.getTabById(tabId, function (tab) {
+                $$('Storage').setItem({
+                    currentTab: tab
+                });
+            });
         },
         getTabById: function (tabId, callback) {
             return chrome.tabs.get(tabId, callback);

@@ -23,27 +23,33 @@
             chrome.windows.getCurrent(null, callback);
         };
 
-        this.removeAllTabsInWindowExceptGptTab = function () {
+        this.removeAllTabsInWindowExceptGptTab = function (callback) {
             $$('Storage').getItem('currentGptWindowId', function (windowId) {
                 $$('Tab').getAllTabsByWindowId(windowId, function (tabs) {
-                    var tabsLength = tabs.length,
-                        i = 0,
-                        j;
+                    $$('Storage').getItem('currentGptTabId', function (gptTabId) {
+                        var tabsLength = tabs.length - 1, // exclude gptTabId!
+                            i = 0,
+                            j;
 
-                    function onRemoved () {
-                        i += 1;
-                        if (i >= tabsLength) {
-                            $$('Message').sendMessage({
-                                klass: 'GptSiteOffer',
-                                method: 'trigger',
-                                args: ['OFFER_DONE']
-                            });
+                        function onRemoved () {
+                            i += 1;
+                            if (i >= tabsLength) {
+                                callback();
+//                                $$('Message').sendMessage({
+//                                    klass: 'GptSiteOffer',
+//                                    method: 'trigger',
+//                                    args: ['OFFER_DONE']
+//                                });
+                            }
                         }
-                    }
 
-                    for (j = 0; i < tabs.length; tabs += 1) {
-                        chrome.tabs.remove(tab[i].id, onRemoved);
-                    }
+                        for (j = 0; j < tabs.length; j += 1) {
+                            if (tabs[i].id === gptTabId) {
+                                continue;
+                            }
+                            chrome.tabs.remove(tabs[j].id, onRemoved);
+                        }
+                    });
                 });
             });
         };

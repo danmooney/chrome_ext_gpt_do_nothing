@@ -26,9 +26,13 @@
         offerTimedOut: function (offer) {
             offer = offer || this.getCurrentOffer();
 
+            var that = this;
+
             $$('Message').sendMessage({
                 klass: 'Window',
                 method: 'removeAllTabsInWindowExceptGptTab'
+            }, function () {
+                that.offerDone();
             });
         },
         /**
@@ -36,7 +40,6 @@
          */
         submitOffer: function (offer) {
             offer = offer || this.getCurrentOffer();
-
         },
         offerDone: function () {
             console.warn('OFFER DONE');
@@ -54,7 +57,8 @@
                 tabData = {},
                 linkEl = offer.linkEl,
                 href,
-                hasOnClick;
+                hasOnClick,
+                that = this;
 
             if (!linkEl) {
                 this.offerDone();
@@ -71,19 +75,24 @@
                 linkEl.trigger('click');
             }
 
-            tabData.url = href;
-            tabData.active = true;
+            Storage.getItem('currentGptWindowId', function (windowId) {
+                tabData.windowId = windowId;
+                tabData.url = href;
+                tabData.active = true;
 
 //            Storage.setItem({
 //
 //            });
-            Message.sendMessage({
-                klass: 'Tab',
-                method: 'createNewTab',
-                args: [tabData]
-            });
+                Message.sendMessage({
+                    klass: 'Tab',
+                    method: 'createNewTab',
+                    args: [tabData]
+                });
 
-            setTimeout(this.offerTimedOut, this.getTimeLimitToComplete());
+                setTimeout(function () {
+                    that.offerTimedOut.call(that);
+                },  that.getTimeLimitToComplete());
+            });
         },
         /**
          * @param {Array} offers
@@ -95,13 +104,13 @@
             function storeOffer (offer, callback) {
                 that.setCurrentOffer(offer);
                 $$('Storage').setItem({
-                    offer: offer
+                    currentOffer: offer
                 }, function () {
                     callback.call(that);
                 })
             }
 
-            this.listen('OFFER_DONE', function () {
+            this.listen('OFFER_DONE', function nextOffer () {
                 i += 1;
 
                 storeOffer(offers[i], that.completeOffer);

@@ -34,9 +34,10 @@
                  * @return {Boolean}
                  */
                 filterCallback: function (offer) {
-//                    if (offer.price.substr(0, 1) !== '$') {
-//                        return false;
-//                    }
+                    if (offer.price.indexOf('points') !== -1) { // points
+                        offer.price = parseInt(offer.price, 10);
+                        offer.price = '$.' + offer.price.toFixed(2);
+                    }
                     return true;
                 }
             }

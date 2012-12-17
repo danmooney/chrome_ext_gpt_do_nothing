@@ -50,11 +50,13 @@
                         q = confirm('Make sure that you are logged in to this GPT site before you proceed.  Also make sure you allowed GPT Do Nothing to be opened in incognito mode.');
                         if (q === true) {
                             App.setStatus('Working');
+                            window.close();
                         }
                     } else {
                         q = confirm('Are you sure you would like to stop GPT Do Nothing?');
                         if (q === true) {
                             App.stopWorking();
+                            window.close();
                         }
                     }
                 });

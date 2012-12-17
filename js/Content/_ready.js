@@ -75,11 +75,9 @@ $(document).ready(function () {
         if (false === appWorkingBool) {
             return;
         }
-        Message.sendMessage({
-            klass: 'Tab',
-            method: 'getCurrentlySelectedTabIdSync'
-        }, function (tabId) {
+        Message.sendMessage('getThisTab', function (tab) {
             debugger;
+            var tabId = tab.id;
             Storage.getItem('currentGptTabId', function (gptTabId) {
                 console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
                 if (tabId === gptTabId) {

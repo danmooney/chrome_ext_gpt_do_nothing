@@ -46,7 +46,12 @@
 
         // TODO - any hope for returning a response through an async method?
         this.getMessage = function (message, sender, sendResponse) {
-//            console.log('Got message:\n', message.klass + '.' + message.method, message.args, sender);
+
+            // special exception here to return tab in sender argument if message === 'getThisTab'
+            if ('getThisTab' === message) {
+                return sendResponse(sender.tab);
+            }
+
             if (!$$.util.isObject(message)) {
                 throw new AppTypeError('Messages passed between pages and content scripts must be an object.');
             } else if (!$$.util.isString(message.klass) ||
@@ -59,7 +64,7 @@
             var instance = $$(message.klass),
                 returnValMixed,
                 responseStr,
-                methodParams = $$.util.getParamsOfFn(message.method),
+                methodParams = $$.util.getParamsOfFn(instance[message.method]),
                 async = methodParams.indexOf('callback') !== -1;
 
             responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed;
@@ -78,14 +83,18 @@
 
                 done(returnValMixed);
             } else if (true === async) {
-                console.warn ("ASYNC");
-                debugger;
+                console.warn("ASYNC");
+//                debugger;
 
                 message.args = message.args || [];
                 if (message.args.length === (methodParams.length - 1)) {
                     message.args.push(done);
                 }
-                instance[message.method].apply(instance, message.args)
+                instance[message.method].apply(instance, message.args);
+
+                // keep the channel open
+                // http://developer.chrome.com/extensions/extension.html#event-onMessage
+                return true;
             }
         };
     }, {
