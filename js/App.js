@@ -36,6 +36,7 @@
             var Notification = $$('Notification'),
                 that = this;
 
+            alert('STOPPING WORK');
             debugger;
 
             // clear status

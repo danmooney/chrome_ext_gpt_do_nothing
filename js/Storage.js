@@ -20,11 +20,11 @@
         this.freezeTimeoutNum = 200;
     }, {
         _static: true,
-            /**
-             * @param {String} item
-             * @param {Function} callback
-             * @param {Boolean} allData
-             */
+        /**
+         * @param {String} item
+         * @param {Function} callback
+         * @param {Boolean} allData  - TODO - is this even in use?
+         */
         getItem: function (item, callback, allData) {
             // check if frozen
             if (this.isItemFrozen(item)) {
@@ -45,8 +45,12 @@
                 }
             });
         },
-        setItem: function (item, callback) {
-            chrome.storage.local.set(item, function () {
+        setItem: function (itemNameStr, itemObj, callback) {
+            var itemWrapperObj = {};
+
+            itemWrapperObj[itemNameStr] = itemObj;
+
+            chrome.storage.local.set(itemWrapperObj, function () {
                 if ($$.util.isFunc(callback)) {
                     return callback();
                 }

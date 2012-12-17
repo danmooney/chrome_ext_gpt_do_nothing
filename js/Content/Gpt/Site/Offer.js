@@ -1,11 +1,34 @@
 (function() {
     'use strict';
+
     $$.klass(function GptSiteOffer () {
         var currentOffer = {},
-            timeLimitToComplete = 2 * 60 * 1000; // 2 minutes
+        // TODO - need to be able to stop timer if page is loading???????????
+            minTimeLimitToComplete = 20 * 1000,
+            timeLimitToComplete = 2 * 60 * 1000; // 2 minutes by default, will be gauged by price
 
         this.getTimeLimitToComplete = function () {
             return timeLimitToComplete;
+        };
+
+        /**
+         * Calculate time limit on offer based on its price
+         */
+        this.calculateAndSetTimeLimitToComplete = function (offer) {
+            offer = offer || this.getCurrentOffer();
+
+            var price = parseFloat(/[\.]?[\d]+/.exec(offer.price)[0]),  // gets any decimal/digit combo from the unsanitized string
+                priceTimeMultiplier = .12, // so $1.00 will take 120 seconds, $.50 will take 60 seconds
+                calculatedTimeLimit; // in milliseconds
+
+            calculatedTimeLimit = (price * priceTimeMultiplier * 1000);
+
+            // check if calculated is less than minimum time limit to complete
+            if (calculatedTimeLimit < minTimeLimitToComplete) {
+                calculatedTimeLimit = minTimeLimitToComplete;
+            }
+
+            timeLimitToComplete = calculatedTimeLimit;
         };
 
         this.setCurrentOffer = function (offerObj) {
@@ -75,26 +98,31 @@
                 linkEl.trigger('click');
             }
 
+            this.calculateAndSetTimeLimitToComplete();
+
             Storage.getItem('currentGptWindowId', function (windowId) {
                 tabData.windowId = windowId;
                 tabData.url = href;
                 tabData.active = true;
 
-//            Storage.setItem({
-//
-//            });
+                // open new tab, and set offerTab in storage
                 Message.sendMessage({
                     klass: 'Tab',
                     method: 'createNewTab',
                     args: [tabData]
+                }, function (tab) {
+                    Storage.setItem('offerTab', tab, function () {
+                        setTimeout(function () {
+                            that.offerTimedOut.call(that);
+                        },  that.getTimeLimitToComplete());
+                    });
                 });
 
-                setTimeout(function () {
-                    that.offerTimedOut.call(that);
-                },  that.getTimeLimitToComplete());
             });
         },
         /**
+         * Iterate through offers and async call nextOffer when offer
+         * is done through timeout
          * @param {Array} offers
          */
         completeOffers: function (offers) {
@@ -103,9 +131,7 @@
 
             function storeOffer (offer, callback) {
                 that.setCurrentOffer(offer);
-                $$('Storage').setItem({
-                    currentOffer: offer
-                }, function () {
+                $$('Storage').setItem('currentOffer', offer, function () {
                     callback.call(that);
                 })
             }

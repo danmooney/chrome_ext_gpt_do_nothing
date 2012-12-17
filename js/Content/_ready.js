@@ -49,21 +49,19 @@ $(document).ready(function () {
 
     // TODO - Storing contact info here for now
     // obviously put somewhere better later
-    $$('Storage').setItem({
-        contact_info: {
-            first_name: 'Daniel',
-            last_name: 'Mooney',
-            address: '5 Nabby Rd',
-            address2: 'Unit A12',
-            city: 'Danbury',
-            state: 'CT',
-            zip: '06811',
-            phone: {
-                home: '2032619103',
-                mobile: '2032619103'
-            },
-            email: 'doesttwork@gmail.com'
-        }
+    $$('Storage').setItem('contact_info', {
+        first_name: 'Daniel',
+        last_name: 'Mooney',
+        address: '5 Nabby Rd',
+        address2: 'Unit A12',
+        city: 'Danbury',
+        state: 'CT',
+        zip: '06811',
+        phone: {
+            home: '2032619103',
+            mobile: '2032619103'
+        },
+        email: 'doesttwork@gmail.com'
     });
 
     // boot up GPT if tabId is the same,

@@ -21,9 +21,7 @@
         storeGptKlassTabId: function (tabId, callback) {
             console.warn("SETTING GPT TAB ID: " + tabId);
             var Storage = $$('Storage');
-            Storage.setItem({
-                currentGptTabId: tabId
-            }, callback);
+            Storage.setItem('currentGptTabId', tabId, callback);
         },
         getCurrentlySelectedTabId: function (callback) {
             if (this.currentlySelectedTabId > 0) {
@@ -39,12 +37,6 @@
         },
         setCurrentlySelectedTabId: function (tabId) {
             this.currentlySelectedTabId = tabId;
-
-            this.getTabById(tabId, function (tab) {
-                $$('Storage').setItem({
-                    currentTab: tab
-                });
-            });
         },
         getTabById: function (tabId, callback) {
             return chrome.tabs.get(tabId, callback);

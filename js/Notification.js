@@ -8,9 +8,7 @@
             notificationsArr = [];
 
         this.setNotificationMessage = function (msgStr, callback) {
-            $$('Storage').setItem({
-                notificationMessage: msgStr
-            }, callback);
+            $$('Storage').setItem('notificationMessage', msgStr, callback);
         };
 
         this.getNotificationMessage = function (callback) {

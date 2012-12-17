@@ -85,9 +85,7 @@
                     Message = $$('Message');
 
                 console.warn('CURRENT WINDOW ID: ' + window.id);
-                Storage.setItem({
-                    currentGptWindowId: window.id
-                }, function () {
+                Storage.setItem('currentGptWindowId', window.id, function () {
                     console.warn('GOING TO SEND MESSAGE TO START NOW');
                     Message.sendMessage({
                         klass: 'GptSite',

@@ -45,10 +45,8 @@
          */
         this.setCurrentGptUrlObj = function (currentGptUrlObj, callback) {
             throw new AppError('Gpt.setCurrentGptUrlObj is deprecated');
-            var Storage = $$('Storage');
-            Storage.setItem({
-                currentGptUrlObj: currentGptUrlObj
-            }, callback);
+//            var Storage = $$('Storage');
+//            Storage.setItem('currentGptUrlObj', currentGptUrlObj, callback);
         };
 
         /**
@@ -56,15 +54,13 @@
          */
         this.getCurrentGptUrlObj = function (callback) {
             throw new AppError('Gpt.getCurrentGptUrlObj is deprecated');
-            var Storage = $$('Storage');
-            Storage.getItem('currentGptUrlObj', callback);
+//            var Storage = $$('Storage');
+//            Storage.getItem('currentGptUrlObj', callback);
         };
 
         this.setCurrentGptUrlObjIdxNum = function (currentGptUrlObjIdxNum, callback) {
             var Storage = $$('Storage');
-            Storage.setItem({
-                currentGptUrlObjIdx: currentGptUrlObjIdxNum
-            }, callback);
+            Storage.setItem('currentGptUrlObjIdx', currentGptUrlObjIdxNum, callback);
         };
 
         this.getCurrentGptUrlObjIdxNum = function (callback) {
@@ -86,9 +82,7 @@
                     return;
                 }
 
-                Storage.setItem({
-                    currentGptKlass: gptKlassStr
-                });
+                Storage.setItem('currentGptKlass', gptKlassStr);
 
 //                that.currentGptKlassStr = gptKlassStr;
             });
@@ -139,7 +133,7 @@
                     console.log('just got ' + that.constructor.name, startingUrlObj, new Date());
                     startingUrlObj = startingUrlObj || {};
                     startingUrlObj[that.constructor.name] = that.urlArr;
-                    Storage.setItem({startingUrls: startingUrlObj}, function () {
+                    Storage.setItem('startingUrls', startingUrlObj, function () {
                         console.log('just set ' + that.constructor.name, startingUrlObj, new Date());
                         Storage.releaseGetOnItem('startingUrls');
                         Storage.freezeGetOnItem('startingUrls');
@@ -169,7 +163,7 @@
                     console.log('just got ' + that.constructor.name, gptKlassObj, new Date());
                     gptKlassObj = gptKlassObj || [];
                     gptKlassObj[klassNameStr] = klassNameStr;
-                    Storage.setItem({gptKlasses: gptKlassObj}, function () {
+                    Storage.setItem('gptKlasses', gptKlassObj, function () {
                         console.log('just set ' + that.constructor.name, gptKlassObj, new Date());
                         Storage.releaseGetOnItem('gptKlasses');
                         Storage.freezeGetOnItem('gptKlasses');
