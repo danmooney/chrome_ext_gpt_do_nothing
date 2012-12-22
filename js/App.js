@@ -117,7 +117,9 @@
                                         currentGptUrlObjIdxNum
                                     ]
                                 }, function () {
-                                    that.setStatus('Ready', tabId);
+                                    Window.storeGptKlassWindowId(window.id, function () {
+                                        that.setStatus('Ready', tabId);
+                                    });
                                 });
                             });
                         } else {

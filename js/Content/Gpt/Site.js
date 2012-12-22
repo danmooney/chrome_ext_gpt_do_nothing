@@ -63,6 +63,10 @@
                 Offer.completeOffers(offers);
             });
         },
+        goToNextPage: function () {
+            var navigation = $$('Navigation').getNavigation();
+            $(navigation.nextBtnSelectorStr).submit();
+        },
         filterOffers: function () {
             var Language = $$('GptSiteLanguage'),
                 offers = this.getOffers(),

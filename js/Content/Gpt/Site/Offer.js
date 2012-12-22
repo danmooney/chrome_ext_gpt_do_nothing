@@ -3,8 +3,8 @@
 
     $$.klass(function GptSiteOffer () {
         var currentOffer = {},
-        // TODO - need to be able to stop timer if page is loading???????????
-            minTimeLimitToComplete = 20 * 1000,
+        // TODO - need to be able to stop timer if page is loading/redirecting???????????
+            minTimeLimitToComplete = 50 * 1000,
             timeLimitToComplete = 2 * 60 * 1000; // 2 minutes by default, will be gauged by price
 
         this.getTimeLimitToComplete = function () {
@@ -61,15 +61,25 @@
         /**
          * Hit the submit button on the offer
          */
-        submitOffer: function (offer) {
+        submitOffer: function (offer, callback) {
             offer = offer || this.getCurrentOffer();
+            // TODO - add a refresh-callback in case submit doesn't take user to same page (ex. Treasuretrooper)
+            $$('Storage').setItem('currentGptRedirectUrl', window.location.href, function () {
+                offer.formEl.submit();
+            });
         },
 
         offerDone: function () {
             console.warn('OFFER DONE');
             console.log(this.getCurrentOffer());
+            this.submitOffer();
+//            this.trigger('OFFER_DONE');
+        },
+
+        offerSkip: function () {
             this.trigger('OFFER_DONE');
         },
+
         /**
          * TODO - set Timeout limit per offer
          * @param {Object} offer
@@ -85,13 +95,13 @@
                 that = this;
 
             if (!linkEl) {
-                this.offerDone();
+                this.offerSkip();
             }
 
             href = linkEl.attr('href');
 
             if (!href) {
-                this.offerDone();
+                this.offerSkip();
             }
 
             hasOnClick = $$.util.isString(linkEl.attr('onclick'));
@@ -122,13 +132,17 @@
             });
         },
         /**
-         * Iterate through offers and async call nextOffer when offer
+         * Iterate through filtered offers and async call nextOffer when offer
          * is done through timeout
          * @param {Array} offers
          */
         completeOffers: function (offers) {
             var that = this,
                 i = 0;
+
+            if (offers.length === 0) {
+                $$('GptSite').goToNextPage();
+            }
 
             function storeOffer (offer, callback) {
                 that.setCurrentOffer(offer);
@@ -137,9 +151,15 @@
                 })
             }
 
+            // TODO - This will never be executed unless filtered offer is skipped, because the submit will force a page refresh and all will be lost!
             this.listen('OFFER_DONE', function nextOffer () {
                 i += 1;
-                storeOffer(offers[i], that.completeOffer);
+
+                if (i === offers.length) {
+                    $$('GptSite').goToNextPage();
+                } else {
+                    storeOffer(offers[i], that.completeOffer);
+                }
             });
 
 

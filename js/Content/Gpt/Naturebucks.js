@@ -36,7 +36,7 @@
                 filterCallback: function (offer) {
                     if (offer.price.indexOf('points') !== -1) { // points
                         offer.price = parseInt(offer.price, 10);
-                        offer.price = '$.' + offer.price.toFixed(2);
+                        offer.price = '$' + (offer.price * .01).toString().substr(1);
                     }
                     return true;
                 }

@@ -102,7 +102,7 @@
             var args = $$.util.arrayify(arguments),
                 item = args[0],
                 that = this;
-            
+
             setTimeout(function () {
                 if (that.isItemReleased(item)) {
                     return that.getItem.apply(that, args);
@@ -126,6 +126,7 @@
          * Clears all the items in local storage
          */
         clearItems: function (callback) {
+            alert('CLEARING ITEMS');
             chrome.storage.local.clear(function () {
                 if (typeof callback === 'function') {
                     callback();

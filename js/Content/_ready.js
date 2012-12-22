@@ -78,9 +78,23 @@ $(document).ready(function () {
             Storage.getItem('currentGptWindowId', function (gptWindowId) {
                 // make sure that reloaded page isn't the actual GPT site itself
                 Storage.getItem('currentGptTabId', function (gptTabId) {
-                    if (gptTabId !== tab.id &&
-                        tab.windowId === gptWindowId
-                    ) {
+                    if (gptTabId === tab.id) {
+                        Storage.getItem('currentGptRedirectUrl', function (redirectUrl) {
+                            if ($$.util.isString(redirectUrl)) {
+                                // remove redirect request
+                                // TODO - perhaps implement Storage.clearItem?
+                                Storage.setItem('currentGptRedirectUrl', null, function () {
+                                    if (window.location.href === redirectUrl) {
+                                        $$('GptSite').start();
+                                    } else {
+                                        window.location = redirectUrl;
+                                    }
+                                });
+                            } else {
+                                $$('GptSite').start();
+                            }
+                        });
+                    } else if (tab.windowId === gptWindowId) {
                         $$('Offer').start();
                     }
                 });
