@@ -102,7 +102,7 @@
             var args = $$.util.arrayify(arguments),
                 item = args[0],
                 that = this;
-            console.log('setting freeze timeout');
+            
             setTimeout(function () {
                 if (that.isItemReleased(item)) {
                     return that.getItem.apply(that, args);

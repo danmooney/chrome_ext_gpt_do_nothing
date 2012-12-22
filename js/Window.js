@@ -44,7 +44,7 @@
                         }
 
                         for (j = 0; j < tabs.length; j += 1) {
-                            if (tabs[i].id === gptTabId) {
+                            if (tabs[j].id === gptTabId) {
                                 continue;
                             }
                             chrome.tabs.remove(tabs[j].id, onRemoved);

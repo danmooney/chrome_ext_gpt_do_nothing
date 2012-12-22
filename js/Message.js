@@ -67,15 +67,25 @@
                 methodParams = $$.util.getParamsOfFn(instance[message.method]),
                 async = methodParams.indexOf('callback') !== -1;
 
-            responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ') returned ' + returnValMixed;
-            responseStr = responseStr.replace('(undefined)', '()');
+            responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ')';
 
             function done (returnVal) {
+                if (typeof returnVal !== 'undefined') {
+                    responseStr += ' returned ' + returnVal;
+                }
+                responseStr =  responseStr.replace('(undefined)', '()');
+                console.log(responseStr);
                 return sendResponse(returnVal);
             }
 
             if (false === async) {
                 returnValMixed = instance[message.method].apply(instance, message.args || []);
+
+                if (typeof returnValMixed !== 'undefined') {
+                    responseStr += ' returned ' + returnValMixed;
+                }
+
+                responseStr =  responseStr.replace('(undefined)', '()');
 
                 if (typeof returnValMixed !== 'undefined') {
                     console.log(responseStr);

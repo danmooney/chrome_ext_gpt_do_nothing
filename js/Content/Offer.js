@@ -4,6 +4,7 @@
         var offer;
 
         this.start = function () {
+            alert('starting parsing offer');
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
             });

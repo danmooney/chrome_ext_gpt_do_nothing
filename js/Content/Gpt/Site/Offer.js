@@ -27,7 +27,7 @@
             if (calculatedTimeLimit < minTimeLimitToComplete) {
                 calculatedTimeLimit = minTimeLimitToComplete;
             }
-
+            console.warn('setting time to complete to ' + calculatedTimeLimit);
             timeLimitToComplete = calculatedTimeLimit;
         };
 
@@ -64,6 +64,7 @@
         submitOffer: function (offer) {
             offer = offer || this.getCurrentOffer();
         },
+
         offerDone: function () {
             console.warn('OFFER DONE');
             console.log(this.getCurrentOffer());
@@ -138,7 +139,6 @@
 
             this.listen('OFFER_DONE', function nextOffer () {
                 i += 1;
-
                 storeOffer(offers[i], that.completeOffer);
             });
 

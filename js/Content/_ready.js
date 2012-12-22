@@ -74,27 +74,37 @@ $(document).ready(function () {
             return;
         }
         Message.sendMessage('getThisTab', function (tab) {
-            debugger;
-            var tabId = tab.id;
-            Storage.getItem('currentGptTabId', function (gptTabId) {
-                console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
-                if (tabId === gptTabId) {
-                    $$('GptSite').start();
-                } else { // check if opened from gpt site
-                    Message.sendMessage({
-                        klass: 'Tab',
-                        method: 'getTabById',
-                        args: [tabId]
-                    }, function (tab) {
-                        var windowId = tab.windowId;
-                        Storage.getItem('currentGptWindowId', function (gptWindowId) {
-                            if (windowId === gptWindowId) {
-                                $$('Offer').start();
-                            }
-                        });
-                    });
-                }
+            // check if windowId matches
+            Storage.getItem('currentGptWindowId', function (gptWindowId) {
+                // make sure that reloaded page isn't the actual GPT site itself
+                Storage.getItem('currentGptTabId', function (gptTabId) {
+                    if (gptTabId !== tab.id &&
+                        tab.windowId === gptWindowId
+                    ) {
+                        $$('Offer').start();
+                    }
+                });
             });
+//            var tabId = tab.id;
+//            Storage.getItem('currentGptTabId', function (gptTabId) {
+//                console.warn('tabId: ' + tabId + '  gptTabId: ' + gptTabId);
+//                if (tabId === gptTabId) {
+//                    $$('GptSite').start();
+//                } else { // check if opened from gpt site
+//                    Message.sendMessage({
+//                        klass: 'Tab',
+//                        method: 'getTabById',
+//                        args: [tabId]
+//                    }, function (tab) {
+//                        var windowId = tab.windowId;
+//                        Storage.getItem('currentGptWindowId', function (gptWindowId) {
+//                            if (windowId === gptWindowId) {
+//                                $$('Offer').start();
+//                            }
+//                        });
+//                    });
+//                }
+//            });
         });
     });
 });
