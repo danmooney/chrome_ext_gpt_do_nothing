@@ -90,7 +90,6 @@
                 method: 'removeAllTabsInWindowExceptGptTab'
             }, function () {
                 if (true === submitBool) {
-                    alert('submitBool === true');
                     that.submitOffer();
                 } else {
                     that.trigger('OFFER_DONE');

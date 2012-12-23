@@ -49,7 +49,7 @@ $(document).ready(function () {
 
     // TODO - Storing contact info here for now
     // obviously put somewhere better later
-    $$('Storage').setItem('contact_info', {
+    $$('Storage').setItem('formInfo', {
         first_name: 'Daniel',
         last_name: 'Mooney',
         address: '5 Nabby Rd',

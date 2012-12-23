@@ -1,8 +1,15 @@
 (function() {
     'use strict';
     $$.klass(function Offer () {
-        var offer,
-            forms = [];
+        var
+            /**
+             * @type {Object}
+             */
+            offer,
+            /**
+             * @type {jQuery}
+             */
+            forms;
 
         this.parseOffer = function () {
             forms = $$('GptOfferForm').evaluateForms();
@@ -11,6 +18,12 @@
                 alert('Absolutely... NO FORMS!')
             } else {
                 alert('Form length: ' + forms.length);
+                $$('GptOfferForm').setFormInfo(null, function () {
+                    forms.each(function () {
+                        var form = $(this);
+                        $$('GptOfferForm').fillOutForm(form);
+                    });
+                });
             }
         };
 
@@ -59,9 +72,9 @@
         seemsLikeOfferExpired: function () {
             var body = $('body'),
                 bodyText = $.trim(body.text());
-//            if (body.children().length > 10) {
-//                return false;
-//            }
+            if (body.find('*').length > 25) {
+                return false;
+            }
 
             if (bodyText === '' ||
                 bodyText.toLowerCase().indexOf('expir') !== -1 ||
