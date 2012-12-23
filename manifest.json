@@ -43,6 +43,7 @@
                 "js/Content/Gpt/Site/Language.js",
                 "js/Content/Gpt/Site/Navigation.js",
                 "js/Content/Gpt/Site/Offer.js",
+                "js/Content/Offer/Form.js",
                 "js/Evt.js",
                 "js/Evt/Message.js",
                 "js/Content/_ready.js"

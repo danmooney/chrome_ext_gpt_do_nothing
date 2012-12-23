@@ -20,6 +20,7 @@
                     ],
                     blacklistArr: [
                         'facebook',
+                        'install',
                         'download',
                         'sign up',
                         'confirm email'

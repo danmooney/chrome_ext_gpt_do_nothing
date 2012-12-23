@@ -66,11 +66,12 @@
                 klass: 'Window',
                 method: 'removeAllTabsInWindowExceptGptTab'
             }, function () {
-                that.offerDone();
+                that.submitOffer();
             });
         },
         /**
-         * Hit the submit button on the offer
+         * Callback when offer completes, which happens only when offer times out.
+         * Hits the submit button on the offer
          */
         submitOffer: function (offer, callback) {
             offer = offer || this.getCurrentOffer();
@@ -79,14 +80,7 @@
             });
         },
 
-        /**
-         * Callback when offer completes.  This is only when offer times out
-         */
-        offerDone: function () {
-            this.submitOffer();
-        },
-
-        offerSkip: function () {
+        offerSkip: function (submitBool) {
             this.clearOfferTimeout();
 
             var that = this;
@@ -95,14 +89,19 @@
                 klass: 'Window',
                 method: 'removeAllTabsInWindowExceptGptTab'
             }, function () {
-                that.trigger('OFFER_DONE')
+                if (true === submitBool) {
+                    alert('submitBool === true');
+                    that.submitOffer();
+                } else {
+                    that.trigger('OFFER_DONE');
+                }
             });
         },
 
         offerExpired: function () {
             alert('OFFER EXPIRED');
 //            return this.offerSkip();
-            return this.offerTimedOut();  // just submit the stupid thing so it won't appear on the list
+            return this.offerSkip(true);  // just submit the stupid thing so it won't appear on the list
         },
 
         /**

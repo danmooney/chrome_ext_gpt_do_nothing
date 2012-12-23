@@ -5,37 +5,51 @@
             forms = [];
 
         this.parseOffer = function () {
-            forms = $('GptOfferForm').evaluateForms();
+            forms = $$('GptOfferForm').evaluateForms();
 
             if (forms.length === 0) { // hmm... click in random places???
                 alert('Absolutely... NO FORMS!')
             } else {
-                alert(forms.length);
+                alert('Form length: ' + forms.length);
             }
         };
 
+        /**
+         * Offer isn't worth pursuing, do the next one
+         */
+        this.skipOffer = function () {
+            alert('skipping offer');
+            $$('Storage').getItem('currentGptTabId', function (gptTabId) {
+                $$('Message').sendMessage({
+                    klass: 'Message',
+                    method: 'sendMessage',
+                    args: [
+                        {
+                            klass: 'GptSiteOffer',
+                            method: 'offerExpired',
+                            tabId: gptTabId,
+                            args: [
+                                true // submitBool
+                            ]
+                        }
+                    ]
+                })
+            });
+        };
+
+        /**
+         * TODO - https incognito won't load ANY extensions whatsoever!
+         */
         this.start = function () {
             var that = this;
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
-                if (true === that.seemsLikeARedirect()) {
+                if (true === that.seemsLikeOfferExpired()) {
+                    that.skipOffer();
+                } else if (true === that.seemsLikeARedirect()) { // go to next offer
                     // just wait it out until it does redirect
                     return;
-                } else if (true === that.seemsLikeOfferExpired()) { // go to next offer
-                    $$('Storage').getItem('currentGptTabId', function (gptTabId) {
-                        $$('Message').sendMessage({
-                            klass: 'Message',
-                            method: 'sendMessage',
-                            args: [
-                                {
-                                    klass: 'GptSiteOffer',
-                                    method: 'offerExpired',
-                                    tabId: gptTabId
-                                }
-                            ]
-                        })
-                    });
-                } else { // this is a legitimate offer
+                } else { // this is a legitimate offer...
                     that.parseOffer.call(that);
                 }
             });
@@ -45,17 +59,19 @@
         seemsLikeOfferExpired: function () {
             var body = $('body'),
                 bodyText = $.trim(body.text());
-            if (body.children().length > 0) {
-                return false;
-            }
+//            if (body.children().length > 10) {
+//                return false;
+//            }
 
             if (bodyText === '' ||
                 bodyText.toLowerCase().indexOf('expir') !== -1 ||
-                bodyText.toLowerCase().indexOf('no longer ') !== -1 ||
+                bodyText.toLowerCase().indexOf('no longer') !== -1 ||
                 body.html().length < 2500
             ) {
                 return true;
             }
+
+            return false;
         },
 
         /**

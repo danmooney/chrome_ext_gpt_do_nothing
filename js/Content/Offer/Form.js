@@ -3,11 +3,12 @@
     $$.klass(function GptOfferForm () {
         /**
          * Parse the DOM and look for THE appropriate form to focus on
+         * TODO
          * @return {Array}
          */
         this.evaluateForms = function () {
             console.warn('SEARCHING FOR FORMS');
-            return [];
+            return $('form');
         }
     });
 }());
