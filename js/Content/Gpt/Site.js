@@ -63,15 +63,31 @@
                 Offer.completeOffers(offers);
             });
         },
+        /**
+         * Hit the next button
+         */
         goToNextPage: function () {
-            var navigation = $$('Navigation').getNavigation();
-            $(navigation.nextBtnSelectorStr).submit();
+            var navigation = $$('GptSiteNavigation').getNavigation(),
+                nextBtnEl = $(navigation.nextBtnSelectorStr);
+
+            // if no navigation button
+            if (nextBtnEl.length === 0) {
+                $$('Message').sendMessage({
+                    klass: 'App',
+                    method: 'stopWorking',
+                    args: [
+                        'notificationAppStoppedReasonDone'
+                    ]
+                });
+            } else {
+                nextBtnEl.trigger('click').submit();
+            }
         },
         filterOffers: function () {
             var Language = $$('GptSiteLanguage'),
                 offers = this.getOffers(),
                 filteredOffers = [],
-                filteredOffersLength = 0,
+                filteredOffersLength,
                 isAllowedBool,
                 i;
 

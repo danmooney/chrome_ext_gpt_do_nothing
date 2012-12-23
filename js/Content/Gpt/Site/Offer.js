@@ -5,7 +5,19 @@
         var currentOffer = {},
         // TODO - need to be able to stop timer if page is loading/redirecting???????????
             minTimeLimitToComplete = 50 * 1000,
-            timeLimitToComplete = 2 * 60 * 1000; // 2 minutes by default, will be gauged by price
+            timeLimitToComplete = 2 * 60 * 1000, // 2 minutes by default, will be gauged by price
+            offerTimeout;
+
+        this.setOfferTimeout = function () {
+            var that = this;
+            offerTimeout = setTimeout(function () {
+                that.offerTimedOut();
+            }, this.getTimeLimitToComplete());
+        };
+
+        this.clearOfferTimeout = function () {
+            clearTimeout(offerTimeout);
+        };
 
         this.getTimeLimitToComplete = function () {
             return timeLimitToComplete;
@@ -44,7 +56,6 @@
          * Spent maximum amount of time on offer.
          * Close all tabs except for GPT Site tab id and
          * work on next offer.
-         * TODO
          */
         offerTimedOut: function (offer) {
             offer = offer || this.getCurrentOffer();
@@ -63,29 +74,48 @@
          */
         submitOffer: function (offer, callback) {
             offer = offer || this.getCurrentOffer();
-            // TODO - add a refresh-callback in case submit doesn't take user to same page (ex. Treasuretrooper)
             $$('Storage').setItem('currentGptRedirectUrl', window.location.href, function () {
                 offer.formEl.submit();
             });
         },
 
+        /**
+         * Callback when offer completes.  This is only when offer times out
+         */
         offerDone: function () {
-            console.warn('OFFER DONE');
-            console.log(this.getCurrentOffer());
             this.submitOffer();
-//            this.trigger('OFFER_DONE');
         },
 
         offerSkip: function () {
-            this.trigger('OFFER_DONE');
+            this.clearOfferTimeout();
+
+            var that = this;
+
+            $$('Message').sendMessage({
+                klass: 'Window',
+                method: 'removeAllTabsInWindowExceptGptTab'
+            }, function () {
+                that.trigger('OFFER_DONE')
+            });
+        },
+
+        offerExpired: function () {
+            alert('OFFER EXPIRED');
+//            return this.offerSkip();
+            return this.offerTimedOut();  // just submit the stupid thing so it won't appear on the list
         },
 
         /**
-         * TODO - set Timeout limit per offer
          * @param {Object} offer
          */
         completeOffer: function (offer) {
             offer = offer || this.getCurrentOffer();
+
+            if (!offer) {
+                alert('NO offer exists in completeOffer??');
+                return $$('GptSite').goToNextPage();
+            }
+
             var Storage = $$('Storage'),
                 Message = $$('Message'),
                 tabData = {},
@@ -123,12 +153,9 @@
                     args: [tabData]
                 }, function (tab) {
                     Storage.setItem('offerTab', tab, function () {
-                        setTimeout(function () {
-                            that.offerTimedOut.call(that);
-                        },  that.getTimeLimitToComplete());
+                        that.setOfferTimeout();
                     });
                 });
-
             });
         },
         /**
@@ -148,7 +175,7 @@
                 that.setCurrentOffer(offer);
                 $$('Storage').setItem('currentOffer', offer, function () {
                     callback.call(that);
-                })
+                });
             }
 
             // TODO - This will never be executed unless filtered offer is skipped, because the submit will force a page refresh and all will be lost!

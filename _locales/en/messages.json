@@ -63,5 +63,9 @@
     "notificationAppStoppedReasonTabClosed": {
         "description": "This is the reason that appears in app stop notification when GPT site tab gets closed",
         "message": "GPT Site tab closed"
+    },
+    "notificationAppStoppedReasonDone": {
+        "description": "This is the reason that appears in app stop notification when app is done going through all relevant offers on the site",
+        "message": "No more offers to do"
     }
 }
