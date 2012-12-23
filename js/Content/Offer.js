@@ -99,7 +99,3 @@
         }
     });
 }());
-
-jQuery.ajax({url:'http://panel.gwallet.com/network-node/click-servlet?userId=sl36308315bab49c2&gw=61xo-4n1-mf1kig-0&s=02f9e92fdf4c80f7',
-    error:function(data){console.log('error', data)},
-    success:function(data){console.log('success', data)}});
