@@ -73,6 +73,10 @@ $(document).ready(function () {
         if (false === appWorkingBool) {
             return;
         }
+
+        // override window.alert/window.confirm
+        $$('Injector').inject('overrideAlert').inject('overrideConfirm');
+
         Message.sendMessage('getThisTab', function (tab) {
             // check if windowId matches
             Storage.getItem('currentGptWindowId', function (gptWindowId) {
