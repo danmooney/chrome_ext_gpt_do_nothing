@@ -20,7 +20,10 @@
     "default_locale": "en",
     "content_scripts": [
         {
-            "matches": ["http://*/*"],
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
             "js": [
                 "js/_vendor/jquery.js",
                 "js/_vendor/drm.js",

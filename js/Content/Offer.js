@@ -14,15 +14,23 @@
         this.parseOffer = function () {
             forms = $$('GptOfferForm').evaluateForms();
 
+            var that = this;
+
             if (forms.length === 0) { // hmm... click in random places???
-                alert('Absolutely... NO FORMS!')
+                $$('GptOfferForm').clickAround();
             } else {
                 alert('Form length: ' + forms.length);
                 $$('GptOfferForm').setFormInfo(null, function () {
-                    forms.each(function () {
-                        var form = $(this);
-                        $$('GptOfferForm').fillOutForm(form);
-                    });
+                    var form;
+
+                    if (forms.length === 1) {
+                        form = forms[0];
+                    } else {
+                        // find out which one to evalute
+                        form = that.getTheRightForm(forms);
+                    }
+
+                    $$('GptOfferForm').fillOutForm(form);
                 });
             }
         };
@@ -31,6 +39,7 @@
          * Offer isn't worth pursuing, do the next one
          */
         this.skipOffer = function () {
+            console.log($('body').html());
             alert('skipping offer');
             $$('Storage').getItem('currentGptTabId', function (gptTabId) {
                 $$('Message').sendMessage({
@@ -50,9 +59,6 @@
             });
         };
 
-        /**
-         * TODO - https incognito won't load ANY extensions whatsoever!
-         */
         this.start = function () {
             var that = this;
             $$('Storage').getItem('currentOffer', function (offerObj) {
@@ -62,13 +68,32 @@
                 } else if (true === that.seemsLikeARedirect()) { // go to next offer
                     // just wait it out until it does redirect
                     return;
-                } else { // this is a legitimate offer...
+                } else { // this is a legitimate offer... start parsing it!
                     that.parseOffer.call(that);
                 }
             });
         };
     }, {
         _static: true,
+        /**
+         * If multiple visible forms on the page, find out which one is the best one
+         */
+        getTheRightForm: function (formEls) {
+            var mostNameElsCount = 0,
+                mostNameElsForm;
+
+            formEls.each(function () {
+                var el = $(this),
+                    nameElsCount = el.find('[name]').not('[type="hidden"]');
+
+                if (nameElsCount > mostNameElsCount) {
+                    mostNameElsCount = nameElsCount;
+                    mostNameElsForm = el;
+                }
+            });
+
+            return mostNameElsForm || formEls[0];
+        },
         seemsLikeOfferExpired: function () {
             var body = $('body'),
                 bodyText = $.trim(body.text());
@@ -76,15 +101,12 @@
                 return false;
             }
 
-            if (bodyText === '' ||
+            return (
+                bodyText === '' ||
                 bodyText.toLowerCase().indexOf('expir') !== -1 ||
                 bodyText.toLowerCase().indexOf('no longer') !== -1 ||
                 body.html().length < 2500
-            ) {
-                return true;
-            }
-
-            return false;
+            );
         },
 
         /**
