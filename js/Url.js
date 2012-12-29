@@ -56,7 +56,8 @@
             $$('Message').sendMessage({
                 klass: 'Debug',
                 method: 'setTitleToTabId',
-                args: [tabId]
+                args: [tabId],
+                tabId: tabId
             });
 
             this.getUrlFromTab(tab, function (urlStr) {
