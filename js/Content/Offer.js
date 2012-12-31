@@ -17,9 +17,10 @@
             var that = this;
 
             if (forms.length === 0) { // hmm... click in random places???
+                alert('Form length: ' + forms.length);
+                // TODO - check for inputs!  some weirdo sites don't use a form field but still use inputs
                 $$('GptOfferForm').clickAround();
             } else {
-                alert('Form length: ' + forms.length);
                 $$('GptOfferForm').setFormInfo(null, function () {
                     var form;
 

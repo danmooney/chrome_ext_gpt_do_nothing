@@ -23,7 +23,8 @@
                         'install',
                         'download',
                         'sign up',
-                        'confirm email'
+                        'confirm email', // TODO - this should be easy to do after the bot submits.. so remove??
+                        'print'
                     ]
                 },
                 /**

@@ -12,6 +12,9 @@
              * @type {Object}
              */
             formAliases = {
+                email: [
+                    'e-mail'
+                ],
                 name: [
 
                 ],
@@ -32,9 +35,6 @@
                 ],
                 zip: [
                     'postal'
-                ],
-                email: [
-                    'e-mail'
                 ],
                 phone: {
                     home: [
@@ -98,7 +98,7 @@
         fillOutForm: function (formEl) {
             var formInfo = this.getFormInfo(),
                 formAliases = this.getFormAliases(),
-                formInputs = formEl.find('input[type="text"], input[type="checkbox"], input[type="radio"], select, textarea'),
+                formInputs = formEl.find('input:text, input[type="checkbox"], input[type="radio"], select, textarea'),
                 submitButtonEl,
                 that = this,
                 i = 0;
@@ -112,33 +112,58 @@
              * Take care of the input
              * @param {jQuery} inputEl
              * @param {String} typeStr ('text', 'radio', 'checkbox' or 'select')
-             * @param {String} valueStr
+             * @param {String|Object} value
              * @param {jQuery} labelEl
              */
-            function handleInput (inputEl, typeStr, valueStr, labelEl) {
+            function handleInput (inputEl, typeStr, value, labelEl) {
                 var valueChangeSpeed = 20,
-                    that = this;
+                    emptyValueBool = (value === '' || $$.util.isUndefined(value));
 
+
+                /**
+                 * Fill out text/textarea fields
+                 */
                 function fillOutText () {
-                    var i = 1;
+                    var i = 1,
+                        j;
 
                     inputEl.focus();
 
+                    // if value is empty, get a random value
+                    if (true === emptyValueBool) {
+                        value = 'OK';
+                    }
+
                     /**
                      * Simulate typing
+                     * TODO - 'this' is getting messed up
                      */
                     function changeValue () {
-                        inputEl.val(valueStr.substr(0, i));
+                        var that = this;
+                        inputEl.val(value.substr(0, i));
 
-                        if (i === valueStr.length) {
-                            return inputDoneHandling();
+                        if (i === value.length) {
+                            inputEl.blur();
+                            return inputDoneHandling.call(that);
                         }
 
                         i += 1;
-                        return setTimeout(changeValue, valueChangeSpeed);
+                        return setTimeout(function () {
+                            changeValue.call(that);
+                        }, valueChangeSpeed);
                     }
-
-                    changeValue();
+                    
+                    if ($$.util.isObject(value)) {
+                        for (j in value) {
+                            if (!value.hasOwnProperty(j)) {
+                                continue;
+                            }
+                            value = value[j];
+                            break;
+                        }
+                    }
+                    
+                    changeValue.call(that);
                 }
 
                 /**
@@ -172,39 +197,86 @@
             function getSubmitButton () {
                 // if there's a submit type button, then it's easy and we can just use this
                 if (formEl.find('input[type="submit"]').length > 0) {
-                    return formEl.find('input[type="submit"');
+                    return formEl.find('input[type="submit"]');
+                }
+
+                if (formEl.find('input[onclick]').length > 0) {
+                    formEl.find('input[onclick]');
                 }
             }
 
             /**
-             * Get the value from formInfo based on the name of the form field
-             * @param {String} name the form field name
-             * @return {String}
+             * Get the value from formInfo based on the formNameStr of the form field
+             * @param {String} formNameStr the form field name
+             * @param {Array} nestedAliases the nested aliases used for recursion
+             * @return {String|Object}
              * TODO!!
              */
-            function getValueByName (name) {
-                var formAlias,
-                    i;
+            function getValueByName (formNameStr, nestedAliases) {
+                if ($$.util.isUndefined(formNameStr)) {
+                    return '';
+                }
 
-                for (i = 0; i > formAliases.length; i += 1) {
-                    formAlias = formAliases[i];
-                    if (name.indexOf(formAlias) !== -1) {
+                var formAliasNameStr,
+                    formAliasArr,
+                    matchedFormNameStr,
+                    i,
+                    j;
 
+                for (i in formAliases) {
+                    if (!formAliases.hasOwnProperty(i)) {
+                        continue;
+                    }
+                    formAliasNameStr = i;
+                    formAliasArr = formAliases[i];
+
+                    if (formNameStr.indexOf(formAliasNameStr) !== -1) {  // object key is direct match
+                        matchedFormNameStr = formAliasNameStr;
+                    } else { // look in alias array list
+                        for (j = 0; j < formAliasArr.length; j += 1) {
+                            if (formNameStr.indexOf(formAliasArr[j]) !== -1) {
+                                matchedFormNameStr = formAliasNameStr;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($$.util.isString(matchedFormNameStr)) {
+                        console.log(formNameStr + ' matches with ' + matchedFormNameStr);
+                        break;
                     }
                 }
 
-                return '';
+                if (!$$.util.isString(matchedFormNameStr)) {
+                    return '';
+                }
+
+                /**
+                 * We have a matched form alias name, let's get its value
+                 * @return {*}
+                 */
+                function searchForFormInfoValueByName (name) {
+                    if ($$.util.isDefined(formInfo[name])) {
+                        console.log('returning ' + formInfo[name]);
+                        return formInfo[name];
+                    }
+
+                    return '';
+                }
+
+                return searchForFormInfoValueByName(matchedFormNameStr);
             }
 
             /**
              * Gather all the DOM info for the input and pass off to handler
              * @param inputEl
              * TODO - maybe group radios together... will this ever be important???
+             * TODO - check if input is invisible???
              */
             function parseInput (inputEl) {
-                var tagNameStr = inputEl.prop('tagNameStr').toLowerCase(),
-                    nameStr    = inputEl.attr('nameStr'),
-                    valueStr   = getValueByName(nameStr),
+                var tagNameStr = inputEl.prop('tagName').toLowerCase(),
+                    nameStr    = inputEl.attr('name'),
+                    value      = getValueByName(nameStr),
                     typeStr    = inputEl.attr('type'),
                     labelEl;
 
@@ -263,7 +335,7 @@
                     typeStr = 'text';
                 }
 
-                handleInput(inputEl, typeStr, valueStr, labelEl);
+                handleInput(inputEl, typeStr, value, labelEl);
             }
 
             this.listen('INPUT_DONE_HANDLING', function () {
@@ -271,7 +343,7 @@
 
                 if (i < formInputs.length) {
                     console.log('handling form input ' + i);
-                    parseInput(formInputs[i]);
+                    parseInput(formInputs.eq(i));
                 } else {
                     submitButtonEl = getSubmitButton();
                     that.submitForm(formEl, submitButtonEl);
@@ -288,7 +360,8 @@
             alert('CLICKING AROUND');
             $('button, a').each(function () {
                 var el = $(this),
-                    hasHrefBool = $$.util.isString(el.attr('href')),
+                    href = el.attr('href'),
+                    hasHrefBool = ($$.util.isString(href) && href.indexOf('mailto:') === -1),
                     hasOnClickBool = $$.util.isString(el.attr('onclick'));
 
 
@@ -296,8 +369,10 @@
                     el.trigger('click');
                 }
 
-                if (true === hasHrefBool) {
+                if (true === hasHrefBool && window.location.href !== href) {
                     window.location = el.attr('href');
+                    // break out of loop
+                    return false;
                 }
             });
         }

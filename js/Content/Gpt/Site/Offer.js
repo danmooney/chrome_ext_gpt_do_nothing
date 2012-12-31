@@ -3,9 +3,9 @@
 
     $$.klass(function GptSiteOffer () {
         var currentOffer = {},
-        // TODO - need to be able to stop timer if page is loading/redirecting???????????
-            minTimeLimitToComplete = 50 * 1000,
-            timeLimitToComplete = 2 * 60 * 1000, // 2 minutes by default, will be gauged by price
+            // TODO - need to be able to stop timer if page is loading/redirecting???????????
+            minTimeLimitToComplete = /*50*/ 9999 * 1000, // 50 seconds
+            timeLimitToComplete = 2 * 60 * 1000, // 2 minutes by default, will be gauged and overwritten based on price
             offerTimeout;
 
         this.setOfferTimeout = function () {
@@ -66,7 +66,7 @@
                 klass: 'Window',
                 method: 'removeAllTabsInWindowExceptGptTab'
             }, function () {
-                that.submitOffer();
+                that.submitOffer(offer);
             });
         },
         /**
@@ -99,7 +99,6 @@
 
         offerExpired: function () {
             alert('OFFER EXPIRED');
-//            return this.offerSkip();
             return this.offerSkip(true);  // just submit the stupid thing so it won't appear on the list
         },
 
@@ -129,7 +128,7 @@
             href = linkEl.attr('href');
 
             if (!href) {
-                this.offerSkip();
+                this.offerSkip(false);
             }
 
             hasOnClick = $$.util.isString(linkEl.attr('onclick'));
