@@ -73,7 +73,7 @@
          * Callback when offer completes, which happens only when offer times out.
          * Hits the submit button on the offer
          */
-        submitOffer: function (offer, callback) {
+        submitOffer: function (offer) {
             offer = offer || this.getCurrentOffer();
             $$('Storage').setItem('currentGptRedirectUrl', window.location.href, function () {
                 offer.formEl.submit();

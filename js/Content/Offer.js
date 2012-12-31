@@ -24,7 +24,7 @@
                     var form;
 
                     if (forms.length === 1) {
-                        form = forms[0];
+                        form = forms.eq(0);
                     } else {
                         // find out which one to evalute
                         form = that.getTheRightForm(forms);
@@ -92,7 +92,7 @@
                 }
             });
 
-            return mostNameElsForm || formEls[0];
+            return mostNameElsForm || formEls.eq(0);
         },
         seemsLikeOfferExpired: function () {
             var body = $('body'),

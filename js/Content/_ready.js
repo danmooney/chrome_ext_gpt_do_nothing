@@ -71,7 +71,6 @@
             }
             formCheckInterval = setInterval(function () {
                 if ($('form').length > 0) {
-                    alert('jumping the gun!');
                     clearInterval(formCheckInterval);
                     checkForGptSitePageOrGptOfferPage();
                 }

@@ -76,7 +76,6 @@
          * @return {Array}
          */
         evaluateForms: function () {
-            console.warn('SEARCHING FOR FORMS');
             return $('form:visible');
         },
 
@@ -86,7 +85,7 @@
                 return;
             }
 
-            if (submitButtonEl) {
+            if ($$.util.isDefined(submitButtonEl)) {
                 submitButtonEl.trigger('click');
             }
 
@@ -101,17 +100,52 @@
                 formAliases = this.getFormAliases(),
                 formInputs = formEl.find('input[type="text"], input[type="checkbox"], input[type="radio"], select, textarea'),
                 submitButtonEl,
-                that = this;
+                that = this,
+                i = 0;
+
+            if (formInputs.length === 0) {
+                alert('no form inputs in this form??!!?');
+                return this.submitForm(formEl);
+            }
 
             /**
              * Take care of the input
+             * @param {jQuery} inputEl
              * @param {String} typeStr ('text', 'radio', 'checkbox' or 'select')
              * @param {String} valueStr
+             * @param {jQuery} labelEl
              */
-            function handleInput (typeStr, valueStr) {
+            function handleInput (inputEl, typeStr, valueStr, labelEl) {
+                var valueChangeSpeed = 20,
+                    that = this;
 
-                function fillOutValue () {
+                function fillOutText () {
+                    var i = 1;
 
+                    inputEl.focus();
+
+                    /**
+                     * Simulate typing
+                     */
+                    function changeValue () {
+                        inputEl.val(valueStr.substr(0, i));
+
+                        if (i === valueStr.length) {
+                            return inputDoneHandling();
+                        }
+
+                        i += 1;
+                        return setTimeout(changeValue, valueChangeSpeed);
+                    }
+
+                    changeValue();
+                }
+
+                /**
+                 * Input Done Handling, go to next form input!
+                 */
+                function inputDoneHandling () {
+                    that.trigger('INPUT_DONE_HANDLING');
                 }
 
                 switch (typeStr) {
@@ -126,15 +160,19 @@
                         break;
                     case 'text':
                     default:
-
+                        fillOutText();
                         break;
                 }
             }
 
+            /**
+             * Get the submit button to trigger onclicks if necessary
+             * @return {jQuery|undefined}
+             */
             function getSubmitButton () {
                 // if there's a submit type button, then it's easy and we can just use this
                 if (formEl.find('input[type="submit"]').length > 0) {
-                    submitButtonEl = formEl.find('input[type="submit"');
+                    return formEl.find('input[type="submit"');
                 }
             }
 
@@ -142,6 +180,7 @@
              * Get the value from formInfo based on the name of the form field
              * @param {String} name the form field name
              * @return {String}
+             * TODO!!
              */
             function getValueByName (name) {
                 var formAlias,
@@ -157,25 +196,89 @@
                 return '';
             }
 
-            formInputs.each(function (i) {
-                var el = $(this),
-                    tagName = el.prop('tagName').toLowerCase(),
-                    name = el.attr('name'),
-                    valueStr = getValueByName(name),
-                    typeStr = el.attr('type');
+            /**
+             * Gather all the DOM info for the input and pass off to handler
+             * @param inputEl
+             * TODO - maybe group radios together... will this ever be important???
+             */
+            function parseInput (inputEl) {
+                var tagNameStr = inputEl.prop('tagNameStr').toLowerCase(),
+                    nameStr    = inputEl.attr('nameStr'),
+                    valueStr   = getValueByName(nameStr),
+                    typeStr    = inputEl.attr('type'),
+                    labelEl;
 
-                if ('select' === tagName) {
+                /**
+                 * Try to get the associated label with the form input... hopefully there is a label
+                 * @return {jQuery|undefined}
+                 */
+                function getLabelEl () {
+                    var id = inputEl.attr('id'),
+                        labelEls = formEl.find('label'),
+                        fakeLabelEl,
+                        closestTd,
+                        closestTdSiblings;
+
+                    /**
+                     * Case when labelEl is the ancestor of the inputEl
+                     */
+                    if (inputEl.closest('label').length === 1) {
+                        return inputEl.closest('label');
+                    }
+
+                    /**
+                     * Case when 'for' attribute shared with id
+                     */
+                    if ($$.util.isString(id) &&
+                        labelEls.find('[for="' + id + '"]')
+                    ) {
+                        return labelEls.find('[for="' + id + '"]');
+                    }
+
+                    /**
+                     * Make shitty guess... find fakeLabelEl for case when there are sibling td tags if in table
+                     */
+                    if (inputEl.closest('td').length > 0) {
+                        closestTd = inputEl.closest('td').eq(0);
+                        closestTdSiblings = closestTd.siblings();
+
+                        closestTdSiblings.each(function () {
+                            var el = $(this);
+                            if ($.trim(el.text().replace('&nbsp;', '')) !== '') {
+                                fakeLabelEl = el;
+                                // break out of loop
+                                return false;
+                            }
+                        });
+
+                        return fakeLabelEl;
+                    }
+                }
+
+                labelEl = getLabelEl();
+
+                if ('select' === tagNameStr) {
                     typeStr = 'select';
                 } else if (!$$.util.isString(typeStr)) {
                     typeStr = 'text';
                 }
 
-                handleInput(typeStr, valueStr);
+                handleInput(inputEl, typeStr, valueStr, labelEl);
+            }
+
+            this.listen('INPUT_DONE_HANDLING', function () {
+                i += 1;
+
+                if (i < formInputs.length) {
+                    console.log('handling form input ' + i);
+                    parseInput(formInputs[i]);
+                } else {
+                    submitButtonEl = getSubmitButton();
+                    that.submitForm(formEl, submitButtonEl);
+                }
             });
 
-            getSubmitButton();
-
-            that.submitForm(formEl, submitButtonEl);
+            parseInput(formInputs.eq(i));
         },
 
         /**
@@ -184,7 +287,18 @@
         clickAround: function () {
             alert('CLICKING AROUND');
             $('button, a').each(function () {
+                var el = $(this),
+                    hasHrefBool = $$.util.isString(el.attr('href')),
+                    hasOnClickBool = $$.util.isString(el.attr('onclick'));
 
+
+                if (true === hasOnClickBool) {
+                    el.trigger('click');
+                }
+
+                if (true === hasHrefBool) {
+                    window.location = el.attr('href');
+                }
             });
         }
     });
