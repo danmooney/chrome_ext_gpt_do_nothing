@@ -358,22 +358,35 @@
          */
         clickAround: function () {
             alert('CLICKING AROUND');
-            $('button, a').each(function () {
-                var el = $(this),
-                    href = el.attr('href'),
-                    hasHrefBool = ($$.util.isString(href) && href.indexOf('mailto:') === -1),
-                    hasOnClickBool = $$.util.isString(el.attr('onclick'));
+            var hrefsClickedArr = [];
+            $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
+                $('button, a').each(function () {
+                    var el = $(this),
+                        hrefStr = el.attr('hrefStr'),
+                        hasHrefBool = ($$.util.isString(hrefStr) && hrefStr.indexOf('mailto:') === -1),
+                        hasOnClickBool = $$.util.isString(el.attr('onclick'));
 
 
-                if (true === hasOnClickBool) {
-                    el.trigger('click');
-                }
+                    if (true === hasOnClickBool) {
+                        el.trigger('click');
+                    }
 
-                if (true === hasHrefBool && window.location.href !== href) {
-                    window.location = el.attr('href');
-                    // break out of loop
-                    return false;
-                }
+                    if (true === hasHrefBool &&
+                        window.location.href !== hrefStr &&
+                        false === $$.util.inArray(hrefsClickedArr, hrefStr)
+                    ) {
+                        hrefsClickedArr.push(hrefStr);
+                        // open new tab in GPT window
+                        $$('Message').sendMessage({
+                            klass: 'Tab',
+                            method: 'createNewTab',
+                            args: {
+                                windowId: gptWindowId,
+                                url: hrefStr
+                            }
+                        });
+                    }
+                });
             });
         }
     });

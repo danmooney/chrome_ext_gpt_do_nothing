@@ -32,8 +32,12 @@
                 });
             }
         },
+        /**
+         * @deprecated
+         */
         getCurrentlySelectedTabIdSync: function () {
-            return this.currentlySelectedTabId;
+            throw new AppError('getCurrentlySelectedTabIdSync is deprecated');
+//            return this.currentlySelectedTabId;
         },
         setCurrentlySelectedTabId: function (tabId) {
             this.currentlySelectedTabId = tabId;
