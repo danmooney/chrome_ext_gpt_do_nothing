@@ -1,5 +1,6 @@
 (function() {
     'use strict';
+    // TODO - serialize form names into JSON and store in Storage so that bot doesn't keep submitting the same form if something goes wrong
     $$.klass(function Offer () {
         var
             /**
@@ -16,24 +17,31 @@
 
             var that = this;
 
-            if (forms.length === 0) { // hmm... click in random places???
-                alert('Form length: ' + forms.length);
-                // TODO - check for inputs!  some weirdo sites don't use a form field but still use inputs
-                $$('GptOfferForm').clickAround();
-            } else {
-                $$('GptOfferForm').setFormInfo(null, function () {
-                    var form;
+            $$('GptOfferForm').setFormInfo(null, function () {
+                var form,
+                    inputEls;
 
+                if (forms.length === 0) {
+                    alert('Form length: ' + forms.length);
+
+                    inputEls = $$('GptOfferForm').evaluateFormInputs();
+
+                    if (inputEls.length > 0) {
+                        $$('GptOfferForm').fillOutForm();
+                    } else {
+                        // click in random places
+                        $$('GptOfferForm').clickAround();
+                    }
+                } else {
                     if (forms.length === 1) {
                         form = forms.eq(0);
                     } else {
                         // find out which one to evalute
                         form = that.getTheRightForm(forms);
                     }
-
                     $$('GptOfferForm').fillOutForm(form);
-                });
-            }
+                }
+            });
         };
 
         /**

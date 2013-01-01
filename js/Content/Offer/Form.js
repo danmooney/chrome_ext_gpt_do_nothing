@@ -34,7 +34,8 @@
 
                 ],
                 zip: [
-                    'postal'
+                    'postal',
+                    'zc'
                 ],
                 phone: {
                     home: [
@@ -73,38 +74,89 @@
     }, {
         /**
          * Parse the DOM and look for THE appropriate form to focus on
-         * @return {Array}
+         * @return {jQuery}
          */
         evaluateForms: function () {
             return $('form:visible');
         },
 
-        submitForm: function (formEl, submitButtonEl) {
+        /**
+         * Parse the DOM and look for form inputs
+         * @return {jQuery} [formEl]
+         */
+        evaluateFormInputs: function (formEl) {
+            formEl = formEl || $('body');
+
+            var formInputEls = formEl.find('input:text, input[type="checkbox"], input[type="radio"], select, textarea'),
+                nullElsBool,
+                i;
+
+            if (formEl.prop('tagName').toLowerCase() === 'form') {
+                return formInputEls;
+            } else {
+                // remove inputs that have a form element ancestor, just in case we are trying to ignore a form
+                //   and the proper one to focus on is the one that doesn't have a form wrapped around it
+                for (i = 0; i < formInputEls.length; i += 1) {
+                    if (formInputEls.eq(i).closest('form').length > 0) {
+                        formInputEls[i] = null;
+                        nullElsBool = true;
+                    }
+                }
+
+                if (true === nullElsBool) {
+                    formInputEls = formInputEls.filter(function (i) {
+                        if (null === $(this)[i]) {
+                            return false;
+                        }
+
+                        return true;
+                    });
+                }
+
+                return formInputEls;
+            }
+        },
+
+        submitForm: function (formEl, submitButtonEl, inputEls) {
+            var that = this;
+
             // if window unloading, forget submitting
+            // TODO - will this actually work?  I don't think so... see Injector.js onbeforeunload method
             if ($('#gpt-offer-form-submitted').length > 0) {
                 return;
             }
 
-            if ($$.util.isDefined(submitButtonEl)) {
-                submitButtonEl.trigger('click');
-            }
+            if (formEl.prop('tagName').toLowerCase() === 'form') {
+                if ($$.util.isDefined(submitButtonEl)) {
+                    submitButtonEl.trigger('click');
+                }
 
-            formEl.submit();
+                formEl.submit();
+            } else { // these sick fucks sometimes don't put their shit in form elements... search for the submit triggerer if this is true!
+                alert('Trying to submit, but no proper form element on page!');
+                inputEls.trigger('click');
+                // TODO - if that didn't do anything.....?? click everything??
+                setTimeout(function () {
+                    that.clickAround();
+                }, 7000);
+            }
         },
 
         /**
          * Parse form and fill out according to formInfo values
          */
         fillOutForm: function (formEl) {
+            formEl = formEl || $('body');
+
             var formInfo = this.getFormInfo(),
                 formAliases = this.getFormAliases(),
-                formInputs = formEl.find('input:text, input[type="checkbox"], input[type="radio"], select, textarea'),
+                formInputs = this.evaluateFormInputs(formEl),
                 submitButtonEl,
                 that = this,
                 i = 0;
 
             if (formInputs.length === 0) {
-                alert('no form inputs in this form??!!?');
+                alert('ZERO form inputs in this form??!!?');
                 return this.submitForm(formEl);
             }
 
@@ -118,7 +170,6 @@
             function handleInput (inputEl, typeStr, value, labelEl) {
                 var valueChangeSpeed = 20,
                     emptyValueBool = (value === '' || $$.util.isUndefined(value));
-
 
                 /**
                  * Fill out text/textarea fields
@@ -166,6 +217,61 @@
                     changeValue.call(that);
                 }
 
+                function fillOutSelect () {
+                    var optionEls = inputEl.children('option'),
+                        matchFoundBool,
+                        matchingValueEl,
+                        randOptionNum,
+                        randOptionEl,
+                        i;
+
+                    if ($$.util.isString(value)) {
+                        value = {
+                            only: value
+                        };
+                    }
+
+                    optionEls.each(function () {
+                        var el = $(this),
+                            selectVal = el.val(),
+                            textVal   = el.text(),
+                            currentVal;
+
+                        for (i in value) {
+                            if (!value.hasOwnProperty(i)) {
+                                continue;
+                            }
+
+                            currentVal = value[i].toLowerCase();
+
+                            if (selectVal.toLowerCase().indexOf(currentVal) !== -1 ||
+                                textVal.toLowerCase().indexOf(currentVal)   !== -1
+                            ) {
+                                // match found
+                                matchFoundBool = true;
+                                matchingValueEl = el;
+                                // break out of loop
+                                return false;
+                            }
+                        }
+                    });
+
+                    // if no match found, choose random number.
+                    // avoid choosing first option since that is always the default
+                    if (false === matchFoundBool) {
+                        randOptionNum = Math.floor(Math.random(1, optionEls.length));
+                        randOptionEl = optionEls.eq(randOptionNum);
+                        optionEls.removeAttr('checked');
+                        inputEl.val(randOptionEl.val());
+                        randOptionEl.attr('checked', 'checked');
+                    } else {
+                        optionEls.removeAttr('checked');
+                        inputEl.val(matchingValueEl.val());
+                        matchingValueEl.attr('checked', 'checked');
+                        inputEl.trigger('change');
+                    }
+                }
+
                 /**
                  * Input Done Handling, go to next form input!
                  */
@@ -181,7 +287,7 @@
 
                         break;
                     case 'select':
-
+                        fillOutSelect();
                         break;
                     case 'text':
                     default:
@@ -210,7 +316,6 @@
              * @param {String} formNameStr the form field name
              * @param {Array} nestedAliases the nested aliases used for recursion
              * @return {String|Object}
-             * TODO!!
              */
             function getValueByName (formNameStr, nestedAliases) {
                 if ($$.util.isUndefined(formNameStr)) {
@@ -271,7 +376,7 @@
              * Gather all the DOM info for the input and pass off to handler
              * @param inputEl
              * TODO - maybe group radios together... will this ever be important???
-             * TODO - check if input is invisible???
+             * TODO - check if input is invisible???  Thinking no at the moment, because they might be in accordion or something stupid
              */
             function parseInput (inputEl) {
                 var tagNameStr = inputEl.prop('tagName').toLowerCase(),
@@ -346,7 +451,7 @@
                     parseInput(formInputs.eq(i));
                 } else {
                     submitButtonEl = getSubmitButton();
-                    that.submitForm(formEl, submitButtonEl);
+                    that.submitForm(formEl, submitButtonEl, formInputs);
                 }
             });
 
@@ -354,7 +459,7 @@
         },
 
         /**
-         * There are no form elements... just click around
+         * There are no form elements or inputs... just click around
          */
         clickAround: function () {
             alert('CLICKING AROUND');
@@ -362,10 +467,9 @@
             $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
                 $('button, a').each(function () {
                     var el = $(this),
-                        hrefStr = el.attr('hrefStr'),
+                        hrefStr = el.attr('href'),
                         hasHrefBool = ($$.util.isString(hrefStr) && hrefStr.indexOf('mailto:') === -1),
                         hasOnClickBool = $$.util.isString(el.attr('onclick'));
-
 
                     if (true === hasOnClickBool) {
                         el.trigger('click');
@@ -380,10 +484,11 @@
                         $$('Message').sendMessage({
                             klass: 'Tab',
                             method: 'createNewTab',
-                            args: {
+//                            active: false,
+                            args: [{
                                 windowId: gptWindowId,
                                 url: hrefStr
-                            }
+                            }]
                         });
                     }
                 });
