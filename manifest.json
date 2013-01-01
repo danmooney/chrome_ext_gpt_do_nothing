@@ -48,6 +48,10 @@
                 "js/Content/Gpt/Site/Navigation.js",
                 "js/Content/Gpt/Site/Offer.js",
                 "js/Content/Offer/Form.js",
+                "js/Content/Offer/Form/Text.js",
+                "js/Content/Offer/Form/Checkbox.js",
+                "js/Content/Offer/Form/Radio.js",
+                "js/Content/Offer/Form/Select.js",
                 "js/Evt.js",
                 "js/Evt/Message.js",
                 "js/Content/_ready.js"

@@ -15,22 +15,22 @@
         this.parseOffer = function () {
             var that = this;
 
-            $$('GptOfferForm').evaluateForms(function (formEls) {
+            $$('OfferForm').evaluateForms(function (formEls) {
                 forms = formEls;
-                $$('GptOfferForm').setFormInfo(null, function () {
+                $$('OfferForm').setFormInfo(null, function () {
                     var form,
                         inputEls;
 
                     if (formEls.length === 0) {
                         alert('Form length: ' + formEls.length);
 
-                        inputEls = $$('GptOfferForm').evaluateFormInputs();
+                        inputEls = $$('OfferForm').evaluateFormInputs();
 
                         if (inputEls.length > 0) {
-                            $$('GptOfferForm').fillOutForm();
+                            $$('OfferForm').fillOutForm();
                         } else {
                             // click in random places
-                            $$('GptOfferForm').clickAround();
+                            $$('OfferForm').clickAround();
                         }
                     } else {
                         if (formEls.length === 1) {
@@ -40,8 +40,8 @@
                             form = that.getTheRightForm(formEls);
                         }
 
-                        $$('GptOfferForm').setFormString(form.serialize(), function () {
-                            $$('GptOfferForm').fillOutForm(form);
+                        $$('OfferForm').setFormString(form.serialize(), function () {
+                            $$('OfferForm').fillOutForm(form);
                         });
                     }
                 });

@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    $$.klass(function GptOfferForm () {
+    $$.klass(function OfferForm () {
         var clickAroundWindowLimit = 2,
             /**
              * List containing all of the form values to populate (ex. first name, last name, city, state, etc.)
@@ -78,15 +78,15 @@
 
         /**
          * Store names of form as query string to ensure that we're not filling out the same form multiple times
-         * @param formEl
+         * @param {String} formStr
          * @param callback
          */
-        this.setFormString = function (formEl, callback) {
-            formEl = (!$$.util.isString(formEl))
-                ? formEl.serialize()
-                : formEl;
+        this.setFormString = function (formStr, callback) {
+            formStr = (!$$.util.isString(formStr))
+                ? formStr.serialize()
+                : formStr;
 
-            $$('Storage').setItem('lastForm', formEl, callback);
+            $$('Storage').setItem('lastForm', formStr, callback);
         };
 
         this.getFormString = function (callback) {
@@ -130,11 +130,7 @@
                 if (true === lastFormExistsBool) {
                     alert('last form exists!');
                     formEls = formEls.filter(function (i) {
-                        if (!(this instanceof HTMLElement)) {
-                            return false;
-                        }
-
-                        return true;
+                        return (this instanceof HTMLElement);
                     });
                 }
 
@@ -167,11 +163,7 @@
 
                 if (true === nullElsBool) {
                     formInputEls = formInputEls.filter(function (i) {
-                        if (!(this instanceof HTMLElement)) {
-                            return false;
-                        }
-
-                        return true;
+                        return (this instanceof HTMLElement);
                     });
                 }
 
@@ -225,137 +217,20 @@
 
             /**
              * Take care of the input
-             * @param {jQuery} inputEl
              * @param {String} typeStr ('text', 'radio', 'checkbox' or 'select')
+             * @param {jQuery} inputEl
              * @param {String|Object} value
              * @param {jQuery} labelEl
              */
-            function handleInput (inputEl, typeStr, value, labelEl) {
-                var valueChangeSpeed = 20,
-                    emptyValueBool = (value === '' || $$.util.isUndefined(value));
+            function handleInput (typeStr, inputEl, value, labelEl) {
+                var inputKlassStr = 'OfferForm' + typeStr,
+                    inputKlass = $$(inputKlassStr);
 
-                /**
-                 * Fill out text/textarea fields
-                 */
-                function fillOutText () {
-                    var i = 1,
-                        j;
-
-                    inputEl.focus();
-
-                    // if value is empty, get a random value
-                    if (true === emptyValueBool) {
-                        value = 'OK';
-                    }
-
-                    /**
-                     * Simulate typing
-                     */
-                    function changeValue () {
-                        var that = this;
-                        inputEl.val(value.substr(0, i));
-
-                        if (i === value.length) {
-                            inputEl.blur();
-                            return inputDoneHandling.call(that);
-                        }
-
-                        i += 1;
-                        return setTimeout(function () {
-                            changeValue.call(that);
-                        }, valueChangeSpeed);
-                    }
-                    
-                    if ($$.util.isObject(value)) {
-                        for (j in value) {
-                            if (!value.hasOwnProperty(j)) {
-                                continue;
-                            }
-                            value = value[j];
-                            break;
-                        }
-                    }
-                    
-                    changeValue.call(that);
+                if (null === inputKlass) {
+                    throw new AppError(inputKlassStr + ' is not a valid klass');
                 }
 
-                function fillOutSelect () {
-                    var optionEls = inputEl.children('option'),
-                        matchFoundBool,
-                        matchingValueEl,
-                        randOptionNum,
-                        randOptionEl,
-                        i;
-
-                    if ($$.util.isString(value)) {
-                        value = {
-                            only: value
-                        };
-                    }
-
-                    optionEls.each(function () {
-                        var el = $(this),
-                            selectVal = el.val(),
-                            textVal   = el.text(),
-                            currentVal;
-
-                        for (i in value) {
-                            if (!value.hasOwnProperty(i)) {
-                                continue;
-                            }
-
-                            currentVal = value[i].toLowerCase();
-
-                            if (selectVal.toLowerCase().indexOf(currentVal) !== -1 ||
-                                textVal.toLowerCase().indexOf(currentVal)   !== -1
-                            ) {
-                                // match found
-                                matchFoundBool = true;
-                                matchingValueEl = el;
-                                // break out of loop
-                                return false;
-                            }
-                        }
-                    });
-
-                    // if no match found, choose random number.
-                    // avoid choosing first option since that is always the default
-                    if (false === matchFoundBool) {
-                        randOptionNum = Math.floor(Math.random(1, optionEls.length));
-                        randOptionEl = optionEls.eq(randOptionNum);
-                        optionEls.removeAttr('checked');
-                        inputEl.val(randOptionEl.val());
-                        randOptionEl.attr('checked', 'checked');
-                    } else {
-                        optionEls.removeAttr('checked');
-                        inputEl.val(matchingValueEl.val());
-                        matchingValueEl.attr('checked', 'checked');
-                        inputEl.trigger('change');
-                    }
-                }
-
-                /**
-                 * Input Done Handling, go to next form input!
-                 */
-                function inputDoneHandling () {
-                    that.trigger('INPUT_DONE_HANDLING');
-                }
-
-                switch (typeStr) {
-                    case 'checkbox':
-
-                        break;
-                    case 'radio':
-
-                        break;
-                    case 'select':
-                        fillOutSelect();
-                        break;
-                    case 'text':
-                    default:
-                        fillOutText();
-                        break;
-                }
+                inputKlass.fillOut(inputEl, value, labelEl);
             }
 
             /**
@@ -438,7 +313,6 @@
              * Gather all the DOM info for the input and pass off to handler
              * @param inputEl
              * TODO - maybe group radios together... will this ever be important???
-             * TODO - check if input is invisible???  Thinking no at the moment, because they might be in accordion or something stupid
              */
             function parseInput (inputEl) {
                 var tagNameStr = inputEl.prop('tagName').toLowerCase(),
@@ -505,7 +379,7 @@
                 inputEl.data('gptParsed', true);
                 inputEl.attr('data-gptParsed', '1');
 
-                handleInput(inputEl, typeStr, value, labelEl);
+                handleInput(typeStr, inputEl, value, labelEl);
             }
 
             this.listen('INPUT_DONE_HANDLING', function () {
