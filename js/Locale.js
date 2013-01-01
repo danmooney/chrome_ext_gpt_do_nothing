@@ -1,6 +1,6 @@
 /**
  * Locale klass
- * Fills up elements with locale-specific text based on their data-i118n HTML attribute
+ * Fills up elements with locale-specific text based on their data-i18n HTML attribute
  */
 (function() {
     'use strict';

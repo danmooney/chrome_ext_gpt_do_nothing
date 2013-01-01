@@ -1,7 +1,7 @@
 (function() {
     'use strict';
     $$.klass(function GptOfferForm () {
-        var
+        var clickAroundWindowLimit = 2,
             /**
              * List containing all of the form values to populate (ex. first name, last name, city, state, etc.)
              * @type {Object}
@@ -91,6 +91,13 @@
 
         this.getFormString = function (callback) {
             $$('Storage').getItem('lastForm', callback);
+        };
+
+        /**
+         * @return {Number}
+         */
+        this.getClickAroundWindowLimit = function () {
+            return clickAroundWindowLimit;
         };
 
     }, {
@@ -199,6 +206,7 @@
 
         /**
          * Parse form and fill out according to formInfo values
+         * TODO - there's so much ajax going on in these ones today that re-evaluating the form for new inputs is essential!!!!!
          */
         fillOutForm: function (formEl) {
             formEl = formEl || $('body');
@@ -494,6 +502,9 @@
                     typeStr = 'text';
                 }
 
+                inputEl.data('gptParsed', true);
+                inputEl.attr('data-gptParsed', '1');
+
                 handleInput(inputEl, typeStr, value, labelEl);
             }
 
@@ -514,19 +525,15 @@
 
         /**
          * There are no form elements or inputs... just click around
-         * TODO - This is a debugged method.  Only opening one window
          */
         clickAround: function () {
             alert('CLICKING AROUND');
-            var hrefsClickedArr = [];
-            $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
-                var oneWindowOpenAlreadyDebugBool = false;
-                $('button, a').each(function () {
-                    if (true === oneWindowOpenAlreadyDebugBool) {
-                        // break out ofl oop
-                        return false;
-                    }
+            var hrefsClickedArr = [],
+                windowNum,
+                windowLimitNum = this.getClickAroundWindowLimit();
 
+            $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
+                $('button, a').each(function () {
                     var el = $(this),
                         hrefStr = el.attr('href'),
                         hasHrefBool = ($$.util.isString(hrefStr) && hrefStr.indexOf('mailto:') === -1),
@@ -538,11 +545,11 @@
 
                     if (true === hasHrefBool &&
                         window.location.href !== hrefStr &&
-                        false === $$.util.inArray(hrefsClickedArr, hrefStr)
+                        false === $$.util.inArray(hrefsClickedArr, hrefStr) &&
+                        windowNum < windowLimitNum
                     ) {
                         hrefsClickedArr.push(hrefStr);
-
-                        oneWindowOpenAlreadyDebugBool = true;
+                        windowNum += 1;
 
                         // open new tab in GPT window
                         $$('Message').sendMessage({
