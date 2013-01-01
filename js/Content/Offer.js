@@ -13,34 +13,38 @@
             forms;
 
         this.parseOffer = function () {
-            forms = $$('GptOfferForm').evaluateForms();
-
             var that = this;
 
-            $$('GptOfferForm').setFormInfo(null, function () {
-                var form,
-                    inputEls;
+            $$('GptOfferForm').evaluateForms(function (formEls) {
+                forms = formEls;
+                $$('GptOfferForm').setFormInfo(null, function () {
+                    var form,
+                        inputEls;
 
-                if (forms.length === 0) {
-                    alert('Form length: ' + forms.length);
+                    if (formEls.length === 0) {
+                        alert('Form length: ' + formEls.length);
 
-                    inputEls = $$('GptOfferForm').evaluateFormInputs();
+                        inputEls = $$('GptOfferForm').evaluateFormInputs();
 
-                    if (inputEls.length > 0) {
-                        $$('GptOfferForm').fillOutForm();
+                        if (inputEls.length > 0) {
+                            $$('GptOfferForm').fillOutForm();
+                        } else {
+                            // click in random places
+                            $$('GptOfferForm').clickAround();
+                        }
                     } else {
-                        // click in random places
-                        $$('GptOfferForm').clickAround();
+                        if (formEls.length === 1) {
+                            form = formEls.eq(0);
+                        } else {
+                            // find out which one to evalute
+                            form = that.getTheRightForm(formEls);
+                        }
+
+                        $$('GptOfferForm').setFormString(form.serialize(), function () {
+                            $$('GptOfferForm').fillOutForm(form);
+                        });
                     }
-                } else {
-                    if (forms.length === 1) {
-                        form = forms.eq(0);
-                    } else {
-                        // find out which one to evalute
-                        form = that.getTheRightForm(forms);
-                    }
-                    $$('GptOfferForm').fillOutForm(form);
-                }
+                });
             });
         };
 

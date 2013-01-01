@@ -123,6 +123,7 @@
                                 });
                             });
                         } else {
+                            console.warn('SETTING STATUS TO NOT READY');
                             that.setStatus('NotReady', tabId);
                         }
                     });

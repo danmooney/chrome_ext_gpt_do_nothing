@@ -20,6 +20,14 @@
         this.freezeTimeoutNum = 200;
     }, {
         _static: true,
+
+        init: function () {
+            var that = this;
+            this.listen('APP_STARTED_WORKING', function () {
+                that.removeItem('lastForm');
+            });
+        },
+
         /**
          * @param {String} item
          * @param {Function} callback

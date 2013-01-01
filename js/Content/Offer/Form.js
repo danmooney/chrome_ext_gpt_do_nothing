@@ -47,6 +47,11 @@
                 }
             };
 
+        /**
+         * @param formInfoObj
+         * @param callback
+         * TODO - incorporate options and check currently selected formInfo
+         */
         this.setFormInfo = function (formInfoObj, callback) {
             if ($$.util.isObject(formInfoObj)) {
                 formInfo = formInfoObj;
@@ -71,13 +76,63 @@
             return formAliases;
         };
 
+        /**
+         * Store names of form as query string to ensure that we're not filling out the same form multiple times
+         * @param formEl
+         * @param callback
+         */
+        this.setFormString = function (formEl, callback) {
+            formEl = (!$$.util.isString(formEl))
+                ? formEl.serialize()
+                : formEl;
+
+            $$('Storage').setItem('lastForm', formEl, callback);
+        };
+
+        this.getFormString = function (callback) {
+            $$('Storage').getItem('lastForm', callback);
+        };
+
     }, {
         /**
-         * Parse the DOM and look for THE appropriate form to focus on
-         * @return {jQuery}
+         * Parse the DOM and look for THE appropriate form to focus on.
+         * Also remove the last completed form if it exists in the DOM.
          */
-        evaluateForms: function () {
-            return $('form:visible');
+        evaluateForms: function (callback) {
+            var formEls = $('form:visible'),
+                that = this;
+
+            // get last completed form as string and see if it matches any of the current forms
+            this.getFormString(function (formStr) {
+                if (!$$.util.isString(formStr)) {
+                    callback(formEls);
+                }
+
+                var lastFormExistsBool;
+
+                formEls.each(function (i) {
+                    var el = $(this),
+                        elStr = el.serialize();
+
+                    if (formStr === elStr) {
+                        formEls[i] = null;
+                        lastFormExistsBool = true;
+                    }
+                });
+
+                if (true === lastFormExistsBool) {
+                    alert('last form exists!');
+                    formEls = formEls.filter(function (i) {
+                        if (!(this instanceof HTMLElement)) {
+                            return false;
+                        }
+
+                        return true;
+                    });
+                }
+
+                callback(formEls);
+            });
         },
 
         /**
@@ -105,7 +160,7 @@
 
                 if (true === nullElsBool) {
                     formInputEls = formInputEls.filter(function (i) {
-                        if (null === $(this)[i]) {
+                        if (!(this instanceof HTMLElement)) {
                             return false;
                         }
 
@@ -187,7 +242,6 @@
 
                     /**
                      * Simulate typing
-                     * TODO - 'this' is getting messed up
                      */
                     function changeValue () {
                         var that = this;
@@ -460,12 +514,19 @@
 
         /**
          * There are no form elements or inputs... just click around
+         * TODO - This is a debugged method.  Only opening one window
          */
         clickAround: function () {
             alert('CLICKING AROUND');
             var hrefsClickedArr = [];
             $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
+                var oneWindowOpenAlreadyDebugBool = false;
                 $('button, a').each(function () {
+                    if (true === oneWindowOpenAlreadyDebugBool) {
+                        // break out ofl oop
+                        return false;
+                    }
+
                     var el = $(this),
                         hrefStr = el.attr('href'),
                         hasHrefBool = ($$.util.isString(hrefStr) && hrefStr.indexOf('mailto:') === -1),
@@ -480,6 +541,9 @@
                         false === $$.util.inArray(hrefsClickedArr, hrefStr)
                     ) {
                         hrefsClickedArr.push(hrefStr);
+
+                        oneWindowOpenAlreadyDebugBool = true;
+
                         // open new tab in GPT window
                         $$('Message').sendMessage({
                             klass: 'Tab',

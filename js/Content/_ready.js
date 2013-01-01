@@ -37,8 +37,7 @@
                             Storage.getItem('currentGptRedirectUrl', function (redirectUrl) {
                                 if ($$.util.isString(redirectUrl)) {
                                     // remove redirect request
-                                    // TODO - perhaps implement Storage.clearItem?
-                                    Storage.setItem('currentGptRedirectUrl', null, function () {
+                                    Storage.removeItem('currentGptRedirectUrl', function () {
                                         if (window.location.href === redirectUrl) {
                                             $$('GptSite').start();
                                         } else {
