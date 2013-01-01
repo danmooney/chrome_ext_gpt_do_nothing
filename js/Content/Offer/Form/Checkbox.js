@@ -4,8 +4,9 @@
 
     }, {
         _static: true,
-        fillOut: function () {
-
+        fillOut: function (inputEl, value, labelEl) {
+            value.attr('checked', 'checked');
+            this.trigger('INPUT_DONE_HANDLING');
         }
     });
 }());

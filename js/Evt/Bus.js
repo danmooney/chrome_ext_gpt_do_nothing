@@ -65,6 +65,12 @@
                 context: this,
                 callback: callback
             });
+        },
+
+        removeListener: function (evtTypeStr) {
+            var EvtBus = $$('EvtBus');
+
+            EvtBus.listenersArr[evtTypeStr] = undefined;
         }
     });
 }());

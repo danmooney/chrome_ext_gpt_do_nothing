@@ -99,10 +99,7 @@
                         var App = $$('App');
                         if (!App.isWorking()) {
                             chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
-                            return;
-                        } else if (thisTabId !== tabId) {
-                            return;
-                        } else {
+                        } else if (thisTabId === tabId) {
                             chrome.tabs.onRemoved.removeListener(checkIfTabIdIsGptSite);
                             App.stopWorking('notificationAppStoppedReasonTabClosed');
                         }

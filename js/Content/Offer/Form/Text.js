@@ -1,10 +1,18 @@
 (function() {
     'use strict';
     $$.klass(function OfferFormText () {
-        var valueChangeSpeed = 20;
+        var valueChangeSpeed = 20,
+            randomStrArr = [
+                'Yes',
+                'OK'
+            ];
 
         this.getValueChangeSpeed = function () {
-            return valueChangedSpeed;
+            return valueChangeSpeed;
+        };
+
+        this.getRandomStr = function () {
+            return randomStrArr[Math.floor(Math.random(0, randomStrArr.length))];
         };
 
     }, {
@@ -22,7 +30,7 @@
 
             // if value is empty, get a random value
             if (true === emptyValueBool) {
-                value = 'OK';
+                value = this.getRandomStr();
             }
 
             /**
