@@ -356,12 +356,12 @@
              * TODO - maybe group radios together... will this ever be important???
              */
             function parseInput (inputEl) {
-                var tagNameStr = inputEl.prop('tagName').toLowerCase(),
-                    nameStr    = inputEl.attr('name'),
-                    value      = getValueByName(nameStr),
-                    typeStr    = inputEl.attr('type'),
+                var tagNameStr    = inputEl.prop('tagName').toLowerCase(),
+                    nameStr       = inputEl.attr('name'),
+                    value         = getValueByName(nameStr),
+                    typeStr       = inputEl.attr('type'),
                     labelEl,
-                    gptParsedStr  = this.getParsedStr();
+                    gptParsedStr  = that.getParsedStr();
 
                 /**
                  * Try to get the associated label with the form input... hopefully there is a label

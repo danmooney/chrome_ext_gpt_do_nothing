@@ -64,6 +64,7 @@
         this.setStatus = function (str, tabId) {
             var Notification = $$('Notification'),
                 nowWorkingBool = false;
+
             if (!this.isWorking()) {
                 statusStr = str;
                 if ('Working' === str) {
