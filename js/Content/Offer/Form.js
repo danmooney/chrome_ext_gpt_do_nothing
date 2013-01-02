@@ -214,31 +214,6 @@
             }
         },
 
-        submitForm: function (formEl, submitButtonEl, inputEls) {
-            var that = this;
-
-            // if window unloading, forget submitting
-            // TODO - will this actually work?  I don't think so... see Injector.js onbeforeunload method
-            if ($('#gpt-offer-form-submitted').length > 0) {
-                return;
-            }
-
-            if (formEl.prop('tagName').toLowerCase() === 'form') {
-                if ($$.util.isDefined(submitButtonEl)) {
-                    submitButtonEl.trigger('click');
-                }
-
-                formEl.submit();
-            } else { // these sick fucks sometimes don't put their shit in form elements... search for the submit triggerer if this is true!
-                alert('Trying to submit, but no proper form element on page!');
-                inputEls.trigger('click');
-                // TODO - if that didn't do anything.....?? click everything??
-                setTimeout(function () {
-                    that.clickAround();
-                }, 7000);
-            }
-        },
-
         /**
          * Parse form and fill out according to formInfo values
          */
@@ -251,13 +226,12 @@
             var formInfo = this.getFormInfo(),
                 formAliases = this.getFormAliases(),
                 formInputs = this.evaluateFormInputs(formEl),
-                submitButtonEl,
                 that = this,
                 i = 0;
 
             if (formInputs.length === 0) {
                 alert('ZERO form inputs in this form??!!?');
-                return this.submitForm(formEl);
+                return $$('OfferFormSubmit').submit(formEl);
             }
 
             /**
@@ -281,21 +255,6 @@
                 // set as handled
                 inputEl.data(gptHandledStr, true);
                 inputEl.attr('data-' + gptHandledStr, '1');
-            }
-
-            /**
-             * Get the submit button to trigger onclicks if necessary
-             * @return {jQuery|undefined}
-             */
-            function getSubmitButton () {
-                // if there's a submit type button, then it's easy and we can just use this
-                if (formEl.find('input[type="submit"]').length > 0) {
-                    return formEl.find('input[type="submit"]');
-                }
-
-                if (formEl.find('input[onclick]').length > 0) {
-                    formEl.find('input[onclick]');
-                }
             }
 
             /**
@@ -463,8 +422,8 @@
                         parseInput(inputEl);
                     }
                 } else {
-                    submitButtonEl = getSubmitButton();
-                    that.submitForm(formEl, submitButtonEl, formInputs);
+                    that.removeListener('INPUT_DONE_HANDLING');
+                    return $$('OfferFormSubmit').submit(formEl, formInputs);
                 }
             });
 

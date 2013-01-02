@@ -52,6 +52,7 @@
                 "js/Content/Offer/Form/Checkbox.js",
                 "js/Content/Offer/Form/Radio.js",
                 "js/Content/Offer/Form/Select.js",
+                "js/Content/Offer/Form/Submit.js",
                 "js/Evt.js",
                 "js/Evt/Message.js",
                 "js/Content/_ready.js"
