@@ -5,7 +5,7 @@
  * data is ever passed through this object.
  *
  * @package DRM Klass/Instance Creator
- * @version 12/15/2012
+ * @version 1/1/2013
  * @author Dan Mooney
  */
 ;
@@ -986,27 +986,27 @@
                 obj[i] = anotherObj[i];
             }
             return obj;
-        },
+        };
 
         /**
          * Checks if array or object is associative or not
          * @param {Array|Object} arr
          * @return {Boolean}
          */
-            Util.isAssociative = function (arr) {
-                var numRegex = /[0-9]+/;
+        Util.isAssociative = function (arr) {
+            var numRegex = /[0-9]+/;
 
-                for (var i in arr) {
-                    if (!arr.hasOwnProperty(i)) {
-                        continue;
-                    }
-                    if (!numRegex.test(i)) {  // if not numeric
-                        return true;
-                    }
+            for (var i in arr) {
+                if (!arr.hasOwnProperty(i)) {
+                    continue;
                 }
+                if (!numRegex.test(i)) {  // if not numeric
+                    return true;
+                }
+            }
 
-                return false;
-            };
+            return false;
+        };
 
         /**
          * My implementation of what falsy values should be
@@ -1018,7 +1018,7 @@
                 typeof value === 'undefined' ||
                     value == null ||
                     value == false
-                );
+            );
         };
 
         Util.isFunc = function (fn) {
@@ -1029,7 +1029,7 @@
             return (
                 toString.call(obj) === '[object Object]' &&
                     typeof obj === 'object'
-                );
+            );
         };
 
         Util.isArray = function (arr) {

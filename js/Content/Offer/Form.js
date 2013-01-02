@@ -100,6 +100,10 @@
             $$('Storage').getItem('lastForm', callback);
         };
 
+        this.removeFormString = function (callback) {
+            $$('Storage').removeItem('lastForm', callback);
+        };
+
         /**
          * @return {Number}
          */
@@ -149,6 +153,10 @@
                     callback(formEls);
                 }
 
+                // TODO - this is a DEBUG to allow for last form to not get stuck
+                that.removeFormString();
+                // END DEBUG
+
                 var lastFormExistsBool;
 
                 formEls.each(function (i) {
@@ -188,6 +196,7 @@
             } else {
                 // remove inputs that have a form element ancestor, just in case we are trying to ignore a form
                 //   and the proper one to focus on is the one that doesn't have a form wrapped around it
+                //   TODO - This only happens if there are forms we are trying to IGNORE... so for DEBUGGING purposes how should it be maybe add data to it to tell methods to disable triggers on element?
                 for (i = 0; i < formInputEls.length; i += 1) {
                     if (formInputEls.eq(i).closest('form').length > 0) {
                         formInputEls[i] = null;
@@ -259,9 +268,9 @@
              * @param {jQuery} labelEl
              */
             function handleInput (typeStr, inputEl, value, labelEl) {
-                var inputKlassStr = 'OfferForm' + typeStr,
-                    inputKlass = $$(inputKlassStr),
-                    gptHandledStr = this.getHandledStr();
+                var inputKlassStr = 'OfferForm' + typeStr.substr(0,1).toUpperCase() + typeStr.substr(1), // OfferFormText, OfferFormRadio, etc.
+                    inputKlass    = $$(inputKlassStr),
+                    gptHandledStr = that.getHandledStr();
 
                 if (null === inputKlass) {
                     throw new AppError(inputKlassStr + ' is not a valid klass');
@@ -296,9 +305,12 @@
              * @return {String|Object}
              */
             function getValueByName (formNameStr, nestedAliases) {
+                // TODO - this should have different implications for radio and checkbox, since all the form aliases are for textboxes and selects only.  In this case, find the matching label and pass that to value
                 if ($$.util.isUndefined(formNameStr)) {
                     return '';
                 }
+
+                formNameStr = formNameStr.toLowerCase();
 
                 var formAliasNameStr,
                     formAliasArr,
@@ -460,7 +472,7 @@
         },
 
         /**
-         * There are no form elements or inputs... just click around
+         * There are absolutely ZERO form elements or inputs... just click around...?
          */
         clickAround: function () {
             alert('CLICKING AROUND');

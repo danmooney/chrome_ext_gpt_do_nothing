@@ -48,7 +48,7 @@
                 i += 1;
                 return setTimeout(function () {
                     changeValue.call(that);
-                }, this.getValueChangeSpeed());
+                }, that.getValueChangeSpeed());
             }
 
             if ($$.util.isObject(value)) {
@@ -61,7 +61,7 @@
                 }
             }
 
-            changeValue.call($$('OfferForm'));
+            changeValue.call($$('OfferFormText'));
         }
     });
 }());

@@ -2,8 +2,29 @@
  * Event Bus / PubSub
  */
 (function() {
+    'use strict';
     $$.klass(function EvtBus () {
         this.listenersArr = [];
+
+        /**
+         * Check for duplicate callback functions in evtTypeStr inside this.listenersArr
+         * @return {Boolean}
+         */
+        this.listenerAlreadyExists = function (evtTypeStr, callbackFn) {
+            var listenerTypeArr = this.listenersArr[evtTypeStr],
+                listenerObj,
+                callbackStr = callbackFn.toString(),
+                i;
+
+            for (i = 0; i < listenerTypeArr; i += 1) {
+                listenerObj = listenerTypeArr[i];
+                if (listenerObj.callback.toString() === callbackStr) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
 
     }, {
         _static: true,
@@ -53,12 +74,18 @@
          * @param {String} evtTypeStr
          * @param {Function} callback
          */
+        // don't allow listener to register the same listener twice TODO - TEST the implementation
         listen: function (evtTypeStr, callback) {
             var EvtBus = $$('EvtBus'),
                 listenerArr = EvtBus.listenersArr[evtTypeStr];
 
             if ($$.util.isUndefined(listenerArr)) {
                 EvtBus.listenersArr[evtTypeStr] = listenerArr = [];
+            }
+
+            if (EvtBus.listenerAlreadyExists(evtTypeStr, callback)) {
+                console.warn('Listener already exists.  Aborting...');
+                return;
             }
 
             listenerArr.push({

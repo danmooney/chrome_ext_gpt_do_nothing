@@ -21,6 +21,9 @@
     }, {
         _static: true,
 
+        /**
+         * Remove items
+         */
         init: function () {
             var that = this;
             this.listen('APP_STARTED_WORKING', function () {
