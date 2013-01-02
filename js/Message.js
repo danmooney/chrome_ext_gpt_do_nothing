@@ -93,9 +93,6 @@
 
                 done(returnValMixed);
             } else if (true === async) {
-                console.warn("ASYNC");
-//                debugger;
-
                 message.args = message.args || [];
                 if (message.args.length === (methodParams.length - 1)) {
                     message.args.push(done);

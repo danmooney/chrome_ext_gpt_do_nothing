@@ -59,7 +59,7 @@
         },
 
         /**
-         * Used purely as a debug to make sure jQuery selectors are proper
+         * Used purely as a DEBUG to make sure jQuery selectors are proper
          */
         colorOffers: function (offersArr) {
             var navigation = this.getNavigation(),

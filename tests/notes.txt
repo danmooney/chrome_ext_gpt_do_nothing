@@ -1,0 +1,4 @@
+## With input type="image":
+-- onclick is triggered but NOT onsubmit when clicked manually
+-- x and y are included in the POST only when clicked manually
+-- if you add x and y hidden inputs to the form and click the input type="image" manually, they will be overwritten!

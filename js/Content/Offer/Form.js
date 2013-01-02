@@ -137,7 +137,6 @@
         this.getForm = function () {
             return form;
         };
-
     }, {
         /**
          * Parse the DOM and look for THE appropriate form to focus on.
@@ -398,33 +397,35 @@
 
             this.listen('INPUT_DONE_HANDLING', function () {
                 i += 1;
+                // DEBUG HERE WITH SETTIMEOUT
+                setTimeout(function () {
+                    var
+                        /**
+                         * Re-evaluate form inputs length to see if this function needs to be run from the beginning.
+                         */
+                            currentInputsLength = that.evaluateFormInputs(formEl).length,
+                        inputEl;
 
-                var
-                   /**
-                    * Re-evaluate form inputs length to see if this function needs to be run from the beginning.
-                    */
-                    currentInputsLength = that.evaluateFormInputs(formEl).length,
-                    inputEl;
-
-                if (currentInputsLength !== formInputs.length) {
-                    alert('NEW INPUTS HAVE BEEN ADDED');
-                    that.removeListener('INPUT_DONE_HANDLING');
-                    return that.fillOutForm(formEl);
-                }
-
-                if (i < formInputs.length) { // more formInputs to go!
-                    inputEl = formInputs.eq(i);
-
-                    if (true === that.hasBeenParsed(inputEl)) { // if already parsed, go to next formInput
-                        return that.trigger('INPUT_DONE_HANDLING');
-                    } else {
-                        console.log('handling form input ' + i);
-                        parseInput(inputEl);
+                    if (currentInputsLength !== formInputs.length) {
+                        alert('NEW INPUTS HAVE BEEN ADDED');
+                        that.removeListener('INPUT_DONE_HANDLING');
+                        return that.fillOutForm(formEl);
                     }
-                } else {
-                    that.removeListener('INPUT_DONE_HANDLING');
-                    return $$('OfferFormSubmit').submit(formEl, formInputs);
-                }
+
+                    if (i < formInputs.length) { // more formInputs to go!
+                        inputEl = formInputs.eq(i);
+
+                        if (true === that.hasBeenParsed(inputEl)) { // if already parsed, go to next formInput
+                            return that.trigger('INPUT_DONE_HANDLING');
+                        } else {
+                            console.log('handling form input ' + i);
+                            parseInput(inputEl);
+                        }
+                    } else {
+                        that.removeListener('INPUT_DONE_HANDLING');
+                        return $$('OfferFormSubmit').submit(formEl, formInputs);
+                    }
+                }, 1000);
             });
 
             parseInput(formInputs.eq(i));
@@ -432,6 +433,7 @@
 
         /**
          * There are absolutely ZERO form elements or inputs... just click around...?
+         * TODO - setTimeout to check if windowNum is empty and if so, just skip the stupid offer!
          */
         clickAround: function () {
             alert('CLICKING AROUND');
