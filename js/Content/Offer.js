@@ -78,23 +78,23 @@
 //            console.log($('body').html());
 
             alert('skipping offer');
-            $$('Storage').removeItem('lastForms');
-
-            $$('Storage').getItem('currentGptTabId', function (gptTabId) {
-                $$('Message').sendMessage({
-                    klass: 'Message',
-                    method: 'sendMessage',
-                    args: [
-                        {
-                            klass: 'GptSiteOffer',
-                            method: 'siteOfferExpired',
-                            tabId: gptTabId,
-                            args: [
-                                true // submitBool
-                            ]
-                        }
-                    ]
-                })
+            $$('OfferForm').removeLastFormsArr(function () {
+                $$('Storage').getItem('currentGptTabId', function (gptTabId) {
+                    $$('Message').sendMessage({
+                        klass: 'Message',
+                        method: 'sendMessage',
+                        args: [
+                            {
+                                klass: 'GptSiteOffer',
+                                method: 'siteOfferExpired',
+                                tabId: gptTabId,
+                                args: [
+                                    true // submitBool
+                                ]
+                            }
+                        ]
+                    })
+                });
             });
         };
 

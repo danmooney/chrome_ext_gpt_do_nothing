@@ -1,3 +1,9 @@
+What if there's more than 4 forms on the page??
+ex. points2shop.com
+Time to store all forms completed thoughout the course of a single offer.
+
+Maybe sort forms by largest form first?
+
 ## With input type="image":
 -- onclick is triggered but NOT onsubmit when clicked manually
 -- x and y are included in the POST only when clicked manually
