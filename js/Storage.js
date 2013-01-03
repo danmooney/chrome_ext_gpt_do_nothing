@@ -27,7 +27,7 @@
         init: function () {
             var that = this;
             this.listen('APP_STARTED_WORKING', function () {
-                that.removeItem('lastForm');
+                that.removeItem('lastForms');
             });
         },
 

@@ -2,13 +2,14 @@
     'use strict';
     $$.klass(function OfferForm () {
         var clickAroundWindowLimit = 2,
+            clickAroundTimeLimit = 7000,
             gptParsedStr  = 'gptParsed',
             gptHandledStr = 'gptHandledStr',
             /**
              * The form we are working with on this page via OfferForm klass
              * @type {jQuery}
              */
-                form,
+            form,
             /**
              * List containing all of the form values to populate (ex. first name, last name, city, state, etc.)
              * @type {Object}
@@ -88,20 +89,21 @@
          * @param {String} formStr
          * @param callback
          */
-        this.setFormString = function (formStr, callback) {
+        // TODO - set as array of serialized form strings (and maybe measure by another metric and use objects instead) to determine whether or not form has already been submitted, and then clear lastFormArr after each offer
+        this.setLastFormsArr = function (formStr, callback) {
             formStr = (!$$.util.isString(formStr))
                 ? formStr.serialize()
                 : formStr;
 
-            $$('Storage').setItem('lastForm', formStr, callback);
+            $$('Storage').setItem('lastForms', formStr, callback);
         };
 
-        this.getFormString = function (callback) {
-            $$('Storage').getItem('lastForm', callback);
+        this.getLastFormsArr = function (callback) {
+            $$('Storage').getItem('lastForms', callback);
         };
 
-        this.removeFormString = function (callback) {
-            $$('Storage').removeItem('lastForm', callback);
+        this.removeLastFormsArr = function (callback) {
+            $$('Storage').removeItem('lastForms', callback);
         };
 
         /**
@@ -112,6 +114,14 @@
         };
 
         /**
+         * @return {Number}
+         */
+        this.getClickAroundTimeLimit = function () {
+            return clickAroundTimeLimit;
+        };
+
+        /**
+         * Determine if inputEl has already been parsed or not
          * @param {jQuery} inputEl
          * @return {Boolean}
          */
@@ -147,36 +157,40 @@
                 that = this;
 
             // get last completed form as string and see if it matches any of the current forms
-            this.getFormString(function (formStr) {
-                if (!$$.util.isString(formStr)) {
-                    callback(formEls);
-                }
-
-                // TODO - this is a DEBUG to allow for last form to not get stuck
-                that.removeFormString();
-                // END DEBUG
-
-                var lastFormExistsBool;
-
-                formEls.each(function (i) {
-                    var el = $(this),
-                        elStr = el.serialize();
-
-                    if (formStr === elStr) {
-                        formEls[i] = null;
-                        lastFormExistsBool = true;
+            function removePreviouslySubmittedForms () {
+                this.getLastFormsArr(function (lastFormStr) {
+                    if (!$$.util.isString(lastFormStr)) {
+                        callback(formEls);
                     }
-                });
 
-                if (true === lastFormExistsBool) {
-                    alert('last form exists!');
-                    formEls = formEls.filter(function (i) {
-                        return (this instanceof HTMLElement);
+                    // TODO - this is a DEBUG to allow for last form to not get stuck
+//                    that.removeLastFormsArr();
+                    // END DEBUG
+
+                    var lastFormExistsBool;
+
+                    formEls.each(function (i) {
+                        var el = $(this),
+                            elStr = el.serialize();
+
+                        if (lastFormStr === elStr) {
+                            formEls[i] = null;
+                            lastFormExistsBool = true;
+                        }
                     });
-                }
 
-                callback(formEls);
-            });
+                    if (true === lastFormExistsBool) {
+                        alert('last form exists!');
+                        formEls = formEls.filter(function (i) {
+                            return (this instanceof HTMLElement);
+                        });
+                    }
+
+                    callback(formEls);
+                });
+            }
+
+            removePreviouslySubmittedForms();
         },
 
         /**
@@ -186,7 +200,7 @@
         evaluateFormInputs: function (formEl) {
             formEl = formEl || $('body');
 
-            var formInputEls = formEl.find('input:text, input[type="checkbox"], input[type="radio"], select, textarea'),
+            var formInputEls = formEl.find('input:text, input[type="checkbox"], input[type="radio"], select, textarea').filter(':visible'),
                 nullElsBool,
                 i;
 
@@ -217,7 +231,6 @@
          * Parse form and fill out according to formInfo values
          */
         fillOutForm: function (formEl) {
-            // TODO - there's so much ajax going on in these ones today that re-evaluating the form for new inputs is essential!!!!!
             formEl = formEl || $('body');
 
             this.setForm(formEl);
@@ -397,13 +410,14 @@
 
             this.listen('INPUT_DONE_HANDLING', function () {
                 i += 1;
-                // DEBUG HERE WITH SETTIMEOUT
+                // DEBUG HERE WITH THE SETTIMEOUT, ALTHOUGH PROBABLY ADVISED TO LEAVE IN..??...  Try to get script to act human!
                 setTimeout(function () {
                     var
                         /**
+                         * There's so much ajax going on in these ones today that re-evaluating the form for new inputs is essential!!!!!
                          * Re-evaluate form inputs length to see if this function needs to be run from the beginning.
                          */
-                            currentInputsLength = that.evaluateFormInputs(formEl).length,
+                        currentInputsLength = that.evaluateFormInputs(formEl).length,
                         inputEl;
 
                     if (currentInputsLength !== formInputs.length) {
@@ -440,6 +454,12 @@
             var hrefsClickedArr = [],
                 windowNum,
                 windowLimitNum = this.getClickAroundWindowLimit();
+
+            setTimeout(function () {
+                if (0 === windowNum) {
+                    $$('Offer').skipOffer();
+                }
+            }, this.getClickAroundTimeLimit);
 
             $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
                 $('button, a').each(function () {

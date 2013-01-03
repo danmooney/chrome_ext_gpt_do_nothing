@@ -61,7 +61,7 @@
         /**
          * Used purely as a DEBUG to make sure jQuery selectors are proper
          */
-        colorOffers: function (offersArr) {
+        colorSiteOffers: function (offersArr) {
             var navigation = this.getNavigation(),
                 offerEls = [],
                 i;

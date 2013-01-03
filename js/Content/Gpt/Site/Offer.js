@@ -2,20 +2,20 @@
     'use strict';
 
     $$.klass(function GptSiteOffer () {
-        var currentOffer = {},
+        var currentSiteOffer = {},
             // TODO - need to be able to stop timer if page is loading/redirecting???????????
             minTimeLimitToComplete = /*50*/ 9999 * 1000, // 50 seconds
             timeLimitToComplete = 2 * 60 * 1000, // 2 minutes by default, will be gauged and overwritten based on price
             offerTimeout;
 
-        this.setOfferTimeout = function () {
+        this.setSiteOfferTimeout = function () {
             var that = this;
             offerTimeout = setTimeout(function () {
                 that.offerTimedOut();
             }, this.getTimeLimitToComplete());
         };
 
-        this.clearOfferTimeout = function () {
+        this.clearSiteOfferTimeout = function () {
             clearTimeout(offerTimeout);
         };
 
@@ -27,7 +27,7 @@
          * Calculate time limit on offer based on its price
          */
         this.calculateAndSetTimeLimitToComplete = function (offer) {
-            offer = offer || this.getCurrentOffer();
+            offer = offer || this.getCurrentSiteOffer();
 
             var price = parseFloat(/[\.]?[\d]+/.exec(offer.price)[0]),  // gets any decimal/digit combo from the unsanitized string
                 priceTimeMultiplier = .12, // so $1.00 will take 120 seconds, $.50 will take 60 seconds
@@ -43,12 +43,12 @@
             timeLimitToComplete = calculatedTimeLimit;
         };
 
-        this.setCurrentOffer = function (offerObj) {
-            currentOffer = offerObj;
+        this.setCurrentSiteOffer = function (offerObj) {
+            currentSiteOffer = offerObj;
         };
 
-        this.getCurrentOffer = function () {
-            return currentOffer;
+        this.getCurrentSiteOffer = function () {
+            return currentSiteOffer;
         };
     }, {
         _static: true,
@@ -58,7 +58,7 @@
          * work on next offer.
          */
         offerTimedOut: function (offer) {
-            offer = offer || this.getCurrentOffer();
+            offer = offer || this.getCurrentSiteOffer();
 
             var that = this;
 
@@ -66,22 +66,22 @@
                 klass: 'Window',
                 method: 'removeAllTabsInWindowExceptGptTab'
             }, function () {
-                that.submitOffer(offer);
+                that.submitSiteOffer(offer);
             });
         },
         /**
          * Callback when offer completes, which happens only when offer times out.
          * Hits the submit button on the offer
          */
-        submitOffer: function (offer) {
-            offer = offer || this.getCurrentOffer();
+        submitSiteOffer: function (offer) {
+            offer = offer || this.getCurrentSiteOffer();
             $$('Storage').setItem('currentGptRedirectUrl', window.location.href, function () {
                 offer.formEl.submit();
             });
         },
 
-        offerSkip: function (submitBool) {
-            this.clearOfferTimeout();
+        skipSiteOffer: function (submitBool) {
+            this.clearSiteOfferTimeout();
 
             var that = this;
 
@@ -90,23 +90,27 @@
                 method: 'removeAllTabsInWindowExceptGptTab'
             }, function () {
                 if (true === submitBool) {
-                    that.submitOffer();
+                    that.submitSiteOffer();
                 } else {
                     that.trigger('OFFER_DONE');
                 }
             });
         },
 
-        offerExpired: function () {
+        /**
+         * Site Offer expired (or done... TODO - maybe refactor method name??)
+         * @return {*}
+         */
+        siteOfferExpired: function () {
             alert('OFFER EXPIRED');
-            return this.offerSkip(true);  // just submit the stupid thing so it won't appear on the list
+            return this.skipSiteOffer(true);  // just submit the stupid thing so it won't appear on the list
         },
 
         /**
          * @param {Object} offer
          */
-        completeOffer: function (offer) {
-            offer = offer || this.getCurrentOffer();
+        completeSiteOffer: function (offer) {
+            offer = offer || this.getCurrentSiteOffer();
 
             if (!offer) {
                 alert('NO offer exists in completeOffer??');
@@ -122,13 +126,13 @@
                 that = this;
 
             if (!linkEl) {
-                this.offerSkip();
+                this.skipSiteOffer(false);
             }
 
             href = linkEl.attr('href');
 
             if (!href) {
-                this.offerSkip(false);
+                this.skipSiteOffer(false);
             }
 
             hasOnClick = $$.util.isString(linkEl.attr('onclick'));
@@ -150,7 +154,7 @@
                     args: [tabData]
                 }, function (tab) {
                     Storage.setItem('offerTab', tab, function () {
-                        that.setOfferTimeout();
+                        that.setSiteOfferTimeout();
                     });
                 });
             });
@@ -160,7 +164,7 @@
          * is done through timeout
          * @param {Array} offers
          */
-        completeOffers: function (offers) {
+        completeSiteOffers: function (offers) {
             var that = this,
                 i = 0;
 
@@ -168,8 +172,8 @@
                 $$('GptSite').goToNextPage();
             }
 
-            function storeOffer (offer, callback) {
-                that.setCurrentOffer(offer);
+            function storeSiteOffer (offer, callback) {
+                that.setCurrentSiteOffer(offer);
                 $$('Storage').setItem('currentOffer', offer, function () {
                     callback.call(that);
                 });
@@ -182,12 +186,12 @@
                 if (i === offers.length) {
                     $$('GptSite').goToNextPage();
                 } else {
-                    storeOffer(offers[i], that.completeOffer);
+                    storeSiteOffer(offers[i], that.completeSiteOffer);
                 }
             });
 
 
-            storeOffer(offers[i], that.completeOffer);
+            storeSiteOffer(offers[i], that.completeSiteOffer);
         }
     });
 }());

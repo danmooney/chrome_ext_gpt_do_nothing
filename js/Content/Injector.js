@@ -2,6 +2,7 @@
     'use strict';
     $$.klass(function Injector () {
         var that = this,
+            popupCheckingInterval = 200,
             content = {
                 overrideAlert: function () {
                     var win = window;
@@ -52,6 +53,10 @@
            return content[fnStr];
         };
 
+        this.getPopupCheckingInterval = function () {
+            return popupCheckingInterval;
+        };
+
         /**
          * This is for the purposes of message passing when a confirm or an alert happens
          * TODO - is there a better way to send messages?
@@ -69,33 +74,33 @@
     }, {
         _static: true,
 
-        init: function () {
-            setInterval(this.checkForInterceptedPopupsAndTrigger, 200);
-        },
         checkForInterceptedPopupsAndTrigger: function () {
-            var interceptedPopups = $('.gpt-popup-box'),
-                triggerStr,
-                that = this;
+            var that = this;
+            return setInterval(function () {
+                var interceptedPopups = $('.gpt-popup-box'),
+                    triggerStr;
 
-            if (interceptedPopups.length === 0) {
-                return;
-            }
-
-            interceptedPopups.each(function () {
-                var popupEl = $(this);
-
-                switch (popupEl.attr('id')) {
-                    case 'gpt-offer-alert':
-                        triggerStr = 'onalert';
-                        break;
-                    case 'gpt-offer-confirm':
-                        triggerStr = 'onconfirm';
-                        break;
+                if (interceptedPopups.length === 0) {
+                    return;
                 }
 
-                that.trigger(triggerStr, popupEl.text());
-                popupEl.remove();
-            });
+                interceptedPopups.each(function () {
+                    var popupEl = $(this);
+
+                    switch (popupEl.attr('id')) {
+                        case 'gpt-offer-alert':
+                            triggerStr = 'onalert';
+                            break;
+                        case 'gpt-offer-confirm':
+                            triggerStr = 'onconfirm';
+                            break;
+                    }
+
+                    console.warn("TRIGGERING " + triggerStr);
+                    that.trigger(triggerStr, popupEl.text());
+                    popupEl.remove();
+                });
+            }, that.getPopupCheckingInterval());
         },
         inject: function (fnStr) {
             var script = document.createElement('script');

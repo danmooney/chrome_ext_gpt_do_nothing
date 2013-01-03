@@ -73,7 +73,7 @@
          * @return {jQuery}
          */
         evaluateSubmitEls: function (formEl) {
-            var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick]');
+            var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick]').filter(':visible');
             this.setSubmitEls(submitEls);
             return submitEls;
         },

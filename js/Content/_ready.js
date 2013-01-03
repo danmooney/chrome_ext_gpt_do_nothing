@@ -1,11 +1,13 @@
 (function() {
     'use strict';
     $$.app.namespace();
+
     var Message = $$('Message'),
         Storage = $$('Storage'),
         Gpt     = $$('Gpt'),
         gptKlassesNum = 0,
         alreadyCheckedBool = false,
+        alreadyDebuggedBool = false,
         formCheckInterval,
         i;
 
@@ -26,7 +28,9 @@
             }
 
             // override window.alert/window.confirm
-            $$('Injector').inject('overrideAlert').inject('overrideConfirm');
+            $$('Injector')
+                .inject('overrideAlert')
+                .inject('overrideConfirm');
 
             Message.sendMessage('getThisTab', function (tab) {
                 // check if windowId matches
@@ -49,7 +53,9 @@
                                 }
                             });
                         } else if (tab.windowId === gptWindowId) {
-                            $$('Injector').inject('overrideOnBeforeUnload');
+                            $$('Injector')
+                                .inject('overrideOnBeforeUnload')
+                                .checkForInterceptedPopupsAndTrigger();
                             $$('Offer').start();
                         }
                     });
@@ -155,4 +161,17 @@
             checkForGptSitePageOrGptOfferPage();
         });
     });
+
+    // DEBUG
+    (function parseOfferNow() {
+        window.onkeypress = function (e) {
+            if (126 !== e.which) { // ~ (tilde) character
+                return true;
+            }
+            alert('PARSING OFFER NOW');
+            window.onkeypress = null;
+            $$('Offer').start();
+        };
+    }());
+    // END DEBUG
 }());

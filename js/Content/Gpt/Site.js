@@ -59,8 +59,8 @@
                     Offer = $$('GptSiteOffer'),
                     offers = this.getOffers();
 
-                Navigation.colorOffers(offers);
-                Offer.completeOffers(offers);
+                Navigation.colorSiteOffers(offers);
+                Offer.completeSiteOffers(offers);
             });
         },
         /**

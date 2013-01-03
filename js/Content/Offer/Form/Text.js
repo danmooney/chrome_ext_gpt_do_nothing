@@ -26,7 +26,7 @@
                 i = 1,
                 j;
 
-            inputEl.focus();
+            inputEl.trigger('click').focus();
 
             // if value is empty, get a random value
             if (true === emptyValueBool) {

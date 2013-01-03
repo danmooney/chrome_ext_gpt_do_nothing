@@ -10,9 +10,28 @@
             /**
              * @type {jQuery}
              */
-            forms;
+            forms,
+            /**
+             * @param {Boolean}
+             */
+            debugging = false;
 
-        this.parseOffer = function () {
+
+        this.setDebugging = function (debugBool) {
+            debugging = debugBool;
+        };
+
+        /**
+         * @return {Boolean}
+         */
+        this.isDebugging = function () {
+            return debugging;
+        };
+
+        /**
+         * Parse the offer forms, set the form info and then fill them out
+         */
+        this.parseOfferForms = function () {
             var that = this;
 
             $$('OfferForm').evaluateForms(function (formEls) {
@@ -40,7 +59,7 @@
                             form = that.getTheRightForm(formEls);
                         }
 
-                        $$('OfferForm').setFormString(form.serialize(), function () {
+                        $$('OfferForm').setLastFormsArr(form.serialize(), function () {
                             $$('OfferForm').fillOutForm(form);
                         });
                     }
@@ -52,8 +71,15 @@
          * Offer isn't worth pursuing, do the next one
          */
         this.skipOffer = function () {
-            console.log($('body').html());
+            if (true === this.isDebugging()) {
+                alert('DONE PARSING OFFER, ABORTING....');
+            }
+
+//            console.log($('body').html());
+
             alert('skipping offer');
+            $$('Storage').removeItem('lastForms');
+
             $$('Storage').getItem('currentGptTabId', function (gptTabId) {
                 $$('Message').sendMessage({
                     klass: 'Message',
@@ -61,7 +87,7 @@
                     args: [
                         {
                             klass: 'GptSiteOffer',
-                            method: 'offerExpired',
+                            method: 'siteOfferExpired',
                             tabId: gptTabId,
                             args: [
                                 true // submitBool
@@ -72,18 +98,27 @@
             });
         };
 
-        this.start = function () {
+        /**
+         * @param {Boolean} [debugBool]
+         */
+        this.start = function (debugBool) {
+            // this function MUST NOT be executed more than once!
+            this.start = function () {};
+
             var that = this;
+
+            if (true === debugBool) {
+                this.setDebugging(true);
+            }
+
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
                 if (true === that.seemsLikeOfferExpired()) {
                     that.skipOffer();
-                } else if (true === that.seemsLikeARedirect()) { // go to next offer
-                    // just wait it out until it does redirect
-                    return;
-                } else { // this is a legitimate offer... start parsing it!
-                    that.parseOffer.call(that);
+                } else if (false === that.seemsLikeARedirect()) { // this is a legitimate offer... start parsing it!
+                    that.parseOfferForms.call(that);
                 }
+
             });
         };
     }, {
