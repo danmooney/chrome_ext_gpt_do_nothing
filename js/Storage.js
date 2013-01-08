@@ -81,7 +81,7 @@
          * @example
          *      Storage.freezeGetOnItem(options);
          *      Storage.getItem(''); // works
-         *      Storage.getItem(''); // FROZEN!
+         *      Storage.getItem(''); // FROZEN, CANNOT FETCH!
          * @param item
          */
         freezeGetOnItem: function (item) {

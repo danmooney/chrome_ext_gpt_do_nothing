@@ -2,7 +2,8 @@ What if there's more than 4 forms on the page??
 ex. points2shop.com
 Time to store all forms completed thoughout the course of a single offer.
 
-Maybe sort forms by largest form first?
+!! Sort forms by largest form first (by square footage)...
+      Same with clicking on submits and input els in attempt to submit!
 
 ## With input type="image":
 -- onclick is triggered but NOT onsubmit when clicked manually

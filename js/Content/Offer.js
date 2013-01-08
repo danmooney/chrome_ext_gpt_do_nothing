@@ -59,7 +59,7 @@
                             form = that.getTheRightForm(formEls);
                         }
 
-                        $$('OfferForm').setLastFormsArr(form.serialize(), function () {
+                        $$('OfferForm').setLastFormsArr(form, function () {
                             $$('OfferForm').fillOutForm(form);
                         });
                     }

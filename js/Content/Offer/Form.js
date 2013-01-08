@@ -86,16 +86,40 @@
 
         /**
          * Store names of form as query string to ensure that we're not filling out the same form multiple times
-         * @param {String} formStr
+         * @param {jQuery} formEl
          * @param callback
          */
-        // TODO - set as array of serialized form strings (and maybe measure by another metric and use objects instead) to determine whether or not form has already been submitted, and then clear lastFormArr after each offer
-        this.setLastFormsArr = function (formStr, callback) {
-            formStr = (!$$.util.isString(formStr))
-                ? formStr.serialize()
-                : formStr;
+        this.setLastFormsArr = function (formEl, callback) {
+            var Storage = $('Storage'),
+                that = this;
 
-            $$('Storage').setItem('lastForms', formStr, callback);
+            Storage.freezeGetOnItem('lastForms');
+            Storage.getItem('lastForms', function (lastFormsArr) {
+                lastFormsArr = lastFormsArr || [];
+
+                var lastFormObj = {},
+                    i;
+
+                lastFormObj.serializedStr = formEl.serialize();
+                lastFormObj.formNamesArr = [];
+
+                for (i = 0; i < formEl.find('[name]').length; i += 1) {
+                    lastFormObj.formNamesArr.push({
+                        'name': formEl.eq(i).attr('name'),
+                        'type': formEl.eq(i).attr('type'),
+                    });
+                }
+
+                lastFormsArr.push(lastFormObj);
+
+                Storage.setItem('lastForms', lastFormsArr, function () {
+                    Storage.releaseGetOnItem('lastForms'); // release and allow another get of 'lastForms'
+                    Storage.freezeGetOnItem('lastForms');
+                    if ($$.util.isFunc(callback)) {
+                        callback();
+                    }
+                });
+            });
         };
 
         this.getLastFormsArr = function (callback) {

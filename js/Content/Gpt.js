@@ -128,7 +128,7 @@
                     startingUrlObj[that.constructor.name] = that.urlArr;
                     Storage.setItem('startingUrls', startingUrlObj, function () {
 //                        console.log('just set ' + that.constructor.name, startingUrlObj, new Date());
-                        Storage.releaseGetOnItem('startingUrls');
+                        Storage.releaseGetOnItem('startingUrls'); // releasing and freezing to allow another GPT klass to fetch startingUrls
                         Storage.freezeGetOnItem('startingUrls');
                     });
                 });
