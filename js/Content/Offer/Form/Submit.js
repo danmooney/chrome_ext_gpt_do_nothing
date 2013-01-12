@@ -74,6 +74,14 @@
          */
         evaluateSubmitEls: function (formEl) {
             var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick]').filter(':visible');
+
+            if (submitEls.length === 0) { // try buttons
+                submitEls = formEl.find('button');
+                if (submitEls.length === 0) {  // no submits or buttons.... try with body // TODO - is this safe?
+                    return evaluateSubmitEls($('body'));
+                }
+            }
+
             this.setSubmitEls(submitEls);
             return submitEls;
         },
@@ -91,9 +99,16 @@
                     this.addXAndYToForm(formEl);
                 }
 
+                // all that needs to be done is simply click on the submit...?  It seems to trigger submits on any element that has a handler for it!
                 submitButtonEls.trigger('click');
-                formEl.submit();
-                submitButtonEls.trigger('submit');
+//                submitButtonEls.trigger('submit');
+
+                // if page isn't redirecting or doing anything after submit, start offer over again and work on another form
+                setTimeout(function () {
+                    alert('submit not working, working on another form');
+                    $$('Offer').start();
+                }, 9000);
+
             } else { // these sick fucks sometimes don't put their shit in form elements... search for the submit triggerer if this is true!
                 alert('Trying to submit, but no proper form element on page!');
                 submitButtonEls.trigger('click').trigger('submit');

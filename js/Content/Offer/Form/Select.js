@@ -33,7 +33,7 @@
 
                     if (selectVal.toLowerCase().indexOf(currentVal) !== -1 ||
                         textVal.toLowerCase().indexOf(currentVal)   !== -1
-                        ) {
+                    ) {
                         // match found
                         matchFoundBool = true;
                         matchingValueEl = el;

@@ -12,7 +12,7 @@
         };
 
         this.getRandomStr = function () {
-            return randomStrArr[Math.floor(Math.random(0, randomStrArr.length))];
+            return randomStrArr[Math.floor(Math.random() * randomStrArr.length)];
         };
 
     }, {

@@ -130,11 +130,13 @@
         // obviously put somewhere better later
         $$('Storage').setItem('formInfo', [{
             first: 'Daniel',
+            middle: 'R',
             last: 'Mooney',
             name: 'Daniel Mooney',
             address: '5 Nabby Rd',
             address2: 'Unit A12',
             city: 'Danbury',
+            password: 'A180s1c61cdA', // TODO - make password meet universal requirements? (i.e. special characters??)
             state: {
                 short: 'CT',
                 long: 'Connecticut'
@@ -144,10 +146,13 @@
                 long: 'United States'
             },
             zip: '06811',
-            phone: {
-                home: '2032619103',
-                mobile: '2032619102'
-            },
+            home_phone: '2032619103',
+            cell_phone: '2032619102',
+            phone: '2032619103',
+//            phone: {
+//                home: '2032619103',
+//                mobile: '2032619102'
+//            },
             email: 'doesttwork@gmail.com'
         }]);
 

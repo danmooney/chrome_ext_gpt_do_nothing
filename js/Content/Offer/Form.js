@@ -22,10 +22,14 @@
              */
             formAliases = {
                 email: [
-                    'e-mail'
+                    'e-mail',
+                    'e_mail'
                 ],
                 first: [
 
+                ],
+                middle: [
+                    'initial'
                 ],
                 last: [
 
@@ -37,13 +41,13 @@
 
                 ],
                 address2: [
-
+                    'second'
                 ],
                 city: [
 
                 ],
                 state: [
-
+                    'province'
                 ],
                 country: [
 
@@ -52,14 +56,29 @@
                     'postal',
                     'zc'
                 ],
-                phone: {
-                    home: [
-
-                    ],
-                    mobile: [
-                        'cell'
-                    ]
-                }
+                home_phone: [
+                    'home',
+                    'homephone',
+                    'home-phone'
+                ],
+                cell_phone: [
+                    'cell',
+                    'mobile'
+                ],
+                phone: [
+//                    'area',
+//                    {
+//                        home: [
+//
+//                        ],
+//                        mobile: [
+//                            'cell'
+//                        ]
+//                    }
+                ],
+                password: [
+                    'pass'
+                ]
             };
 
         /**
@@ -108,14 +127,14 @@
                 lastFormsArr = lastFormsArr || [];
 
 
-                var formInputEls = formEl.find('[name]').not('[type="hidden"]'),
+                var formInputEls = formEl.find(':input[name]').not('[type="hidden"]'),
                     /**
                      * The new last form object to be appended to array
                      */
                     lastFormObj = {},
                     lastFormNameTypeObj;
 
-                lastFormObj.serializedStr = formEl.find(':input[type!="hidden"]').serialize();
+                lastFormObj.serializedStr = formInputEls.serialize();
                 lastFormObj.formNamesArr = [];
 
                 /**
@@ -296,7 +315,7 @@
         evaluateFormInputs: function (formEl) {
             formEl = formEl || $('body');
 
-            var formInputEls = formEl.find('input:text, input[type="checkbox"], input[type="radio"], select, textarea').filter(':visible'),
+            var formInputEls = formEl.find(':input[type!="submit"]')/*('input:text, input[type="checkbox"], input[type="radio"], select, textarea')*/.filter(':visible'),
                 nullElsBool,
                 i;
 
@@ -338,8 +357,10 @@
                 i = 0;
 
             if (formInputs.length === 0) {
-                alert('ZERO form inputs in this form??!!?');
-                return $$('OfferFormSubmit').submit(formEl);
+                alert('ZERO visible inputs in this form; restarting offer process with another form');
+
+                return $$('Offer').start();
+//                return $$('OfferFormSubmit').submit(formEl);
             }
 
             /**
@@ -382,25 +403,60 @@
                 var formAliasNameStr,
                     formAliasArr,
                     matchedFormNameStr,
-                    i,
-                    j;
+                    i;
+
+                /**
+                 * @param {Array|Object} formAliasArr
+                 * @return {String|null}
+                 */
+                function lookForAlias (formAliasArr) {
+                    var matchedAliasStr = '',
+                        j;
+
+                    for (j = 0; j < formAliasArr.length; j += 1) {
+                        if ($$.util.isString(formAliasArr[j])) {
+                            if (formNameStr.indexOf(formAliasArr[j]) !== -1) {
+                                matchedAliasStr = formAliasArr[j];
+                                return matchedAliasStr;
+                            }
+                        } else if ($$.util.isObject(formAliasArr[j])) {  // nested object
+                            if (matchedAliasStr = lookForAlias(formAliasArr[j])) {
+                                return matchedAliasStr;
+                            }
+                        }
+                    }
+
+                    return null;
+                }
 
                 for (i in formAliases) {
                     if (!formAliases.hasOwnProperty(i)) {
                         continue;
                     }
-                    formAliasNameStr = i;
-                    formAliasArr = formAliases[i];
+
+                    formAliasNameStr = i;  // the array key
+                    formAliasArr = formAliases[i]; // the array value
 
                     if (formNameStr.indexOf(formAliasNameStr) !== -1) {  // object key is direct match
                         matchedFormNameStr = formAliasNameStr;
                     } else { // look in alias array list
-                        for (j = 0; j < formAliasArr.length; j += 1) {
-                            if (formNameStr.indexOf(formAliasArr[j]) !== -1) {
-                                matchedFormNameStr = formAliasNameStr;
-                                break;
-                            }
-                        }
+                        matchedFormNameStr = lookForAlias(formAliasArr);
+//                        for (j = 0; j < formAliasArr.length; j += 1) {
+//                            if (matchedFormNameStr = lookForAlias(formAliasArr[j])) {
+//                                break;
+//                            }
+//
+//                            if ($$.util.isString(formAliasArr[j])) {
+//                                if (formNameStr.indexOf(formAliasArr[j]) !== -1) {
+//                                    matchedFormNameStr = formAliasNameStr;
+//                                    break;
+//                                }
+//                            } else if ($$.util.isArray(formAliasArr[j])) {  // nested array  TODO - hopefully not nested more than once, or else need to write recursive function!
+//                                for (k = 0; k < formAliasArr[j].length; k += 1) {
+//
+//                                }
+//                            }
+//                        }
                     }
 
                     if ($$.util.isString(matchedFormNameStr)) {
@@ -493,7 +549,7 @@
 
                 if ('select' === tagNameStr) {
                     typeStr = 'select';
-                } else if (!$$.util.isString(typeStr)) {
+                } else if (!$$.util.isString(typeStr) || 'password' === typeStr) {
                     typeStr = 'text';
                 }
 
