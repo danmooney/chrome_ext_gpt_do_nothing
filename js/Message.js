@@ -65,16 +65,23 @@
                 returnValMixed,
                 responseStr,
                 methodParams = $$.util.getParamsOfFn(instance[message.method]),
-                async = methodParams.indexOf('callback') !== -1;
+                async = methodParams.indexOf('callback') !== -1,
+                isDebugResponseBool;
 
             responseStr = 'Sending Response back:\n' + message.klass + '.' + message.method + '(' + message.args + ')';
+
+            isDebugResponseBool = (responseStr.toLowerCase().indexOf('debug') !== -1);
 
             function done (returnVal) {
                 if (typeof returnVal !== 'undefined') {
                     responseStr += ' returned ' + returnVal;
                 }
                 responseStr =  responseStr.replace('(undefined)', '()');
-                console.log(responseStr);
+
+                if (false === isDebugResponseBool) {
+                    console.log(responseStr);
+                }
+
                 return sendResponse(returnVal);
             }
 
@@ -87,7 +94,9 @@
 
                 responseStr =  responseStr.replace('(undefined)', '()');
 
-                if (typeof returnValMixed !== 'undefined') {
+                if (typeof returnValMixed !== 'undefined' &&
+                    false === isDebugResponseBool
+                ) {
                     console.log(responseStr);
                 }
 

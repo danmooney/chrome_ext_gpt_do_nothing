@@ -34,9 +34,15 @@
         this.parseOfferForms = function () {
             var that = this;
 
+            /**
+             * Evaluate form elements on page and enumerate through lastForms array to make
+             * sure we are not filling out the same form twice
+             */
             $$('OfferForm').evaluateForms(function (formEls) {
                 forms = formEls;
+                // DEBUG - get from user options!
                 $$('OfferForm').setFormInfo(null, function () {
+                // END DEBUG
                     var form,
                         inputEls;
 
@@ -59,6 +65,9 @@
                             form = that.getTheRightForm(formEls);
                         }
 
+                        /**
+                         * Add form to lastFormsArr and fillOutForm as callback
+                         */
                         $$('OfferForm').setLastFormsArr(form, function () {
                             $$('OfferForm').fillOutForm(form);
                         });
@@ -125,6 +134,7 @@
         _static: true,
         /**
          * If multiple visible forms on the page, find out which one is the best one
+         * TODO - sort by square footage!
          */
         getTheRightForm: function (formEls) {
             var mostNameElsCount = 0,

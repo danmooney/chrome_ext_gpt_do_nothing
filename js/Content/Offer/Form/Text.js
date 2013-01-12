@@ -38,7 +38,12 @@
              */
             function changeValue () {
                 var that = this;
-                inputEl.val(value.substr(0, i));
+
+                inputEl
+                    .trigger('keydown')
+                    .trigger('keypress')
+                    .val(value.substr(0, i))
+                    .trigger('keyup');
 
                 if (i === value.length) {
                     inputEl.blur();

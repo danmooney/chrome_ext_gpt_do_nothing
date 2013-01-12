@@ -170,7 +170,9 @@
             }
             alert('PARSING OFFER NOW');
             window.onkeypress = null;
-            $$('Offer').start();
+            $$('OfferForm').removeLastFormsArr(function () {
+                $$('Offer').start(true);
+            });
         };
     }());
     // END DEBUG

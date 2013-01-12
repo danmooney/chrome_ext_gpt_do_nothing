@@ -1,11 +1,19 @@
-What if there's more than 4 forms on the page??
-ex. points2shop.com
-Time to store all forms completed thoughout the course of a single offer.
+??  What if there's more than 4 forms on the page??
+    ex. points2shop.com
+
+??  How to pass e.which to jQuery's triggers?
+
+<> Time to store all forms completed thoughout the course of a single offer.
 
 !! Sort forms by largest form first (by square footage)...
       Same with clicking on submits and input els in attempt to submit!
+
+<> On change event is NOT fired when value is directly changed using jQuery's val method
+<> Blur and focus events are fired when using jQuery's blur/focus, respectively
+<> Value captured in keydown is the old value prior to key press, while value captured in keyup is the new value after key press
 
 ## With input type="image":
 -- onclick is triggered but NOT onsubmit when clicked manually
 -- x and y are included in the POST only when clicked manually
 -- if you add x and y hidden inputs to the form and click the input type="image" manually, they will be overwritten!
+

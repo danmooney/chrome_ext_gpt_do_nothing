@@ -18,10 +18,17 @@
             /**
              * Form info name/alias mapping
              * @type {Object}
+             * TODO - phone is going to be tough to do! Sometimes there's 3 inputs, sometimes there's 1!
              */
             formAliases = {
                 email: [
                     'e-mail'
+                ],
+                first: [
+
+                ],
+                last: [
+
                 ],
                 name: [
 
@@ -56,6 +63,7 @@
             };
 
         /**
+         * Set the user's form information
          * @param formInfoObj
          * @param callback
          * TODO - incorporate options and check currently selected formInfo
@@ -85,30 +93,49 @@
         };
 
         /**
-         * Store names of form as query string to ensure that we're not filling out the same form multiple times
+         * Store names of form as query string to ensure that we're not filling out the same form multiple times.
+         * This method appends to the currently existing stored lastForms array and creates it if it doesn't exist
+         *
          * @param {jQuery} formEl
          * @param callback
          */
         this.setLastFormsArr = function (formEl, callback) {
-            var Storage = $('Storage'),
+            var Storage = $$('Storage'),
                 that = this;
 
             Storage.freezeGetOnItem('lastForms');
             Storage.getItem('lastForms', function (lastFormsArr) {
                 lastFormsArr = lastFormsArr || [];
 
-                var lastFormObj = {},
-                    i;
 
-                lastFormObj.serializedStr = formEl.serialize();
+                var formInputEls = formEl.find('[name]').not('[type="hidden"]'),
+                    /**
+                     * The new last form object to be appended to array
+                     */
+                    lastFormObj = {},
+                    lastFormNameTypeObj;
+
+                lastFormObj.serializedStr = formEl.find(':input[type!="hidden"]').serialize();
                 lastFormObj.formNamesArr = [];
 
-                for (i = 0; i < formEl.find('[name]').length; i += 1) {
-                    lastFormObj.formNamesArr.push({
-                        'name': formEl.eq(i).attr('name'),
-                        'type': formEl.eq(i).attr('type'),
-                    });
-                }
+                /**
+                 * Add name and type of each visible input to lastFormObj.formNamesArr
+                 */
+                formInputEls.each(function (i) {
+                    var formInputEl = $(this);
+
+                    lastFormNameTypeObj = {};
+
+                    if (formInputEl.attr('name')) {
+                        lastFormNameTypeObj.name = formInputEl.attr('name');
+                    }
+
+                    if (formInputEl.attr('type')) {
+                        lastFormNameTypeObj.type = formInputEl.attr('type');
+                    }
+
+                    lastFormObj.formNamesArr.push(lastFormNameTypeObj);
+                });
 
                 lastFormsArr.push(lastFormObj);
 
@@ -180,45 +207,90 @@
             var formEls = $('form:visible'),
                 that = this;
 
-            // get last completed form as string and see if it matches any of the current forms
+            /**
+             * Get lastForms array and see if it matches any of the current forms,
+             * and if so, remove!
+             */
             function removePreviouslySubmittedForms () {
-                this.getLastFormsArr(function (lastFormStr) {
-                    if (!$$.util.isString(lastFormStr)) {
-                        callback(formEls);
+                // TODO - write
+                this.getLastFormsArr(function (lastFormsArr) {
+                    if (!$$.util.isArray(lastFormsArr) || lastFormsArr.length === 0) {
+                        return callback(formEls);
                     }
 
-                    // TODO - this is a DEBUG to allow for last form to not get stuck
+                    // DEBUG to allow for last form to not get stuck
 //                    that.removeLastFormsArr();
                     // END DEBUG
+                    var formExistsInLastFormsBool;
 
-                    var lastFormExistsBool;
+                    formEls.filter(function (i) {
+                        formExistsInLastFormsBool = false;
 
-                    formEls.each(function (i) {
-                        var el = $(this),
-                            elStr = el.serialize();
+                        var formEl = formEls.eq(i),
+                            lastFormObj,
+                            nameStr,
+                            typeStr,
+                            j,
+                            k;
 
-                        if (lastFormStr === elStr) {
-                            formEls[i] = null;
-                            lastFormExistsBool = true;
+                        /**
+                         * Checks for all the names and types in the form and compare
+                         * @return {Boolean}
+                         */
+                        function lastFormExistsInEnumeratingThroughLastNameTypeObj (lastFormNameTypesArr) {
+                            for (k = 0; k < lastFormNameTypesArr.length; k += 1) {
+                                nameStr = lastFormNameTypesArr[k].name;
+                                typeStr = lastFormNameTypesArr[k].type;
+
+                                if (nameStr &&
+                                    formEl.find('[name="' + nameStr + '"]').length === 0
+                                ) {
+                                    return true;
+                                }
+
+                                if (typeStr &&
+                                    formEl.find('[type="' + typeStr + '"]').length === 0
+                                ) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
                         }
+
+                        for (j = 0; j < lastFormsArr.length; j += 1) {
+                            lastFormObj = lastFormsArr[j];
+                            if (formEl.find(':input[type!="hidden"]').serialize() === lastFormObj.serializedStr) {
+                                formExistsInLastFormsBool = true;
+                                break;
+                            }
+
+                            if (true === lastFormExistsInEnumeratingThroughLastNameTypeObj(lastFormsArr[j].formNamesArr)) {
+                                formExistsInLastFormsBool = true;
+                                break;
+                            }
+                        }
+
+                        if (true === formExistsInLastFormsBool) {
+                            return false;
+                        }
+
+                        return true;
                     });
 
-                    if (true === lastFormExistsBool) {
+                    if (true === formExistsInLastFormsBool) {
                         alert('last form exists!');
-                        formEls = formEls.filter(function (i) {
-                            return (this instanceof HTMLElement);
-                        });
                     }
 
                     callback(formEls);
                 });
             }
 
-            removePreviouslySubmittedForms();
+            removePreviouslySubmittedForms.call(that);
         },
 
         /**
-         * Parse the DOM and look for form inputs
+         * Parse the DOM and look for form inputs based on forms already evaluated
          * @return {jQuery} [formEl]
          */
         evaluateFormInputs: function (formEl) {
