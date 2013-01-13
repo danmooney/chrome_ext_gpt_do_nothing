@@ -105,7 +105,7 @@
          * @param [inputEls]
          */
         submit: function (formEl, inputEls) {
-            this.evaluateAndSetIsFormBool();
+            this.evaluateAndSetIsFormBool(formEl);
 
             var submitButtonEls = this.evaluateSubmitEls(formEl),
                 that = this;

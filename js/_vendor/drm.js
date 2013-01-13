@@ -5,7 +5,7 @@
  * data is ever passed through this object.
  *
  * @package DRM Klass/Instance Creator
- * @version 1/1/2013
+ * @version 1/13/2013
  * @author Dan Mooney
  */
 ;
@@ -1006,6 +1006,10 @@
             }
 
             return false;
+        };
+
+        Util.isBool = function (bool) {
+            return (bool === true || bool === false);
         };
 
         /**

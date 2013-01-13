@@ -1,13 +1,18 @@
+!! Store login username/password in each GptKlass child,
+     and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
+     It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
+
+<> Some form inputs have really fucked up names.  For example, email input fields sometimes have completely irrelevant names, like 'from'... ?!?!?
+     Use the labelEl to find the right form info type if the value remains an empty string after parsing the name!
+     ex. http://rashkinonlineleaders.com/?site=myownAaronSophiaMLMRD?t=RD-4688-592
+
 <? What if there's more than 4 forms on the page??
      ex. points2shop.com
      EDIT: I guess this is being solved now with the width/height calculations - DM - 011213
 
-?? How to pass e.which to jQuery's triggers?
-
-!! Store login username/password in each GptKlass child,
-     and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
-     It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
 ?? Need to be able to stop timer if page is loading/redirecting???????????
+
+?? How to pass e.which to jQuery's triggers?
 
 ?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
 
@@ -24,4 +29,3 @@
      -- onclick is triggered but NOT onsubmit when clicked manually
      -- x and y are included in the POST only when clicked manually
      -- if you add x and y hidden inputs to the form and click the input type="image" manually, they will be overwritten!
-

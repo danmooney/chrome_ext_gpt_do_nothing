@@ -439,16 +439,17 @@
             /**
              * Get the value from formInfo based on the formNameStr of the form field
              * @param {String} formNameStr the form field name
-             * @param {Array} [nestedAliases] the nested aliases used for recursion
              * @return {String|Object}
              */
-            function getValueByName (formNameStr, nestedAliases) {
+            function getValueByName (formNameStr) {
                 // TODO - this should have different implications for radio and checkbox, since all the form aliases are for text and select inputs only.  In this case, find the matching label and pass that to value
-                if ($$.util.isUndefined(formNameStr)) {
+                if (!$$.util.isString(formNameStr) ||
+                    $.trim(formNameStr).length === 0
+                ) {
                     return '';
                 }
 
-                formNameStr = formNameStr.toLowerCase();
+                formNameStr = $.trim(formNameStr.toLowerCase());
 
                 var formAliasNameStr,
                     formAliasArr,
@@ -522,15 +523,16 @@
             /**
              * Gather all the DOM info for the input and pass off to handler
              * @param inputEl
-             * TODO - maybe group radios together... will this ever be important???
+             * TODO - maybe group radios/checkboxes together... will this ever be important???
              */
             function parseInput (inputEl) {
                 var tagNameStr    = inputEl.prop('tagName').toLowerCase(),
                     nameStr       = inputEl.attr('name'),
-                    value         = getValueByName(nameStr),
                     typeStr       = inputEl.attr('type'),
+                    gptParsedStr  = that.getParsedStr(),
+                    value,
                     labelEl,
-                    gptParsedStr  = that.getParsedStr();
+                    labelTxtStr;
 
                 /**
                  * Try to get the associated label with the form input... hopefully there is a label
@@ -539,7 +541,7 @@
                 function getLabelEl () {
                     var id = inputEl.attr('id'),
                         labelEls = formEl.find('label'),
-                        fakeLabelEl,
+                        fakeLabelEl = $(),
                         closestTd,
                         closestTdSiblings;
 
@@ -574,12 +576,19 @@
                                 return false;
                             }
                         });
-
-                        return fakeLabelEl;
                     }
+
+                    return fakeLabelEl;
                 }
 
-                labelEl = getLabelEl();
+                labelEl     = getLabelEl();
+                labelTxtStr = $.trim(labelEl.text());
+                value       = getValueByName(nameStr);
+
+                // if appropriate value not found within form name, use the label element's text if it exists!
+                if ('' === value && labelTxtStr.length > 0) {
+                    value = getValueByName(labelTxtStr);
+                }
 
                 if ('select' === tagNameStr) {
                     typeStr = 'select';

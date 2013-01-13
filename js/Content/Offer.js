@@ -84,14 +84,14 @@
         /**
          * Offer isn't worth pursuing, do the next one
          */
-        this.skipOffer = function () {
+        this.skipOffer = function (submitBool) {
+            alert('skipping offer');
+
             if (true === this.isDebugging()) {
                 alert('DONE PARSING OFFER, ABORTING....');
+                return;
             }
 
-//            console.log($('body').html());
-
-            alert('skipping offer');
             $$('OfferForm').removeLastFormsArr(function () {
                 $$('Storage').getItem('currentGptTabId', function (gptTabId) {
                     $$('Message').sendMessage({
@@ -103,7 +103,9 @@
                                 method: 'siteOfferExpired',
                                 tabId: gptTabId,
                                 args: [
-                                    true // submitBool
+                                    $$.util.isBool(submitBool)
+                                        ? submitBool
+                                        : true
                                 ]
                             }
                         ]
@@ -133,6 +135,7 @@
                     that.lookForForms.call(that);
                 }
 
+                // it's a redirect... do some waiting
             });
         };
     }, {
@@ -141,7 +144,10 @@
          * If multiple visible forms on the page, find out which one is the best one
          */
         getTheRightForm: function (formEls) {
-            // this doesn't seem like the right criteria to go by!
+            /**
+             * Sort the forms by name input count
+             * NOTE - this doesn't seem like the right criteria to go by!
+             */
             function getTheRightFormByNameCount () {
                 var mostNameElsCount = 0,
                     mostNameElsForm  = formEls.eq(0); // just a default
@@ -161,9 +167,8 @@
 
             /**
              * Sort the forms by square pixelage
-             * @param formEls
              */
-            function getTheRightFormByPixelCount (formEls) {
+            function getTheRightFormByPixelCount () {
                 var mostPixelsCount  = 0,
                     mostPixelsElForm = formEls.eq(0); // just a default
 
@@ -211,7 +216,8 @@
          * Offers seem to go through a bunch of redirects before
          * they actually go to the main page.
          * This method checks for a meta refresh tag somewhere
-         * // TODO - what if there is no meta refresh and it still is a redirect page and assumes user has JS enabled?
+         * TODO - what if there is no meta refresh and it still is a redirect page and assumes user has JS enabled?
+         * TODO - if there is a meta refresh tag, check for the content (seconds before redirect)... there are valid redirect pages that may need to get clickArounds to speed things up!
          */
         seemsLikeARedirect: function () {
             var redirectBool = ($('meta[http-equiv="refresh"]').length > 0);
