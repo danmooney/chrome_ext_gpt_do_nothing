@@ -443,7 +443,7 @@
              * @return {String|Object}
              */
             function getValueByName (formNameStr, nestedAliases) {
-                // TODO - this should have different implications for radio and checkbox, since all the form aliases are for textboxes and selects only.  In this case, find the matching label and pass that to value
+                // TODO - this should have different implications for radio and checkbox, since all the form aliases are for text and select inputs only.  In this case, find the matching label and pass that to value
                 if ($$.util.isUndefined(formNameStr)) {
                     return '';
                 }
@@ -491,22 +491,6 @@
                         matchedFormNameStr = formAliasNameStr;
                     } else { // look in alias array list
                         matchedFormNameStr = lookForAlias(formAliasArr);
-//                        for (j = 0; j < formAliasArr.length; j += 1) {
-//                            if (matchedFormNameStr = lookForAlias(formAliasArr[j])) {
-//                                break;
-//                            }
-//
-//                            if ($$.util.isString(formAliasArr[j])) {
-//                                if (formNameStr.indexOf(formAliasArr[j]) !== -1) {
-//                                    matchedFormNameStr = formAliasNameStr;
-//                                    break;
-//                                }
-//                            } else if ($$.util.isArray(formAliasArr[j])) {  // nested array  TODO - hopefully not nested more than once, or else need to write recursive function!
-//                                for (k = 0; k < formAliasArr[j].length; k += 1) {
-//
-//                                }
-//                            }
-//                        }
                     }
 
                     if ($$.util.isString(matchedFormNameStr)) {
