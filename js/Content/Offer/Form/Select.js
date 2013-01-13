@@ -19,9 +19,9 @@
             }
 
             optionEls.each(function () {
-                var el = $(this),
-                    selectVal = el.val(),
-                    textVal   = el.text(),
+                var el          = $(this),
+                    selectVal   = el.val(),
+                    textVal     = el.text(),
                     currentVal;
 
                 for (i in value) {
@@ -43,10 +43,10 @@
                 }
             });
 
-            // if no match found, choose random number.
-            // avoid choosing first option since that is always the default
+            // if no match found, choose random number!
+            // avoid choosing first option since that is (usually) always the default!
             if (false === matchFoundBool) {
-                randOptionNum = Math.floor(Math.random(1, optionEls.length));
+                randOptionNum = Math.floor(Math.random() * (optionEls.length - 1) + 1);
                 randOptionEl = optionEls.eq(randOptionNum);
                 optionEls.removeAttr('checked');
                 inputEl.val(randOptionEl.val());

@@ -1,6 +1,5 @@
 (function() {
     'use strict';
-    // TODO - serialize form names into JSON and store in Storage so that bot doesn't keep submitting the same form if something goes wrong
     $$.klass(function Offer () {
         var
             /**
@@ -212,7 +211,7 @@
          * Offers seem to go through a bunch of redirects before
          * they actually go to the main page.
          * This method checks for a meta refresh tag somewhere
-         * TODO - what if there is no meta refresh and it still is a redirect page and assumes user has JS enabled?
+         * // TODO - what if there is no meta refresh and it still is a redirect page and assumes user has JS enabled?
          */
         seemsLikeARedirect: function () {
             var redirectBool = ($('meta[http-equiv="refresh"]').length > 0);

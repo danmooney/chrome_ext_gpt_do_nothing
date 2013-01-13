@@ -126,13 +126,23 @@
         console.warn('Global Object: ');
         console.dir(GPT);
 
-        // TODO - Storing contact info here for now
-        // obviously put somewhere better later
+        /**
+         *  TODO - Storing contact info here for now,
+         *         obviously put somewhere better later
+         */
         $$('Storage').setItem('formInfo', [{
             first: 'Daniel',
             middle: 'R',
             last: 'Mooney',
             name: 'Daniel Mooney',
+            sex: 'male',
+            age: '25',
+            month: {
+                short: '6',
+                long: 'June'
+            },
+            date: '3',
+            year: '1987',
             address: '5 Nabby Rd',
             address2: 'Unit A12',
             city: 'Danbury',

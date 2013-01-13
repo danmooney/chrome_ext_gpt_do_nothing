@@ -5,13 +5,13 @@
         // and helps to build a solid structure
 
         var currentRegisteredGptKlassesNum = 0,
-            gptKlassesNum = 0;  // TODO - this seems like it has to be hardcoded, the whole prog is so async
+            gptKlassesNum = 0;
 
         /**
          * List of starting urls to register on
          * Contents can only be of type object and must contain the following keys
          *   -  url: The registered url.  They are evaluated as regexes.
-         *   -  type: String.  Can be either 'offers', 'surveys', ... TODO - expand upon list
+         *   -  type: String.  Can be either 'offers', 'surveys', ...
          * @type {Array}
          */
         this.urlArr = [];

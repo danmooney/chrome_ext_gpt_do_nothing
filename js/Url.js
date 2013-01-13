@@ -8,7 +8,7 @@
     }, {
         _static: true,
         init: function () {
-            // TODO - figure out better place to put this!
+            // TODO - figure out better place to put this!  EDIT: Why is it commented out? - DM - 011312
             this.listen('IS_STARTING_URL', function (gptKlassStr) {
 //                var Message = $$('Message');
 //                Message.sendMessage({

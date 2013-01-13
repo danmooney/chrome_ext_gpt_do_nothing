@@ -48,6 +48,24 @@
                 name: [
 
                 ],
+                sex: [
+                    'gender',
+                    'mf',
+                    'm-f',
+                    'm_f'
+                ],
+                month: [
+
+                ],
+                day: [
+                    'date'
+                ],
+                year: [
+
+                ],
+                age: [
+
+                ],
                 address: [
 
                 ],
@@ -88,7 +106,8 @@
 //                    }
                 ],
                 password: [
-                    'pass'
+                    'pass',
+                    'confirm'
                 ]
             };
 
@@ -278,11 +297,14 @@
                          * Checks for all the names and types in the form and compare
                          * @return {Boolean}
                          * TODO - test!
-                         * TODO - What if lastFormNameTypesArr is considerably few and the formEl inputs considerably many?
-                         *        Say lastForm just has {name:submit} and formEl also has an input with name=submit, but it has much more than that.
-                         *        That would mean that this current function would consider them identical and return true and the form would never get evaluated!!!
                          */
                         function lastFormExistsInEnumeratingThroughLastNameTypeObj (lastFormNameTypesArr) {
+
+                            // if form's name input length is not equal to lastForm's nameArr length, they are obviously different!
+                            if (formEl.find(namedFormInputSelectorStr).length !== lastFormNameTypesArr.length) {
+                                return false;
+                            }
+
                             for (k = 0; k < lastFormNameTypesArr.length; k += 1) {
                                 nameStr = lastFormNameTypesArr[k].name;
                                 typeStr = lastFormNameTypesArr[k].type;
@@ -299,9 +321,9 @@
                                     return false;
                                 }
                             }
+
                             // forms are definitely the same;
                             // every name/type that the last form had this form also has
-
                             return true;
                         }
 
@@ -635,6 +657,7 @@
                 windowNum,
                 windowLimitNum = this.getClickAroundWindowLimit();
 
+            // after a while, if no windows have been popped up, just give up and go to next offer!
             setTimeout(function () {
                 if (0 === windowNum) {
                     $$('Offer').skipOffer();

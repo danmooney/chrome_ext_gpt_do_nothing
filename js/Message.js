@@ -44,7 +44,6 @@
             }
         };
 
-        // TODO - any hope for returning a response through an async method?
         this.getMessage = function (message, sender, sendResponse) {
 
             // special exception here to return tab in sender argument if message === 'getThisTab'

@@ -47,7 +47,7 @@
                 $('#start-stop').click(function () {
                     var q;
                     if (App.isReady()) {
-                        // TODO - confirm hides itself in Mac
+                        // TODO - confirm hides itself in Mac - any workaround?
 //                        q = confirm('Make sure that you are logged in to this GPT site before you proceed.  Also make sure you allowed GPT Do Nothing to be opened in incognito mode.');
 //                        if (q === true) {
                             App.setStatus('Working');

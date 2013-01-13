@@ -3,7 +3,6 @@
 
     $$.klass(function GptSiteOffer () {
         var currentSiteOffer = {},
-            // TODO - need to be able to stop timer if page is loading/redirecting???????????
             minTimeLimitToComplete = /*50*/ 9999 * 1000, // 50 seconds
             timeLimitToComplete = 2 * 60 * 1000, // 2 minutes by default, will be gauged and overwritten based on price
             offerTimeout;
@@ -179,7 +178,7 @@
                 });
             }
 
-            // TODO - This will never be executed unless filtered offer is skipped, because the submit will force a page refresh and all will be lost!
+            // Offer is 'done' (incomplete and hasn't been submitted so no page refresh), so go to next offer
             this.listen('OFFER_DONE', function nextOffer () {
                 i += 1;
 
