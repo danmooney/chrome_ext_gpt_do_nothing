@@ -9,6 +9,8 @@
      It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
 ?? Need to be able to stop timer if page is loading/redirecting???????????
 
+?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
+
 <> Time to store all forms completed thoughout the course of a single offer.
 
 <> Sort forms by largest form first (by square footage)...
