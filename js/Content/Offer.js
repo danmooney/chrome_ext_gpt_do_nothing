@@ -29,9 +29,15 @@
         };
 
         /**
-         * Parse the offer forms, set the form info and then fill them out
+         * Parse the offer forms,
+         * find 'the right form',
+         * set the form info and then
+         * fill them out!
+         *
+         * Every time it is called, 'the right form' will always be unique
+         * and will have never filled out before.
          */
-        this.parseOfferForms = function () {
+        this.lookForForms = function () {
             var that = this;
 
             /**
@@ -125,7 +131,7 @@
                 if (true === that.seemsLikeOfferExpired()) {
                     that.skipOffer();
                 } else if (false === that.seemsLikeARedirect()) { // this is a legitimate offer... start parsing it!
-                    that.parseOfferForms.call(that);
+                    that.lookForForms.call(that);
                 }
 
             });
@@ -134,36 +140,71 @@
         _static: true,
         /**
          * If multiple visible forms on the page, find out which one is the best one
-         * TODO - sort by square footage!
          */
         getTheRightForm: function (formEls) {
-            var mostNameElsCount = 0,
-                mostNameElsForm;
+            // this doesn't seem like the right criteria to go by!
+            function getTheRightFormByNameCount () {
+                var mostNameElsCount = 0,
+                    mostNameElsForm  = formEls.eq(0); // just a default
 
-            formEls.each(function () {
-                var el = $(this),
-                    nameElsCount = el.find('[name]').not('[type="hidden"]');
+                formEls.each(function () {
+                    var el = $(this),
+                        nameElsCount = el.find('[name]').not('[type="hidden"]');
 
-                if (nameElsCount > mostNameElsCount) {
-                    mostNameElsCount = nameElsCount;
-                    mostNameElsForm = el;
-                }
-            });
+                    if (nameElsCount > mostNameElsCount) {
+                        mostNameElsCount = nameElsCount;
+                        mostNameElsForm = el;
+                    }
+                });
 
-            return mostNameElsForm || formEls.eq(0);
+                return mostNameElsForm;
+            }
+
+            /**
+             * Sort the forms by square pixelage
+             * @param formEls
+             */
+            function getTheRightFormByPixelCount (formEls) {
+                var mostPixelsCount  = 0,
+                    mostPixelsElForm = formEls.eq(0); // just a default
+
+                formEls.each(function () {
+                    var el = $(this),
+                        pixelCount = el.width() * el.height();
+
+                    if (0 === pixelCount) {
+                        pixelCount = el.width() || el.height();
+                    }
+
+                    if (pixelCount > mostPixelsCount) {
+                        mostPixelsCount  = pixelCount;
+                        mostPixelsElForm = el;
+                    }
+                });
+
+                return mostPixelsElForm;
+            }
+
+            return getTheRightFormByPixelCount();
+//            return getTheRightFormByNameCount();
         },
+        /**
+         * Go by some criteria for seeing if an offer has expired or is unavailable
+         * @return {Boolean}
+         * TODO - for now this seems like it is working.  Make doubly sure it is!
+         */
         seemsLikeOfferExpired: function () {
             var body = $('body'),
                 bodyText = $.trim(body.text());
-            if (body.find('*').length > 25) {
+
+            if (body.find('*').length > 25) {  // if there's more than 25 elements, then there's GOTTA be some pertinent info on here...
                 return false;
             }
 
-            return (
-                bodyText === '' ||
-                bodyText.toLowerCase().indexOf('expir') !== -1 ||
-                bodyText.toLowerCase().indexOf('no longer') !== -1 ||
-                body.html().length < 2500
+            return (($.trim(bodyText) === '' ||
+                     bodyText.toLowerCase().indexOf('expir') !== -1 ||
+                     bodyText.toLowerCase().indexOf('no longer') !== -1) &&
+                body.html().length < 2500 // the body html length must be under 2500 characters because some pages can say "no longer" and still be valid??...
             );
         },
 
@@ -193,7 +234,7 @@
                     if ($('a').length <= 2) {
                         $('a').each(function () {
                             var el = $(this);
-                            if (el.text().toLowerCase().indexOf('refresh') !== -1 ||
+                            if (el.text().toLowerCase().indexOf('refresh')  !== -1 ||
                                 el.text().toLowerCase().indexOf('redirect') !== -1
                             ) {
                                 redirectBool = true;

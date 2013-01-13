@@ -2,7 +2,11 @@
     'use strict';
     $$.klass(function OfferFormSubmit () {
         var submitEls,
-            imageInputEl;
+            imageInputEl,
+            /**
+             * @param {Boolean}
+             */
+            isFormBool;
 
         this.getSubmitEls = function () {
             return submitEls;
@@ -18,6 +22,14 @@
 
         this.setImageInputEl = function (inputEl) {
             imageInputEl = inputEl;
+        };
+
+        this.evaluateAndSetIsFormBool = function (formEl) {
+            isFormBool = (formEl.prop('tagName').toLowerCase() === 'form');
+        };
+
+        this.getIsFormBool = function () {
+            return isFormBool;
         };
 
     }, {
@@ -77,8 +89,10 @@
 
             if (submitEls.length === 0) { // try buttons
                 submitEls = formEl.find('button');
-                if (submitEls.length === 0) {  // no submits or buttons.... try with body // TODO - is this safe?
-                    return evaluateSubmitEls($('body'));
+                if (submitEls.length === 0  &&      // no submits or buttons.... try with body // TODO - is this safe?
+                    true === this.getIsFormBool()   // only if formEl isn't already body!
+                ) {
+                    return this.evaluateSubmitEls($('body'));
                 }
             }
 
@@ -91,10 +105,12 @@
          * @param [inputEls]
          */
         submit: function (formEl, inputEls) {
+            this.evaluateAndSetIsFormBool();
+
             var submitButtonEls = this.evaluateSubmitEls(formEl),
                 that = this;
 
-            if (formEl.prop('tagName').toLowerCase() === 'form') { // if form exists, hallelujah!
+            if (true === this.getIsFormBool()) {           // if form exists, hallelujah!
                 if (true === this.hasImageInputTypes()) {
                     this.addXAndYToForm(formEl);
                 }
@@ -103,10 +119,10 @@
                 submitButtonEls.trigger('click');
 //                submitButtonEls.trigger('submit');
 
-                // if page isn't redirecting or doing anything after submit, start offer over again and work on another form
+                // if page isn't redirecting or doing anything after submit, start work on another form inside the offer
                 setTimeout(function () {
                     alert('submit not working, working on another form');
-                    $$('Offer').start();
+                    $$('Offer').lookForForms();
                 }, 9000);
 
             } else { // these sick fucks sometimes don't put their shit in form elements... search for the submit triggerer if this is true!

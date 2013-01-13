@@ -6,6 +6,17 @@
             gptParsedStr  = 'gptParsed',
             gptHandledStr = 'gptHandledStr',
             /**
+             * The selector string for all visible, non-submittable (fillable) named form inputs.
+             * This is used for filling out the form!
+             * @param {String}
+             */
+            visibleFillableFormInputSelectorStr = ':visible:input[name][type!="hidden"][type!="submit"]:not(button)',
+            /**
+             * The selector string for all the form inputs with name attributes.
+             * This is used for form serialization and comparison between other forms.
+             */
+            namedFormInputSelectorStr   = 'input[name]' /*visibleFormInputSelectorStr.replace(/(:visible|\[type!="hidden"\])/, '')*/,
+            /**
              * The form we are working with on this page via OfferForm klass
              * @type {jQuery}
              */
@@ -81,6 +92,21 @@
                 ]
             };
 
+
+        /**
+         * @return {String}
+         */
+        this.getVisibleFillableFormInputSelectorStr = function () {
+            return visibleFillableFormInputSelectorStr;
+        };
+
+        /**
+         * @return {String}
+         */
+        this.getNamedFormInputSelector = function () {
+            return namedFormInputSelectorStr;
+        };
+
         /**
          * Set the user's form information
          * @param formInfoObj
@@ -120,14 +146,14 @@
          */
         this.setLastFormsArr = function (formEl, callback) {
             var Storage = $$('Storage'),
+                namedFormInputSelector = this.getNamedFormInputSelector(),
                 that = this;
 
             Storage.freezeGetOnItem('lastForms');
             Storage.getItem('lastForms', function (lastFormsArr) {
                 lastFormsArr = lastFormsArr || [];
 
-
-                var formInputEls = formEl.find(':input[name]').not('[type="hidden"]'),
+                var formInputEls = formEl.find(namedFormInputSelector),
                     /**
                      * The new last form object to be appended to array
                      */
@@ -143,15 +169,9 @@
                 formInputEls.each(function (i) {
                     var formInputEl = $(this);
 
-                    lastFormNameTypeObj = {};
-
-                    if (formInputEl.attr('name')) {
-                        lastFormNameTypeObj.name = formInputEl.attr('name');
-                    }
-
-                    if (formInputEl.attr('type')) {
-                        lastFormNameTypeObj.type = formInputEl.attr('type');
-                    }
+                    lastFormNameTypeObj      = {};
+                    lastFormNameTypeObj.type = formInputEl.attr('type');
+                    lastFormNameTypeObj.name = formInputEl.attr('name');
 
                     lastFormObj.formNamesArr.push(lastFormNameTypeObj);
                 });
@@ -221,6 +241,7 @@
         /**
          * Parse the DOM and look for THE appropriate form to focus on.
          * Also remove the last completed form if it exists in the DOM.
+         * TODO - what if there are no forms and we get stuck submitting the same formless input elements over and over again?
          */
         evaluateForms: function (callback) {
             var formEls = $('form:visible'),
@@ -231,7 +252,8 @@
              * and if so, remove!
              */
             function removePreviouslySubmittedForms () {
-                // TODO - write
+                var namedFormInputSelectorStr = this.getNamedFormInputSelector();
+
                 this.getLastFormsArr(function (lastFormsArr) {
                     if (!$$.util.isArray(lastFormsArr) || lastFormsArr.length === 0) {
                         return callback(formEls);
@@ -242,7 +264,7 @@
                     // END DEBUG
                     var formExistsInLastFormsBool;
 
-                    formEls.filter(function (i) {
+                    formEls = formEls.filter(function (i) {
                         formExistsInLastFormsBool = false;
 
                         var formEl = formEls.eq(i),
@@ -255,36 +277,42 @@
                         /**
                          * Checks for all the names and types in the form and compare
                          * @return {Boolean}
+                         * TODO - test!
+                         * TODO - What if lastFormNameTypesArr is considerably few and the formEl inputs considerably many?
+                         *        Say lastForm just has {name:submit} and formEl also has an input with name=submit, but it has much more than that.
+                         *        That would mean that this current function would consider them identical and return true and the form would never get evaluated!!!
                          */
                         function lastFormExistsInEnumeratingThroughLastNameTypeObj (lastFormNameTypesArr) {
                             for (k = 0; k < lastFormNameTypesArr.length; k += 1) {
                                 nameStr = lastFormNameTypesArr[k].name;
                                 typeStr = lastFormNameTypesArr[k].type;
 
-                                if (nameStr &&
+                                if (nameStr &&  // if nameStr is defined and the form doesn't have this name attribute, then these two forms are NOT the same (false), and the form will be considered for evaluating
                                     formEl.find('[name="' + nameStr + '"]').length === 0
                                 ) {
-                                    return true;
+                                    return false;
                                 }
 
-                                if (typeStr &&
+                                if (typeStr && // if typeStr is defined and the form doesn't have this type attribute, then these two forms are NOT the same (false), and the form will be considered for evaluating
                                     formEl.find('[type="' + typeStr + '"]').length === 0
                                 ) {
-                                    return true;
+                                    return false;
                                 }
                             }
+                            // forms are definitely the same;
+                            // every name/type that the last form had this form also has
 
-                            return false;
+                            return true;
                         }
 
                         for (j = 0; j < lastFormsArr.length; j += 1) {
                             lastFormObj = lastFormsArr[j];
-                            if (formEl.find(':input[type!="hidden"]').serialize() === lastFormObj.serializedStr) {
+                            if (lastFormObj.serializedStr !== '' &&
+                                formEl.find(namedFormInputSelectorStr).serialize() === lastFormObj.serializedStr
+                            ) {
                                 formExistsInLastFormsBool = true;
                                 break;
-                            }
-
-                            if (true === lastFormExistsInEnumeratingThroughLastNameTypeObj(lastFormsArr[j].formNamesArr)) {
+                            } else if (true === lastFormExistsInEnumeratingThroughLastNameTypeObj(lastFormObj.formNamesArr)) {
                                 formExistsInLastFormsBool = true;
                                 break;
                             }
@@ -298,7 +326,7 @@
                     });
 
                     if (true === formExistsInLastFormsBool) {
-                        alert('last form exists!');
+                        alert('One of the last form exists!  This form has already been filled out!');
                     }
 
                     callback(formEls);
@@ -315,7 +343,7 @@
         evaluateFormInputs: function (formEl) {
             formEl = formEl || $('body');
 
-            var formInputEls = formEl.find(':input[type!="submit"]')/*('input:text, input[type="checkbox"], input[type="radio"], select, textarea')*/.filter(':visible'),
+            var formInputEls = formEl.find(this.getVisibleFillableFormInputSelectorStr() + '[type!="submit"]:not(button)')/*.find(':input[type!="submit"]').not('button').filter(':visible')*/,
                 nullElsBool,
                 i;
 
@@ -359,7 +387,7 @@
             if (formInputs.length === 0) {
                 alert('ZERO visible inputs in this form; restarting offer process with another form');
 
-                return $$('Offer').start();
+                return $$('Offer').lookForForms();
 //                return $$('OfferFormSubmit').submit(formEl);
             }
 
