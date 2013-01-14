@@ -39,6 +39,8 @@
         this.lookForForms = function () {
             var that = this;
 
+            this.trigger('GOING_ONTO_ANOTHER_FORM');
+
             /**
              * Evaluate form elements on page and enumerate through lastForms array to make
              * sure we are not filling out the same form twice
@@ -88,7 +90,7 @@
             alert('skipping offer');
 
             if (true === this.isDebugging()) {
-                alert('DONE PARSING OFFER, ABORTING....');
+                alert('ABORTING PARSING OFFER IN DEBUG MODE');
                 return;
             }
 
@@ -130,12 +132,18 @@
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
                 if (true === that.seemsLikeOfferExpired()) {
-                    that.skipOffer();
+                    return that.skipOffer();
                 } else if (false === that.seemsLikeARedirect()) { // this is a legitimate offer... start parsing it!
-                    that.lookForForms.call(that);
+                    return that.lookForForms.call(that);
                 }
 
                 // it's a redirect... do some waiting
+
+                // DEBUG
+                if (true === that.isDebugging()) {
+                    alert('interpreted as redirect');
+                }
+                // END DEBUG
             });
         };
     }, {

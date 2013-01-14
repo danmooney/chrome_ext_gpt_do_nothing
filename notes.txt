@@ -2,19 +2,22 @@
      and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
      It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
 
-<> Some form inputs have really fucked up names.  For example, email input fields sometimes have completely irrelevant names, like 'from'... ?!?!?
-     Use the labelEl to find the right form info type if the value remains an empty string after parsing the name!
-     ex. http://rashkinonlineleaders.com/?site=myownAaronSophiaMLMRD?t=RD-4688-592
+!! Need to inject a script into the content window to submit the form for it to work properly!
+
+?! What about forms inside iframes?  Sometimes the submit button is inside an iframe, and when it gets manually clicked it tells the parent window to redirect.
+     They have to be the same origin, so is it possible to query the child from the parent and find the rest of the form that way?
+
+?? How to pass e.which to jQuery's triggers?
+
+?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
 
 <? What if there's more than 4 forms on the page??
      ex. points2shop.com
      EDIT: I guess this is being solved now with the width/height calculations - DM - 011213
 
-?? Need to be able to stop timer if page is loading/redirecting???????????
-
-?? How to pass e.which to jQuery's triggers?
-
-?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
+<> Some form inputs have really fucked up names.  For example, email input fields sometimes have completely irrelevant names, like 'from'... ?!?!?
+     Use the labelEl to find the right form info type if the value remains an empty string after parsing the name!
+     ex. http://rashkinonlineleaders.com/?site=myownAaronSophiaMLMRD?t=RD-4688-592
 
 <> Time to store all forms completed thoughout the course of a single offer.
 

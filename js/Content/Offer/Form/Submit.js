@@ -68,7 +68,7 @@
                 inputEl,
                 i;
 
-            for (i = 0; i < fieldArr; i += 1) {
+            for (i = 0; i < fieldArr.length; i += 1) {
                 inputEl = $('<input />');
                 inputEl.attr({
                     'type': 'hidden',
@@ -87,7 +87,7 @@
         evaluateSubmitEls: function (formEl) {
             var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick]').filter(':visible');
 
-            if (submitEls.length === 0) { // try buttons
+            if (submitEls.length === 0) { // then try buttons
                 submitEls = formEl.find('button');
                 if (submitEls.length === 0  &&      // no submits or buttons.... try with body // TODO - is this safe?
                     true === this.getIsFormBool()   // only if formEl isn't already body!
@@ -101,8 +101,17 @@
         },
 
         /**
+         * Just a test to see if we can get these image submit types to behave properly
+         * @param formEl
+         */
+        changeImageTypesToSubmitTypes: function (formEl) {
+            formEl.find('input[type="image"]').prop('type', 'submit');
+        },
+
+        /**
          * @param formEl
          * @param [inputEls]
+         * TODO - may have to inject the submit script into the content window to appease these image types!
          */
         submit: function (formEl, inputEls) {
             this.evaluateAndSetIsFormBool(formEl);
@@ -113,10 +122,17 @@
             if (true === this.getIsFormBool()) {           // if form exists, hallelujah!
                 if (true === this.hasImageInputTypes()) {
                     this.addXAndYToForm(formEl);
+                    this.changeImageTypesToSubmitTypes(formEl);
                 }
 
                 // all that needs to be done is simply click on the submit...?  It seems to trigger submits on any element that has a handler for it!
-                submitButtonEls.trigger('click');
+                window.focus();
+
+                submitButtonEls.each(function () {
+                    this.click();
+                });
+
+//                submitButtonEls.trigger('click');
 //                submitButtonEls.trigger('submit');
 
                 // if page isn't redirecting or doing anything after submit, start work on another form inside the offer

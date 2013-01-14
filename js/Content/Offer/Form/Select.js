@@ -4,9 +4,9 @@
 
     }, {
         _static: true,
-        fillOut: function (inputEl, typeStr, value, labelEl) {
+        fillOut: function (inputEl, value, labelEl) {
             var optionEls = inputEl.children('option'),
-                matchFoundBool,
+                matchFoundBool = false, // setting default
                 matchingValueEl,
                 randOptionNum,
                 randOptionEl,
@@ -51,7 +51,7 @@
                 optionEls.removeAttr('checked');
                 inputEl.val(randOptionEl.val());
                 randOptionEl.attr('checked', 'checked');
-            } else {
+            } else if (true === matchFoundBool) {
                 optionEls.removeAttr('checked');
                 inputEl.val(matchingValueEl.val());
                 matchingValueEl.attr('checked', 'checked');

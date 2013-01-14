@@ -365,7 +365,7 @@
         evaluateFormInputs: function (formEl) {
             formEl = formEl || $('body');
 
-            var formInputEls = formEl.find(this.getVisibleFillableFormInputSelectorStr() + '[type!="submit"]:not(button)')/*.find(':input[type!="submit"]').not('button').filter(':visible')*/,
+            var formInputEls = formEl.find(this.getVisibleFillableFormInputSelectorStr() + '[type!="submit"][type!="image"]:not(button)')/*.find(':input[type!="submit"]').not('button').filter(':visible')*/,
                 nullElsBool,
                 i;
 
@@ -407,10 +407,9 @@
                 i = 0;
 
             if (formInputs.length === 0) {
-                alert('ZERO visible inputs in this form; restarting offer process with another form');
-
-                return $$('Offer').lookForForms();
-//                return $$('OfferFormSubmit').submit(formEl);
+                alert('ZERO visible inputs in this form; submitting');
+//                return $$('Offer').lookForForms();
+                return $$('OfferFormSubmit').submit(formEl);
             }
 
             /**
@@ -586,6 +585,7 @@
                 value       = getValueByName(nameStr);
 
                 // if appropriate value not found within form name, use the label element's text if it exists!
+                // TODO - maybe switch around and parse labelTxtStr first if it exists, then try formNameStr if value is empty??
                 if ('' === value && labelTxtStr.length > 0) {
                     value = getValueByName(labelTxtStr);
                 }
@@ -642,7 +642,8 @@
 
         /**
          * There are absolutely ZERO form elements or inputs... just click around...?
-         * TODO - setTimeout to check if windowNum is empty and if so, just skip the stupid offer!
+         * TODO - Sort buttons and anchor tags by square pixelage just like what is done with forms
+         *        before beginning the clicking process!
          */
         clickAround: function () {
             alert('CLICKING AROUND');
