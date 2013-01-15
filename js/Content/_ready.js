@@ -23,7 +23,7 @@
             klass: 'App',
             method: 'isWorking'
         }, function (appWorkingBool) {
-            if (false === appWorkingBool) {
+            if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
                 return;
             }
 
@@ -71,7 +71,7 @@
             klass: 'App',
             method: 'isWorking'
         }, function (appWorkingBool) {
-            if (false === appWorkingBool) {
+            if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
                 return;
             }
             formCheckInterval = setInterval(function () {
@@ -170,7 +170,7 @@
             klass: 'App',
             method: 'isWorking'
         }, function (appWorkingBool) {
-            if (false === appWorkingBool) {
+            if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
                 return;
             }
             checkForGptSitePageOrGptOfferPage();
