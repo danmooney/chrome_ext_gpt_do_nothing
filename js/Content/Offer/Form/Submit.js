@@ -128,9 +128,11 @@
                 // all that needs to be done is simply click on the submit...?  It seems to trigger submits on any element that has a handler for it!
                 window.focus();
 
-                submitButtonEls.each(function () {
-                    this.click();
-                });
+                $$('Injector').injectSubmit(formEl, submitButtonEls);
+
+//                submitButtonEls.each(function () {
+//                    this.click();
+//                });
 
 //                submitButtonEls.trigger('click');
 //                submitButtonEls.trigger('submit');

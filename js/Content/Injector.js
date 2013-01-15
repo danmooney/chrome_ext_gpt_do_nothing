@@ -30,6 +30,70 @@
                     };
                 },
                 /**
+                 * Submit the form from the content window context.
+                 * (Form submission triggering doesn't exactly work from the partially sandboxed extension context.)
+                 *
+                 * NOTE: jQuery should probably be avoided in this case.
+                 *       It isn't wise to add it because it might override some existing legacy jQuery site JS.
+                 *
+                 * @param {jQuery} formEl
+                 * @param {jQuery} submitButtonEls
+                 */
+                injectSubmit: function (formEl, submitButtonEls) {
+                    var attrs,
+                        attr,
+                        attrsArr = [],
+                        i;
+
+                    submitButtonEls.each(function () {
+                        attrs = this.attributes;
+
+                        for (i = 0; i < attrs.length; i += 1) {
+                            attr = attrs.item(i);
+
+                            attrsArr.push({
+                                'name': attr.nodeName,
+                                'value': attr.nodeValue
+                            });
+                        }
+                    });
+
+                    formEl = formEl[0];
+                    attrs = formEl.attributes;
+
+                    for (i = 0; i < attrs.length; i += 1) {
+                        attr = attrs.item(i);
+
+                        attrsArr.push({
+                            'name': attr.nodeName,
+                            'value': attr.nodeValue
+                        });
+                    }
+
+                    eval('(function() {' +
+                        '    function submitForm () {' +
+                        '        var attrsArr = ' + JSON.stringify(attrsArr) + ';' +
+                        '        ' + // TODO - FINISH HERE
+                        '    }' +
+                        '    var script = document.createElement("script");' +
+                        '    script.onload = function () {' +
+                        '        var myJQuery = jQuery.noConflict();' +
+                        '        submitForm();' +
+                        '    }' +
+                        '    script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js";' +
+                        '    document.documentElement.appendChild(script);' +
+                        '}());'
+                    );
+
+
+                    function evalHere () {
+                        for (var i = 0; i < submitButtonEls.length; i += 1) {
+                            submitButtonEls[0].length
+                        }
+                    }
+
+                },
+                /**
                  * Prevent form.submit from happening more than once if
                  * GPT Offer site using JS for its submissions
                  */
@@ -102,6 +166,11 @@
                 });
             }, that.getPopupCheckingInterval());
         },
+        /**
+         * Inject a function call to be executed within the context of the content window.
+         * Ultra-sneaky solution!
+         * @param fnStr
+         */
         inject: function (fnStr) {
             var script = document.createElement('script');
             script.appendChild(document.createTextNode('('+ this.getScript(fnStr) +'());'));

@@ -11,6 +11,25 @@
         formCheckInterval,
         i;
 
+    /**
+     * @return {Boolean}
+     */
+    function isAppWorking (appWorkingBool) {
+        if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // override window.alert/window.confirm
+    function injectOverrides () {
+        $$('Injector')
+            .inject('overrideAlert')
+            .inject('overrideConfirm')
+            .checkForInterceptedPopupsAndTrigger();
+    }
+
     // boot up GPT if tabId is the same,
     // and complete offer if windowId is the same
     function checkForGptSitePageOrGptOfferPage () {
@@ -23,14 +42,11 @@
             klass: 'App',
             method: 'isWorking'
         }, function (appWorkingBool) {
-            if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
+            if (!isAppWorking(appWorkingBool)) {
                 return;
             }
 
-            // override window.alert/window.confirm
-            $$('Injector')
-                .inject('overrideAlert')
-                .inject('overrideConfirm');
+            injectOverrides();
 
             Message.sendMessage('getThisTab', function (tab) {
                 // check if windowId matches
@@ -54,8 +70,7 @@
                             });
                         } else if (tab.windowId === gptWindowId) {
                             $$('Injector')
-                                .inject('overrideOnBeforeUnload')
-                                .checkForInterceptedPopupsAndTrigger();
+
                             $$('Offer').start();
                         }
                     });
@@ -71,7 +86,7 @@
             klass: 'App',
             method: 'isWorking'
         }, function (appWorkingBool) {
-            if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
+            if (!isAppWorking(appWorkingBool)) {
                 return;
             }
             formCheckInterval = setInterval(function () {
@@ -170,7 +185,7 @@
             klass: 'App',
             method: 'isWorking'
         }, function (appWorkingBool) {
-            if (!$$.util.isBool(appWorkingBool) || false === appWorkingBool) {
+            if (!isAppWorking(appWorkingBool)) {
                 return;
             }
             checkForGptSitePageOrGptOfferPage();
@@ -184,6 +199,7 @@
                 return true;
             }
             alert('PARSING OFFER NOW');
+            injectOverrides();
             window.onkeypress = null;
             $$('OfferForm').removeLastFormsArr(function () {
                 $$('Offer').start(true);
