@@ -418,8 +418,9 @@
              * @param {jQuery} inputEl
              * @param {String|Object} value
              * @param {jQuery} labelEl
+             * @param {String} key
              */
-            function handleInput (typeStr, inputEl, value, labelEl) {
+            function handleInput (typeStr, inputEl, key, value, labelEl) {
                 var inputKlassStr = 'OfferForm' + typeStr.substr(0,1).toUpperCase() + typeStr.substr(1), // OfferFormText, OfferFormRadio, etc.
                     inputKlass    = $$(inputKlassStr),
                     gptHandledStr = that.getHandledStr();
@@ -428,7 +429,7 @@
                     throw new AppError(inputKlassStr + ' is not a valid klass');
                 }
 
-                inputKlass.fillOut(inputEl, value, labelEl);
+                inputKlass.fillOut(inputEl, key, value, labelEl);
 
                 // set as handled
                 inputEl.data(gptHandledStr, true);
@@ -438,7 +439,7 @@
             /**
              * Get the value from formInfo based on the formNameStr of the form field
              * @param {String} formNameStr the form field name
-             * @return {String|Object}
+             * @return {Array} The form info in key/value format or empty string
              */
             function getValueByName (formNameStr) {
                 // TODO - this should have different implications for radio and checkbox, since all the form aliases are for text and select inputs only.  In this case, find the matching label and pass that to value
@@ -510,10 +511,10 @@
                 function searchForFormInfoValueByName (name) {
                     if ($$.util.isDefined(formInfo[name])) {
                         console.log('returning ' + formInfo[name]);
-                        return formInfo[name];
+                        return [matchedFormNameStr, formInfo[name]];
                     }
 
-                    return '';
+                    return ['', ''];
                 }
 
                 return searchForFormInfoValueByName(matchedFormNameStr);
@@ -529,6 +530,8 @@
                     nameStr       = inputEl.attr('name'),
                     typeStr       = inputEl.attr('type'),
                     gptParsedStr  = that.getParsedStr(),
+                    keyValueArr,
+                    key,
                     value,
                     labelEl,
                     labelTxtStr;
@@ -582,12 +585,17 @@
 
                 labelEl     = getLabelEl();
                 labelTxtStr = $.trim(labelEl.text());
-                value       = getValueByName(nameStr);
+
+                keyValueArr = getValueByName(nameStr);
+                key         = keyValueArr[0];
+                value       = keyValueArr[1];
 
                 // if appropriate value not found within form name, use the label element's text if it exists!
                 // TODO - maybe switch around and parse labelTxtStr first if it exists, then try formNameStr if value is empty??
                 if ('' === value && labelTxtStr.length > 0) {
-                    value = getValueByName(labelTxtStr);
+                    keyValueArr = getValueByName(nameStr);
+                    key         = keyValueArr[0];
+                    value       = keyValueArr[1];
                 }
 
                 if ('select' === tagNameStr) {
@@ -600,7 +608,7 @@
                 inputEl.data(gptParsedStr, true);
                 inputEl.attr('data-' + gptParsedStr, '1');
 
-                handleInput(typeStr, inputEl, value, labelEl);
+                handleInput(typeStr, inputEl, key, value, labelEl);
             }
 
             this.listen('INPUT_DONE_HANDLING', function () {

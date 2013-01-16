@@ -37,7 +37,7 @@
          * @param labelEl
          * TODO - need better implementation to parse whether it is a 'no' or negative radio button, which should usually be avoided.
          */
-        fillOut: function (inputEl, value, labelEl) {
+        fillOut: function (inputEl, key, value, labelEl) {
             var nameStr = inputEl.attr('name'),
                 labelTxtStr = $.trim(labelEl.text().toLowerCase());
 

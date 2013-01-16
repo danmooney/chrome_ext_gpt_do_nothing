@@ -5,7 +5,30 @@
             randomStrArr = [
                 'Yes',
                 'OK'
-            ];
+            ],
+            inputWidthMinForPhoneNum = 100,
+            phoneValuesFilledNum = 0,
+            isMultiValuedPhoneFormBool = false;
+
+        this.setMultiValuedPhoneFormBool = function (multiValueFormBool) {
+            isMultiValuedPhoneFormBool = multiValueFormBool;
+        };
+
+        this.isMultiValuedPhoneForm = function () {
+            return isMultiValuedPhoneFormBool;
+        };
+
+        this.getInputWidthMinForPhoneNum = function () {
+            return inputWidthMinForPhoneNum;
+        };
+
+        this.addPhoneValuesFilledNum = function () {
+            phoneValuesFilledNum += 1;
+        };
+
+        this.getPhoneValuesFilledNum = function () {
+            return phoneValuesFilledNum;
+        };
 
         this.getValueChangeSpeed = function () {
             return valueChangeSpeed;
@@ -21,7 +44,7 @@
         /**
          * Fill out text/textarea fields
          */
-        fillOut: function (inputEl, value, labelEl) {
+        fillOut: function (inputEl, key, value, labelEl) {
             var emptyValueBool = (value === '' || $$.util.isUndefined(value)),
                 i = 1,
                 j;
@@ -31,6 +54,31 @@
             // if value is empty, get a random value
             if (true === emptyValueBool) {
                 value = this.getRandomStr();
+            }
+
+            // check for phone
+            if (key.indexOf('phone') !== -1) {
+                this.addPhoneValuesFilledNum();
+
+                if (inputEl.width() < this.getInputWidthMinForPhoneNum() &&
+                    false === this.isMultiValuedPhoneForm()    // first and second inputs are usually the same width, and the last one is wider to accomodate the extra digit
+                ) {
+                    this.setMultiValuedPhoneFormBool(true);
+                }
+
+                if (true === this.isMultiValuedPhoneForm()) {
+                    switch (this.getPhoneValuesFilledNum()) {
+                        case 1:
+                            value = value.substr(0, 3); // 202
+                            break;
+                        case 2:
+                            value = value.substr(3, 3); // 261
+                            break;
+                        case 3:
+                            value = value.substr(6, 4); // 9103
+                            break;
+                    }
+                }
             }
 
             /**

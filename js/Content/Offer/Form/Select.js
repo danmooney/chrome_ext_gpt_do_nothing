@@ -4,7 +4,7 @@
 
     }, {
         _static: true,
-        fillOut: function (inputEl, value, labelEl) {
+        fillOut: function (inputEl, key, value, labelEl) {
             var optionEls = inputEl.children('option'),
                 matchFoundBool = false, // setting default
                 matchingValueEl,

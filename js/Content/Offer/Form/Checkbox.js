@@ -4,7 +4,7 @@
 
     }, {
         _static: true,
-        fillOut: function (inputEl, value, labelEl) {
+        fillOut: function (inputEl, key, value, labelEl) {
             var labelTxtStr = $.trim(labelEl.text().toLowerCase());
 
             // look for 'no' in the beginning of label and keep unchecked if it exists
