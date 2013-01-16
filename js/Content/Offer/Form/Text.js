@@ -6,7 +6,7 @@
                 'Yes',
                 'OK'
             ],
-            inputWidthMinForPhoneNum = 100,
+            inputWidthMinForPhoneNum = 80,
             phoneValuesFilledNum = 0,
             isMultiValuedPhoneFormBool = false;
 
@@ -68,16 +68,18 @@
 
                 if (true === this.isMultiValuedPhoneForm()) {
                     switch (this.getPhoneValuesFilledNum()) {
-                        case 1:
+                        case 0:
                             value = value.substr(0, 3); // 202
                             break;
-                        case 2:
+                        case 1:
                             value = value.substr(3, 3); // 261
                             break;
-                        case 3:
+                        case 2:
                             value = value.substr(6, 4); // 9103
                             break;
                     }
+
+                    this.addPhoneValuesFilledNum();
                 }
             }
 

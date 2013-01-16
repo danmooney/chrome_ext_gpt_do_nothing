@@ -4,7 +4,7 @@
 
 !! Need to inject a script into the content window to submit the form for it to work properly!
 
-!! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for is set as a value inside the input itself.
+!! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
 
 ?! What about forms inside iframes?  Sometimes the submit button is inside an iframe, and when it gets manually clicked it tells the parent window to redirect.
      They have to be the same origin, so is it possible to query the child from the parent and find the rest of the form that way?
@@ -13,9 +13,13 @@
 
 ?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
 
+
 <? What if there's more than 4 forms on the page??
      ex. points2shop.com
      EDIT: I guess this is being solved now with the width/height calculations - DM - 011213
+
+
+<> Multiple phone text fields
 
 <> Some form inputs have really fucked up names.  For example, email input fields sometimes have completely irrelevant names, like 'from'... ?!?!?
      Use the labelEl to find the right form info type if the value remains an empty string after parsing the name!
