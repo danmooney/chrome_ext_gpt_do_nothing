@@ -3,32 +3,72 @@
     $$.klass(function Injector () {
         var that = this,
             popupCheckingInterval = 200,
+            injectedJQueryBool = false,
             content = {
                 evalScript: function (scriptToEvalStr) {
-                    eval(scriptToEvalStr);
+
+                },
+                /**
+                 * This is for the purposes of message passing when a confirm or an alert happens
+                 */
+                addContentToDiv: function () {
+                    var win = window;
+
+                    win.addContentToDiv = function (idStr, contentStr) {
+                        var $ = myJQuery;
+
+                        if ($('#' + idStr).length === 0) {
+                            $('<div></div>').attr({
+                                'id': idStr,
+                                'class': 'gpt-popup-box'
+                            }).appendTo($('body'));
+                        }
+
+                        $('#' + idStr).text(contentStr);
+                    };
+                },
+                /**
+                 * Inject jQuery
+                 */
+                jquery: function () {
+                    var win = window,
+                        script = document.createElement("script");
+
+                    script.onload = function () {
+                        win.myJQuery = jQuery.noConflict();
+
+                        var $ = myJQuery;
+
+                        $('<div></div>').attr({
+                            'id': 'gpt-my-jquery',
+                            'class': 'gpt-popup-box'
+                        }).appendTo($('body'));
+                    };
+
+                    script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js";  // TODO - script.onerror goes to another CDN?
+                    document.documentElement.appendChild(script);
                 },
                 overrideAlert: function () {
                     var win = window;
 
                     win.alertLegacy = win.alert;
 
+                    // win.alert should be the more useful one, because it may indicate form validation errors
                     win.alert = function (msg) {
-                        console.warn('ALERTED ALERTED ALERTED');
 //                        win.alertLegacy('intercepted alert: \n\n' + msg);
-//                        that.trigger('onalert', msg);
-                        addContentToDiv('gpt-offer-alert', msg);
+                        win.addContentToDiv('gpt-offer-alert', msg);
                         return false;
                     };
                 },
+
                 overrideConfirm: function () {
                     var win = window;
-
                     win.confirmLegacy = win.confirm;
 
+                    // win.confirm should always return true.  it's mainly used for when you try to exit a window
                     win.confirm = function (msg) {
-                        console.warn('CONFIRMED CONFIRMED CONFIRMED');
 //                        win.alertLegacy('intercepted confirm: \n\n' + msg);
-                        addContentToDiv('gpt-offer-confirm', msg);
+                        win.addContentToDiv('gpt-offer-confirm', msg);
                         return true;
                     };
                 },
@@ -74,24 +114,14 @@
                         });
                     }
 
-                    scriptStrToEval = '(function() {' +
-                        '    function submitForm () {' +
-                        '        var $ = window.myJQuery,' +
-                        '            attrsArr = ' + JSON.stringify(attrsArr) + ';' +
+                    scriptStrToEval = '(function submitForm($) {' +
+                        '    var $ = window.myJQuery,' +
+                        '        attrsArr = ' + JSON.stringify(attrsArr) + ';' +
                         '        ' + // TODO - FINISH HERE
-                        '    }' +
-                        '    var script = document.createElement("script");' +
-                        '    script.onload = function () {' +
-                        '        window.myJQuery = jQuery.noConflict();' +
-                        '        submitForm();' +
-                        '    };' +
-                        '    script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js";' +
-                        '    document.documentElement.appendChild(script);' +
-                        '}());'
+                        '}(myJQuery));'
                     ;
 
                     this.inject('evalScript', scriptStrToEval);
-
 
 //                    function evalHere () {
 //                        for (var i = 0; i < submitButtonEls.length; i += 1) {
@@ -120,6 +150,14 @@
                 }
             };
 
+        this.setInjectedJQuery = function (jQueryBool) {
+            injectedJQueryBool = jQueryBool;
+        };
+
+        this.hasJQueryBeenInjected = function () {
+            return injectedJQueryBool;
+        };
+
         this.getScript = function (fnStr) {
            return content[fnStr];
         };
@@ -128,23 +166,19 @@
             return popupCheckingInterval;
         };
 
-        /**
-         * This is for the purposes of message passing when a confirm or an alert happens
-         * TODO - is there a better way to send messages?
-         */
-        function addContentToDiv (idStr, contentStr) {
-            if ($('#' + idStr).length === 0) {
-                $('<div></div>').attr({
-                    'id': idStr,
-                    'class': 'gpt-popup-box'
-                }).appendTo($('body'));
-            }
-
-            $('#' + idStr).text(contentStr);
-        }
     }, {
         _static: true,
+        init: function () {
+            this.listen('onalert', function (msg) {
+                console.log('onalert listen');
+                console.dir(arguments);
+            });
 
+            this.listen('onconfirm', function (msg) {
+                console.log('onconfirm listen');
+                console.dir(arguments);
+            });
+        },
         checkForInterceptedPopupsAndTrigger: function () {
             var that = this;
             return setInterval(function () {
@@ -159,6 +193,17 @@
                     var popupEl = $(this);
 
                     switch (popupEl.attr('id')) {
+                        case 'gpt-my-jquery':  // jQuery loaded ??
+                            if (false === that.hasJQueryBeenInjected()) {
+                                that.setInjectedJQuery(true);
+                                triggerStr = 'onjquery';
+                                that
+                                    .inject('addContentToDiv')
+                                    .inject('overrideAlert')
+                                    .inject('overrideConfirm')
+                                    .checkForInterceptedPopupsAndTrigger();
+                            }
+                            break;
                         case 'gpt-offer-alert':
                             triggerStr = 'onalert';
                             break;
@@ -168,6 +213,7 @@
                     }
 
                     console.warn("TRIGGERING " + triggerStr);
+
                     that.trigger(triggerStr, popupEl.text());
                     popupEl.remove();
                 });

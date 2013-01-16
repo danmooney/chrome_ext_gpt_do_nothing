@@ -103,6 +103,7 @@
         /**
          * Just a test to see if we can get these image submit types to behave properly
          * @param formEl
+         * @deprecated
          */
         changeImageTypesToSubmitTypes: function (formEl) {
             formEl.find('input[type="image"]').prop('type', 'submit');
@@ -122,7 +123,7 @@
             if (true === this.getIsFormBool()) {           // if form exists, hallelujah!
                 if (true === this.hasImageInputTypes()) {
                     this.addXAndYToForm(formEl);
-                    this.changeImageTypesToSubmitTypes(formEl);
+//                    this.changeImageTypesToSubmitTypes(formEl);
                 }
 
                 // all that needs to be done is simply click on the submit...?  It seems to trigger submits on any element that has a handler for it!

@@ -23,11 +23,14 @@
     }
 
     // override window.alert/window.confirm
-    function injectOverrides () {
+    function injectOverrides (callback) {
         $$('Injector')
-            .inject('overrideAlert')
-            .inject('overrideConfirm')
+            .inject('jquery')
             .checkForInterceptedPopupsAndTrigger();
+
+        $$('EvtBus').listen('onjquery', function() {
+            callback();
+        });
     }
 
     // boot up GPT if tabId is the same,
@@ -46,33 +49,33 @@
                 return;
             }
 
-            injectOverrides();
+            injectOverrides(function () {
+                Message.sendMessage('getThisTab', function (tab) {
+                    // check if windowId matches
+                    Storage.getItem('currentGptWindowId', function (gptWindowId) {
+                        // make sure that reloaded page isn't the actual GPT site itself
+                        Storage.getItem('currentGptTabId', function (gptTabId) {
+                            if (gptTabId === tab.id) {
+                                Storage.getItem('currentGptRedirectUrl', function (redirectUrl) {
+                                    if ($$.util.isString(redirectUrl)) {
+                                        // remove redirect request
+                                        Storage.removeItem('currentGptRedirectUrl', function () {
+                                            if (window.location.href === redirectUrl) {
+                                                $$('GptSite').start();
+                                            } else {
+                                                window.location = redirectUrl;
+                                            }
+                                        });
+                                    } else {
+                                        $$('GptSite').start();
+                                    }
+                                });
+                            } else if (tab.windowId === gptWindowId) {
+                                $$('Injector')
 
-            Message.sendMessage('getThisTab', function (tab) {
-                // check if windowId matches
-                Storage.getItem('currentGptWindowId', function (gptWindowId) {
-                    // make sure that reloaded page isn't the actual GPT site itself
-                    Storage.getItem('currentGptTabId', function (gptTabId) {
-                        if (gptTabId === tab.id) {
-                            Storage.getItem('currentGptRedirectUrl', function (redirectUrl) {
-                                if ($$.util.isString(redirectUrl)) {
-                                    // remove redirect request
-                                    Storage.removeItem('currentGptRedirectUrl', function () {
-                                        if (window.location.href === redirectUrl) {
-                                            $$('GptSite').start();
-                                        } else {
-                                            window.location = redirectUrl;
-                                        }
-                                    });
-                                } else {
-                                    $$('GptSite').start();
-                                }
-                            });
-                        } else if (tab.windowId === gptWindowId) {
-                            $$('Injector')
-
-                            $$('Offer').start();
-                        }
+                                $$('Offer').start();
+                            }
+                        });
                     });
                 });
             });
@@ -199,10 +202,11 @@
                 return true;
             }
             alert('PARSING OFFER NOW');
-            injectOverrides();
-            window.onkeypress = null;
-            $$('OfferForm').removeLastFormsArr(function () {
-                $$('Offer').start(true);
+            injectOverrides(function () {
+                window.onkeypress = null;
+//            $$('OfferForm').removeLastFormsArr(function () {
+//                $$('Offer').start(true);
+//            });
             });
         };
     }());

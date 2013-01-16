@@ -59,9 +59,9 @@
                 listenerObj = listenerArr[i];
 
                 if (args.length > 0) {
-                    console.log(evtTypeStr, listenerObj.context, args);
+                    console.log(evtTypeStr, listenerObj.context.constructor.name, args);
                 } else {
-                    console.log(evtTypeStr, listenerObj.context);
+                    console.log(evtTypeStr, listenerObj.context.constructor.name);
                 }
 
                 listenerObj.callback.apply(listenerObj.context, args);

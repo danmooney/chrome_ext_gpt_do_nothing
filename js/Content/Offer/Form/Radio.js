@@ -33,7 +33,8 @@
         /**
          * Fill out the radio button
          * @param inputEl
-         * @param value
+         * @param {String} key
+         * @param {String} value
          * @param labelEl
          * TODO - need better implementation to parse whether it is a 'no' or negative radio button, which should usually be avoided.
          */
@@ -42,6 +43,7 @@
                 labelTxtStr = $.trim(labelEl.text().toLowerCase());
 
             if (this.hasNameAlreadyBeenFilledOut(nameStr)) { // a radio button with the same name has already been filled out, just forget it
+                // TODO - don't always fill out the first one that this app finds; count the number of radios there are (shared by name attr) and randomize which one to press, ESPECIALLY if there are a large number of them
                 return this.trigger('INPUT_DONE_HANDLING');
             }
 
