@@ -23,8 +23,8 @@
                         'install',
                         'download',
                         'sign up',
-                        'confirm email', // TODO - this should be easy to do after the bot submits.. so remove??
-                        'print'
+                        'confirm email', // TODO - this should be easy for me to do manually to do after the bot submits.. so remove??
+                        'print' // this probably just detects if window.print is called?  Worth it??
                     ]
                 },
                 /**

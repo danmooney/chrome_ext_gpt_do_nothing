@@ -4,6 +4,8 @@
 
 !! Need to inject a script into the content window to submit the form for it to work properly!
 
+!! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for is set as a value inside the input itself.
+
 ?! What about forms inside iframes?  Sometimes the submit button is inside an iframe, and when it gets manually clicked it tells the parent window to redirect.
      They have to be the same origin, so is it possible to query the child from the parent and find the rest of the form that way?
 

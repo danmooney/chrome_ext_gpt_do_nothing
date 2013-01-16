@@ -11,7 +11,9 @@
             if ('no' !== labelTxtStr &&
                 false === /^no[^a-zA-Z+]/.test(labelTxtStr)
             ) {
+                inputEl.trigger('focus').trigger('click');
                 inputEl.attr('checked', 'checked');
+                inputEl.trigger('blur');
             }
 
             this.trigger('INPUT_DONE_HANDLING');

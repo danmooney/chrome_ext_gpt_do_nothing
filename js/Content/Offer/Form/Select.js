@@ -43,6 +43,8 @@
                 }
             });
 
+            inputEl.trigger('focus').trigger('click');
+
             // if no match found, choose random number!
             // avoid choosing first option since that is (usually) always the default!
             if (false === matchFoundBool) {
@@ -57,6 +59,8 @@
                 matchingValueEl.attr('checked', 'checked');
                 inputEl.trigger('change');
             }
+
+            inputEl.trigger('blur');
 
             this.trigger('INPUT_DONE_HANDLING');
         }

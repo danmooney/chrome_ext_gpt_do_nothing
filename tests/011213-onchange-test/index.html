@@ -20,6 +20,12 @@ $(function () {
         console.log($(this).val());
         console.log('keydown');
         return true;
+    }).on('click', function (e) {
+        console.log('click');
+        return true;
+    }).on('focus', function (e) {
+        console.log('focus');
+        return true;
     }).on('blur', function (e) {
         console.log('blur');
         return true;

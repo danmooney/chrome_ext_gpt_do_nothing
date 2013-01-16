@@ -26,7 +26,7 @@
                 i = 1,
                 j;
 
-            inputEl.trigger('click').focus();
+            inputEl.trigger('focus').trigger('click');
 
             // if value is empty, get a random value
             if (true === emptyValueBool) {
@@ -46,7 +46,7 @@
                     .trigger('keyup');
 
                 if (i === value.length) {
-                    inputEl.blur();
+                    inputEl.trigger('blur');
                     return this.trigger('INPUT_DONE_HANDLING');
                 }
 

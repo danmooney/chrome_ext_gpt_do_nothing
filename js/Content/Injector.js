@@ -4,6 +4,9 @@
         var that = this,
             popupCheckingInterval = 200,
             content = {
+                evalScript: function (scriptToEvalStr) {
+                    eval(scriptToEvalStr);
+                },
                 overrideAlert: function () {
                     var win = window;
 
@@ -43,6 +46,7 @@
                     var attrs,
                         attr,
                         attrsArr = [],
+                        scriptStrToEval,
                         i;
 
                     submitButtonEls.each(function () {
@@ -70,27 +74,30 @@
                         });
                     }
 
-                    eval('(function() {' +
+                    scriptStrToEval = '(function() {' +
                         '    function submitForm () {' +
-                        '        var attrsArr = ' + JSON.stringify(attrsArr) + ';' +
+                        '        var $ = window.myJQuery,' +
+                        '            attrsArr = ' + JSON.stringify(attrsArr) + ';' +
                         '        ' + // TODO - FINISH HERE
                         '    }' +
                         '    var script = document.createElement("script");' +
                         '    script.onload = function () {' +
-                        '        var myJQuery = jQuery.noConflict();' +
+                        '        window.myJQuery = jQuery.noConflict();' +
                         '        submitForm();' +
-                        '    }' +
+                        '    };' +
                         '    script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js";' +
                         '    document.documentElement.appendChild(script);' +
                         '}());'
-                    );
+                    ;
+
+                    this.inject('evalScript', scriptStrToEval);
 
 
-                    function evalHere () {
-                        for (var i = 0; i < submitButtonEls.length; i += 1) {
-                            submitButtonEls[0].length
-                        }
-                    }
+//                    function evalHere () {
+//                        for (var i = 0; i < submitButtonEls.length; i += 1) {
+//                            submitButtonEls[0].length
+//                        }
+//                    }
 
                 },
                 /**
@@ -169,11 +176,17 @@
         /**
          * Inject a function call to be executed within the context of the content window.
          * Ultra-sneaky solution!
+         *
+         * Also allows additional arguments, although it could get messy with string encoding and whatnot (it's only used for evaling as an argument)
+         *
          * @param fnStr
+         * @param [scriptStrToEval]
          */
-        inject: function (fnStr) {
+        inject: function (fnStr, scriptStrToEval) {
+            scriptStrToEval = scriptStrToEval || '';
+
             var script = document.createElement('script');
-            script.appendChild(document.createTextNode('('+ this.getScript(fnStr) +'());'));
+            script.appendChild(document.createTextNode('('+ this.getScript(fnStr) +'(' + scriptStrToEval + '));'));
             document.documentElement.appendChild(script);
 
             return this;
