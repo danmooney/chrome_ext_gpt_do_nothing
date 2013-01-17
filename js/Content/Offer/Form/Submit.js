@@ -126,9 +126,7 @@
 //                    this.changeImageTypesToSubmitTypes(formEl);
                 }
 
-                // all that needs to be done is simply click on the submit...?  It seems to trigger submits on any element that has a handler for it!
-                window.focus();
-
+                // Inject submit into the content window
                 $$('Injector').injectSubmit(formEl, submitButtonEls);
 
 //                submitButtonEls.each(function () {
@@ -146,10 +144,11 @@
 
             } else { // these sick fucks sometimes don't put their shit in form elements... search for the submit triggerer if this is true!
                 alert('Trying to submit, but no proper form element on page!');
-                submitButtonEls.trigger('click').trigger('submit');
+                submitButtonEls.trigger('click');
                 inputEls.trigger('click');
 
-                // TODO - click around???  doomed by this point???
+
+                // TODO - may have to inject/eval clicks into the content window for the anchors/buttons in clickAround
                 setTimeout(function () {
                     $$('OfferForm').clickAround();
                 }, 7000);

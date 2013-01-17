@@ -179,7 +179,7 @@
                 attrsArr = [],
                 formSelectorStr = '',
                 scriptStrToEval,
-                submitButtonSelectorStr = 'input[type="submit"], input[type="image"], input[onsubmit], input[onclick]',
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], input[onclick]',
                 i;
 
             formEl = formEl[0];
@@ -193,18 +193,19 @@
                     'value': attr.nodeValue
                 });
 
-                formSelectorStr += '[' + attr.nodeName + '=' + '"' + attr.nodeValue + '"]';
+                formSelectorStr += '[' + attr.nodeName + '=' + '\\"' + attr.nodeValue + '\\"]';
             }
 
             scriptStrToEval = '(function submitForm() {' +
                 '    var $ = window.gptJQuery,' +
-                '        formEl = $(' + formSelectorStr + '),' +
-                '        submitEls = formEl.find(' + submitButtonSelectorStr + ').filter(":visible");' +
-                '     if (submitEls.length = 0) {' +
-                '         formEl = $("body")' +
-                '         submitEls = $("body").find(' + submitButtonSelectorStr + ').filter(":visible");' +
-                '     }' + // TODO - now maybe sort by width/height...?
-                '     submitButtonEls.trigger("click");' +
+                '        formEl = $(\'' + formSelectorStr + '\'),' +
+                '        submitEls = formEl.find(\'' + submitButtonSelectorStr + '\').filter(\\":visible\\");' +
+                // ??? No reason to evaluate because injection is not needed when there's no form element?
+//                '     if (submitEls.length === 0) {' +
+//                '         formEl = $("body")' +
+//                '         submitEls = $("body").find(\'' + submitButtonSelectorStr + ').filter(":visible");\'' +
+//                '     }' +
+                '     submitEls.trigger(\\"click\\");' +
                 '}());'
             ;
 
@@ -223,7 +224,7 @@
             scriptStrToEval = scriptStrToEval || '';
 
             var script = document.createElement('script');
-            script.appendChild(document.createTextNode('('+ this.getScript(fnStr) +'(' + scriptStrToEval + '));'));
+            script.appendChild(document.createTextNode('('+ this.getScript(fnStr) +'(\"' + scriptStrToEval + '\"));'));
             document.documentElement.appendChild(script);
 
             return this;

@@ -1,0 +1,4 @@
+eval('(function submitForm() ' +
+    '{    var $ = window.gptJQuery,        ' +
+    'formEl = $([name="PageForm"][method="post"][action="ApplyStepOne.aspx?oid=1&sid=1130&hid=631862611&cd=501123&c1=396&c2=6f74d09d76a676cf17e31ee8583fb6ca&c3="][id="PageForm"][onclick="hasExitPopOpened = true;hasExitFrameOpened = true;"]),' +
+    'submitEls = formEl.find(input[type="submit"], input[type="image"], input[onsubmit], input[onclick]).filter(":visible");     if (submitEls.length = 0) {         formEl = $("body")         submitEls = $("body").find(input[type="submit"], input[type="image"], input[onsubmit], input[onclick]).filter(":visible");     }     submitButtonEls.trigger("click");}());');

@@ -204,9 +204,9 @@
             alert('PARSING OFFER NOW');
             injectOverrides(function () {
                 window.onkeypress = null;
-//            $$('OfferForm').removeLastFormsArr(function () {
-//                $$('Offer').start(true);
-//            });
+                $$('OfferForm').removeLastFormsArr(function () {
+                    $$('Offer').start(true);
+                });
             });
         };
     }());
