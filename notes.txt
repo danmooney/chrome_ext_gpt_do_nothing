@@ -2,7 +2,10 @@
      and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
      It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
 
-!! Need to inject a script into the content window to submit the form for it to work properly!
+!! Need to inject a script into the content window for checking checkboxes (ones that NEED to be checked, like 'Terms' or 'Privacy').  Apparently doing it from the extension doesn't trigger the right things.
+   ex. https://www.getyourautoloan.com/FederalAutoButton/ApplyStepTwo.aspx
+
+!! Social Security is another phone-like multi input text box field!
 
 !! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
 
@@ -18,6 +21,7 @@
      ex. points2shop.com
      EDIT: I guess this is being solved now with the width/height calculations - DM - 011213
 
+<> Need to inject a script into the content window to submit the form for it to work properly!
 
 <> Multiple phone text fields
 

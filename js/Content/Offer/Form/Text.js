@@ -58,8 +58,6 @@
 
             // check for phone
             if (key.indexOf('phone') !== -1) {
-                this.addPhoneValuesFilledNum();
-
                 if (inputEl.width() < this.getInputWidthMinForPhoneNum() &&
                     false === this.isMultiValuedPhoneForm()    // first and second inputs are usually the same width, and the last one is wider to accomodate the extra digit
                 ) {
@@ -69,7 +67,7 @@
                 if (true === this.isMultiValuedPhoneForm()) {
                     switch (this.getPhoneValuesFilledNum()) {
                         case 0:
-                            value = value.substr(0, 3); // 202
+                            value = value.substr(0, 3); // 203
                             break;
                         case 1:
                             value = value.substr(3, 3); // 261

@@ -5,6 +5,7 @@
             clickAroundTimeLimit = 7000,
             gptParsedStr  = 'gptParsed',
             gptHandledStr = 'gptHandledStr',
+            stopFillingOutBool = false,
             /**
              * The selector string for all visible, non-submittable (fillable) named form inputs.
              * This is used for filling out the form!
@@ -66,6 +67,9 @@
                 age: [
 
                 ],
+                occupation: [
+                    'job'
+                ],
                 address: [
 
                 ],
@@ -105,11 +109,15 @@
 //                        ]
 //                    }
                 ],
+                ssn: [
+                    'social'
+                ],
                 password: [
                     'pass',
                     'confirm'
                 ]
             };
+
 
 
         /**
@@ -256,7 +264,17 @@
         this.getForm = function () {
             return form;
         };
+
+        this.stopFillingOut= function () {
+            stopFillingOutBool = true;
+        };
+
+        this.isStopRequested = function () {
+            return stopFillingOutBool;
+        };
+
     }, {
+
         /**
          * Parse the DOM and look for THE appropriate form to focus on.
          * Also remove the last completed form if it exists in the DOM.
@@ -439,7 +457,7 @@
             /**
              * Get the value from formInfo based on the formNameStr of the form field
              * @param {String} formNameStr the form field name
-             * @return {Array} The form info in key/value format or empty string
+             * @return {Array|String} The form info in key/value format or empty string
              */
             function getValueByName (formNameStr) {
                 // TODO - this should have different implications for radio and checkbox, since all the form aliases are for text and select inputs only.  In this case, find the matching label and pass that to value
@@ -501,6 +519,7 @@
                 }
 
                 if (!$$.util.isString(matchedFormNameStr)) {
+                    console.log('could not find match for ' + matchedFormNameStr);
                     return '';
                 }
 
@@ -510,10 +529,17 @@
                  */
                 function searchForFormInfoValueByName (name) {
                     if ($$.util.isDefined(formInfo[name])) {
-                        console.log('returning ' + formInfo[name]);
+                        if ($$.util.isScalar(formInfo[name])) {
+                            console.log('returning ' + formInfo[name]);
+                        } else {
+                            console.log('returning ');
+                            console.dir(formInfo[name]);
+                        }
+
                         return [matchedFormNameStr, formInfo[name]];
                     }
-
+                    // This shouldn't happen!!!!!!!!!!!!
+                    throw new AppError('Could not find form info value by name: ' + name);
                     return ['', ''];
                 }
 
@@ -615,6 +641,10 @@
                 i += 1;
                 // DEBUG HERE WITH THE SETTIMEOUT, ALTHOUGH PROBABLY ADVISED TO LEAVE IN..??...  Try to get script to act human!
                 setTimeout(function () {
+                    if (true === that.isStopRequested()) {
+                        return;
+                    }
+
                     var
                         /**
                          * There's so much ajax going on in these ones today that re-evaluating the form for new inputs is essential!!!!!

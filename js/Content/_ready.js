@@ -155,11 +155,12 @@
             name: 'Daniel Mooney',
             sex: 'male',
             age: '25',
+            occupation: 'DJ',
             month: {
                 short: '6',
                 long: 'June'
             },
-            date: '3',
+            day: '3',
             year: '1987',
             address: '5 Nabby Rd',
             address2: 'Unit A12',
@@ -181,7 +182,8 @@
 //                home: '2032619103',
 //                mobile: '2032619102'
 //            },
-            email: 'doesttwork2@gmail.com'
+            email: 'doesttwork2@gmail.com',
+            ssn: '041870203'
         }]);
 
         Message.sendMessage({
@@ -203,7 +205,14 @@
             }
             alert('PARSING OFFER NOW');
             injectOverrides(function () {
-                window.onkeypress = null;
+                window.onkeypress = function (e) {   // TODO - provide way to stop fillOut from continuing
+                    if (126 !== e.which) {
+                        return true;
+                    }
+                    alert('STOP Requested: Will stop after this input is finished.');
+                    $$('OfferForm').stopFillingOut();
+                };
+
                 $$('OfferForm').removeLastFormsArr(function () {
                     $$('Offer').start(true);
                 });
