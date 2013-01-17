@@ -6,7 +6,7 @@
             injectedJQueryBool = false,
             content = {
                 evalScript: function (scriptToEvalStr) {
-
+                    eval(scriptToEvalStr);
                 },
                 /**
                  * This is for the purposes of message passing when a confirm or an alert happens
@@ -15,7 +15,7 @@
                     var win = window;
 
                     win.addContentToDiv = function (idStr, contentStr) {
-                        var $ = myJQuery;
+                        var $ = gptJQuery;
 
                         if ($('#' + idStr).length === 0) {
                             $('<div></div>').attr({
@@ -35,9 +35,9 @@
                         script = document.createElement("script");
 
                     script.onload = function () {
-                        win.myJQuery = jQuery.noConflict();
+                        win.gptJQuery = jQuery.noConflict();
 
-                        var $ = myJQuery;
+                        var $ = gptJQuery;
 
                         $('<div></div>').attr({
                             'id': 'gpt-my-jquery',
@@ -72,81 +72,25 @@
                         return true;
                     };
                 },
-                /**
-                 * Submit the form from the content window context.
-                 * (Form submission triggering doesn't exactly work from the partially sandboxed extension context.)
-                 *
-                 * NOTE: jQuery should probably be avoided in this case.
-                 *       It isn't wise to add it because it might override some existing legacy jQuery site JS.
-                 *
-                 * @param {jQuery} formEl
-                 * @param {jQuery} submitButtonEls
-                 */
-                injectSubmit: function (formEl, submitButtonEls) {
-                    var attrs,
-                        attr,
-                        attrsArr = [],
-                        scriptStrToEval,
-                        i;
-
-                    submitButtonEls.each(function () {
-                        attrs = this.attributes;
-
-                        for (i = 0; i < attrs.length; i += 1) {
-                            attr = attrs.item(i);
-
-                            attrsArr.push({
-                                'name': attr.nodeName,
-                                'value': attr.nodeValue
-                            });
-                        }
-                    });
-
-                    formEl = formEl[0];
-                    attrs = formEl.attributes;
-
-                    for (i = 0; i < attrs.length; i += 1) {
-                        attr = attrs.item(i);
-
-                        attrsArr.push({
-                            'name': attr.nodeName,
-                            'value': attr.nodeValue
-                        });
-                    }
-
-                    scriptStrToEval = '(function submitForm($) {' +
-                        '    var $ = window.myJQuery,' +
-                        '        attrsArr = ' + JSON.stringify(attrsArr) + ';' +
-                        '        ' + // TODO - FINISH HERE
-                        '}(myJQuery));'
-                    ;
-
-                    this.inject('evalScript', scriptStrToEval);
-
-//                    function evalHere () {
-//                        for (var i = 0; i < submitButtonEls.length; i += 1) {
-//                            submitButtonEls[0].length
-//                        }
-//                    }
-
-                },
+                
                 /**
                  * Prevent form.submit from happening more than once if
                  * GPT Offer site using JS for its submissions
+                 * TODO - Finish!  This will allow us to only submit the form once and to prevent further submits from other forms!
                  */
                 overrideOnBeforeUnload: function () {
-//                    var win = window;
-//
-//                    if (win.onbeforeunload !== null) {
-//                        return;
-//                    }
-//
-//                    win.onbeforeunload = function () {
-//                        var div = document.createElement('div');
-//                        div.setAttribute('id', 'gpt-offer-form-submitted');
-//                        document.body.appendChild(div);
-//                        return true;
-//                    };
+                    var win = window;
+
+                    if (win.onbeforeunload !== null) {
+                        return;
+                    }
+
+                    win.onbeforeunload = function () {
+                        var div = document.createElement('div');
+                        div.setAttribute('id', 'gpt-offer-form-submitted');
+                        document.body.appendChild(div);
+                        return true;
+                    };
                 }
             };
 
@@ -218,6 +162,53 @@
                     popupEl.remove();
                 });
             }, that.getPopupCheckingInterval());
+        },
+        /**
+         * Submit the form from the content window context.
+         * (Form submission triggering doesn't exactly work from the partially sandboxed extension context.)
+         *
+         * NOTE: jQuery should probably be avoided in this case.
+         *       It isn't wise to add it because the Google CDN might be down.
+         *
+         * @param {jQuery} formEl
+         * @param {jQuery} submitButtonEls
+         */
+        injectSubmit: function (formEl, submitButtonEls) {
+            var attrs,
+                attr,
+                attrsArr = [],
+                formSelectorStr = '',
+                scriptStrToEval,
+                submitButtonSelectorStr = 'input[type="submit"], input[type="image"], input[onsubmit], input[onclick]',
+                i;
+
+            formEl = formEl[0];
+            attrs = formEl.attributes;
+
+            for (i = 0; i < attrs.length; i += 1) {
+                attr = attrs.item(i);
+
+                attrsArr.push({
+                    'name': attr.nodeName,
+                    'value': attr.nodeValue
+                });
+
+                formSelectorStr += '[' + attr.nodeName + '=' + '"' + attr.nodeValue + '"]';
+            }
+
+            scriptStrToEval = '(function submitForm() {' +
+                '    var $ = window.gptJQuery,' +
+                '        formEl = $(' + formSelectorStr + '),' +
+                '        submitEls = formEl.find(' + submitButtonSelectorStr + ').filter(":visible");' +
+                '     if (submitEls.length = 0) {' +
+                '         formEl = $("body")' +
+                '         submitEls = $("body").find(' + submitButtonSelectorStr + ').filter(":visible");' +
+                '     }' + // TODO - now maybe sort by width/height...?
+                '     submitButtonEls.trigger("click");' +
+                '}());'
+            ;
+
+            this.inject('evalScript', scriptStrToEval);
         },
         /**
          * Inject a function call to be executed within the context of the content window.
