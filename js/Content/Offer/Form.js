@@ -366,7 +366,7 @@
                     });
 
                     if (true === formExistsInLastFormsBool) {
-                        alert('One of the last form exists!  This form has already been filled out!');
+//                        alert('One of the last form exists!  This form has already been filled out!');
                     }
 
                     callback(formEls);

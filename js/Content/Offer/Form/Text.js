@@ -45,11 +45,16 @@
          * Fill out text/textarea fields
          */
         fillOut: function (inputEl, key, value, labelEl) {
-            var emptyValueBool = (value === '' || $$.util.isUndefined(value)),
+            var emptyKeyBool   = (key === '' || $$.util.isUndefined(key)),
+                emptyValueBool = (value === '' || $$.util.isUndefined(value)),
                 i = 1,
                 j;
 
             inputEl.trigger('focus').trigger('click');
+
+            if (true === emptyKeyBool) {
+                key = '';
+            }
 
             // if value is empty, get a random value
             if (true === emptyValueBool) {

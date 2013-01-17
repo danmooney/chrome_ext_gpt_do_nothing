@@ -28,8 +28,12 @@
             isFormBool = (formEl.prop('tagName').toLowerCase() === 'form');
         };
 
-        this.getIsFormBool = function () {
-            return isFormBool;
+        this.isForm = function (formEl) {
+            if (!formEl) {
+                return isFormBool;
+            }
+
+            return formEl.prop('tagName').toLowerCase() === 'form';
         };
 
     }, {
@@ -87,10 +91,10 @@
         evaluateSubmitEls: function (formEl) {
             var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick]').filter(':visible');
 
-            if (submitEls.length === 0) { // then try buttons
+            if (submitEls.length === 0 && true === this.isForm(formEl)) { // then try buttons
                 submitEls = formEl.find('button');
                 if (submitEls.length === 0  &&      // no submits or buttons.... try with body // TODO - is this safe?
-                    true === this.getIsFormBool()   // only if formEl isn't already body!
+                    true === this.isForm()   // only if formEl isn't already body!
                 ) {
                     return this.evaluateSubmitEls($('body'));
                 }
@@ -120,7 +124,7 @@
             var submitButtonEls = this.evaluateSubmitEls(formEl),
                 that = this;
 
-            if (true === this.getIsFormBool()) {           // if form exists, hallelujah!
+            if (true === this.isForm()) {           // if form exists, hallelujah!
                 if (true === this.hasImageInputTypes()) {
                     this.addXAndYToForm(formEl);
 //                    this.changeImageTypesToSubmitTypes(formEl);

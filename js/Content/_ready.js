@@ -148,22 +148,60 @@
          *  TODO - Storing contact info here for now,
          *         obviously put somewhere better later
          */
+//        $$('Storage').setItem('formInfo', [{
+//            first: 'Daniel',
+//            middle: 'R',
+//            last: 'Mooney',
+//            name: 'Daniel Mooney',
+//            sex: 'male',
+//            age: '25',
+//            occupation: 'DJ',
+//            month: {
+//                short: '6',
+//                long: 'June'
+//            },
+//            day: '3',
+//            year: '1987',
+//            address: '5 Nabby Rd',
+//            address2: 'Unit A12',
+//            city: 'Danbury',
+//            password: 'A180s1c61cdA', // TODO - make password meet universal requirements? (i.e. special characters??)
+//            state: {
+//                short: 'CT',
+//                long: 'Connecticut'
+//            },
+//            country: {
+//                short: 'USA',
+//                long: 'United States'
+//            },
+//            zip: '06811',
+//            home_phone: '2032619103',
+//            cell_phone: '2032619102',
+//            phone: '2032619103',
+////            phone: {
+////                home: '2032619103',
+////                mobile: '2032619102'
+////            },
+//            email: 'doesttwork2@gmail.com',
+//            ssn: '041870203'
+//        }]);
+
         $$('Storage').setItem('formInfo', [{
-            first: 'Daniel',
+            first: 'David',
             middle: 'R',
-            last: 'Mooney',
-            name: 'Daniel Mooney',
+            last: 'Boone',
+            name: 'David Boone',
             sex: 'male',
             age: '25',
-            occupation: 'DJ',
+            occupation: 'Pianist',
             month: {
-                short: '6',
-                long: 'June'
+                short: '5',
+                long: 'March'
             },
             day: '3',
-            year: '1987',
-            address: '5 Nabby Rd',
-            address2: 'Unit A12',
+            year: '1978',
+            address: '407 Main Street',
+            address2: '#101',
             city: 'Danbury',
             password: 'A180s1c61cdA', // TODO - make password meet universal requirements? (i.e. special characters??)
             state: {
@@ -175,9 +213,9 @@
                 long: 'United States'
             },
             zip: '06811',
-            home_phone: '2032619103',
-            cell_phone: '2032619102',
-            phone: '2032619103',
+            home_phone: '2032688419',
+            cell_phone: '2036858291',
+            phone: '2032688419',
 //            phone: {
 //                home: '2032619103',
 //                mobile: '2032619102'

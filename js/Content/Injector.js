@@ -200,11 +200,9 @@
                 '    var $ = window.gptJQuery,' +
                 '        formEl = $(\'' + formSelectorStr + '\'),' +
                 '        submitEls = formEl.find(\'' + submitButtonSelectorStr + '\').filter(\\":visible\\");' +
-                // ??? No reason to evaluate because injection is not needed when there's no form element?
-//                '     if (submitEls.length === 0) {' +
-//                '         formEl = $("body")' +
-//                '         submitEls = $("body").find(\'' + submitButtonSelectorStr + ').filter(":visible");\'' +
-//                '     }' +
+                '     if (submitEls.length === 0) {' +
+                '         submitEls = formEl.find(\\"button\\"); ' +
+                '     }' +
                 '     submitEls.trigger(\\"click\\");' +
                 '}());'
             ;
