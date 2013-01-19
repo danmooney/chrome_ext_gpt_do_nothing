@@ -45,6 +45,10 @@
          * Fill out text/textarea fields
          */
         fillOut: function (inputEl, key, value, labelEl) {
+            if (inputEl.val() === value) {
+                return this.trigger('INPUT_DONE_HANDLING');
+            }
+
             var emptyKeyBool   = (key === '' || $$.util.isUndefined(key)),
                 emptyValueBool = (value === '' || $$.util.isUndefined(value)),
                 i = 1,

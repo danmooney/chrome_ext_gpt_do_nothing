@@ -34,6 +34,8 @@
                     var win = window,
                         script = document.createElement("script");
 
+                    script.setAttribute('class', 'gpt-script');
+
                     script.onload = function () {
                         win.gptJQuery = jQuery.noConflict();
 
@@ -145,6 +147,11 @@
                 console.log('onconfirm listen');
                 console.dir(arguments);
             });
+
+            // remove gpt-script classes, just in case a site is evaluating number of script tags in the DOM
+            setInterval(function () {
+                $('script.gpt-script').remove();
+            }, 1);
         },
         checkForInterceptedPopupsAndTrigger: function () {
             var that = this;
@@ -245,29 +252,12 @@
          * @param {jQuery} submitButtonEls
          */
         injectSubmit: function (formEl, submitButtonEls) {
-            var attrs,
-                attr,
-                attrsArr = [],
-                formSelectorStr = '',
-                scriptStrToEval,
-                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], input[onclick]',
-                i;
+            var scriptToEvalStr,
+                formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"'),
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit]';
 
-            formEl = formEl[0];
-            attrs = formEl.attributes;
 
-            for (i = 0; i < attrs.length; i += 1) {
-                attr = attrs.item(i);
-
-                attrsArr.push({
-                    'name': attr.nodeName,
-                    'value': attr.nodeValue
-                });
-
-                formSelectorStr += '[' + attr.nodeName + '=' + '\\"' + attr.nodeValue + '\\"]';
-            }
-
-            scriptStrToEval = '(function submitForm() {' +
+            scriptToEvalStr = '(function submitForm() {' +
                 '    var $ = window.gptJQuery,' +
                 '        formEl = $(\'' + formSelectorStr + '\'),' +
                 '        submitEls = formEl.find(\'' + submitButtonSelectorStr + '\').filter(\\":visible\\");' +
@@ -278,7 +268,7 @@
                 '}());'
             ;
 
-            this.inject('evalScript', scriptStrToEval);
+            this.inject('evalScript', scriptToEvalStr);
         },
         /**
          * Inject a function call to be executed within the context of the content window.
