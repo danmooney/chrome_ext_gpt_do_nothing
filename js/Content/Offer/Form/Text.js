@@ -7,11 +7,27 @@
              * @param {Array}
              */
             multiValuesFilledArr = [],
+            multiValueSubstringMap = {
+                ssn: [
+                    3,
+                    5,
+                    9
+                ],
+                phone: [
+                    3,
+                    6,
+                    10
+                ]
+            },
             randomStrArr = [
                 'Yes',
                 'OK'
             ],
             inputWidthMinForMultiValue = 80;
+
+        this.getMultiValueSubstringMap = function (multiValueFormNameStr) {
+            return multiValueSubstringMap[multiValueFormNameStr];
+        };
 
         this.getMultiValueFillCount = function (multiValueFormNameStr) {
             return multiValuesFilledArr[multiValueFormNameStr];
@@ -28,7 +44,7 @@
             multiValuesFilledArr[multiValueFormNameStr] += 1;
         };
 
-        this.getInputWidthMinForMulltiValue = function () {
+        this.getInputWidthMinForMultiValue = function () {
             return inputWidthMinForMultiValue;
         };
 
@@ -43,8 +59,43 @@
     }, {
         _static: true,
 
-        getMultiInputValue: function () {
+        /**
+         * Find out if it's a multi input type value and re-evaluate the value if true
+         * @param {String} multiValueNameStr
+         * @param {jQuery}inputEl
+         * @param {String} value
+         * @return {String}
+         */
+        getMultiInputValue: function (multiValueNameStr, inputEl, value) {
+            if (inputEl.width() > this.getInputWidthMinForMultiValue()) {
+                return value;
+            }
 
+            if ($$.util.isUndefined(this.getMultiValueFillCount(multiValueNameStr))) { // first and second inputs are usually the same width, and the last one is wider to accomodate the extra digit
+                this.setMultiValueFillCount(multiValueNameStr);
+            }
+
+            var multiValueFilloutCount,
+                multiValueSubstringArr,
+                fromNum,
+                upToNum;
+
+            multiValueFilloutCount = this.getMultiValueFillCount(multiValueNameStr);
+            multiValueSubstringArr = this.getMultiValueSubstringMap(multiValueNameStr);
+
+            if (0 === multiValueFilloutCount) {
+                fromNum = 0;
+            } else {
+                fromNum = multiValueSubstringArr[multiValueFilloutCount - 1];
+            }
+
+            upToNum = multiValueSubstringArr[multiValueFilloutCount];
+
+            value = value.substring(fromNum, upToNum);
+
+            this.addMultiValueFillCount(multiValueNameStr);
+
+            return value;
         },
 
         /**
@@ -57,8 +108,6 @@
 
             var emptyKeyBool   = (key === '' || $$.util.isUndefined(key)),
                 emptyValueBool = (value === '' || $$.util.isUndefined(value)),
-                multiValueNameStr,
-                multiValueFilloutCount,
                 i = 1,
                 j;
 
@@ -75,34 +124,11 @@
 
             // check for phone
             if (key.indexOf('phone') !== -1) {
-                multiValueNameStr = 'phone';
-
-                if (inputEl.width() < this.getInputWidthMinForMulltiValue() &&
-                    $$.util.isUndefined(this.getMultiValueFillCount(multiValueNameStr)) // first and second inputs are usually the same width, and the last one is wider to accomodate the extra digit
-                ) {
-                    this.setMultiValueFillCount(multiValueNameStr);
-                }
-
-                multiValueFilloutCount = this.getMultiValueFillCount(multiValueNameStr);
-                if ($$.util.isNumber(multiValueFilloutCount)) {
-                    switch (multiValueFilloutCount) {
-                        case 0:
-                            value = value.substr(0, 3); // 203
-                            break;
-                        case 1:
-                            value = value.substr(3, 3); // 261
-                            break;
-                        case 2:
-                            value = value.substr(6, 4); // 9103
-                            break;
-                    }
-
-                    this.addMultiValueFillCount(multiValueNameStr);
-                }
+                value = this.getMultiInputValue('phone', inputEl, value);
             }
 
             if ('ssn' === key) {
-
+                value = this.getMultiInputValue('ssn', inputEl, value);
             }
 
             /**

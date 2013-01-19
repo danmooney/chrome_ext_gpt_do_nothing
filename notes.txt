@@ -4,11 +4,7 @@
 
 !! Keep track of form info names already filled out!  It's unlikely you'll have to enter it twice in any offer, so store them so they won't be filled out more than once, even across multiple pages!
 
-!! Social Security is another phone-like multi input text box field!
-
 !! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
-
-!! Multiple textbox fields!!  Are phone and social security the only ones????? Probably make code reusable with other form info names just in case!
 
 ?! What about forms inside iframes?  Sometimes the submit button is inside an iframe, and when it gets manually clicked it tells the parent window to redirect.
      They have to be the same origin, so is it possible to query the child from the parent and find the rest of the form that way?
@@ -16,6 +12,8 @@
 ?? How to pass e.which to jQuery's triggers?
 
 ?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
+
+<> Multiple textbox fields!!  Are phone and social security the only ones????? Probably make code reusable with other form info names just in case!
 
 <> Need to inject a script into the content window for checking checkboxes (ones that NEED to be checked, like 'Terms' or 'Privacy').
    Apparently doing it from the extension doesn't trigger the right things.
