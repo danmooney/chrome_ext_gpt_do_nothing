@@ -287,6 +287,23 @@
         };
 
     }, {
+        /**
+         * Inline forms are not evaluated as visible by jQuery, so force them to be block
+         */
+        convertInlineFormsToBlock: function () {
+            $('form').each(function () {
+                var formEl = $(this);
+                if (formEl.css('display') !== 'inline') {
+                    // continue loop
+                    return true;
+                }
+
+                formEl.css('display', '').attr('style', function (i, s) {
+                    return s + 'display: block!important;';
+                });
+            });
+        },
+
 
         /**
          * Parse the DOM and look for THE appropriate form to focus on.
@@ -294,6 +311,8 @@
          * TODO - what if there are no forms and we get stuck submitting the same formless input elements over and over again?
          */
         evaluateForms: function (callback) {
+            this.convertInlineFormsToBlock();
+
             var formEls = $('form:visible'),
                 that = this;
 
