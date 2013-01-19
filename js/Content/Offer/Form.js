@@ -33,9 +33,17 @@
              * TODO - phone is going to be tough to do! Sometimes there's 3 inputs, sometimes there's 1!
              */
             formAliases = {
+                secondary_email: [
+                    'secondary-email',
+                    'secondary-e-mail',
+                    'secondary-e_mail'
+                ],
                 email: [
                     'e-mail',
                     'e_mail'
+                ],
+                username: [
+
                 ],
                 first: [
 
@@ -75,11 +83,11 @@
                 employer: [
                     'boss'
                 ],
-                address: [
-
-                ],
                 address2: [
                     'second'
+                ],
+                address: [
+
                 ],
                 city: [
 
@@ -518,6 +526,8 @@
                     }
 
                     if ($$.util.isString(matchedFormNameStr)) {
+                        matchedFormNameStr = formAliasNameStr;
+
                         console.log(formNameStr + ' matches with ' + matchedFormNameStr);
                         break;
                     }
@@ -642,10 +652,14 @@
                 handleInput(typeStr, inputEl, key, value, labelEl);
             }
 
-            this.listen('INPUT_DONE_HANDLING', function () {
+            this.listen('INPUT_DONE_HANDLING', function (setTimeoutBool) {
                 i += 1;
-                // DEBUG HERE WITH THE SETTIMEOUT, ALTHOUGH PROBABLY ADVISED TO LEAVE IN..??...  Try to get script to act human!
-                setTimeout(function () {
+
+                if ($$.util.isUndefined(setTimeoutBool)) {
+                    setTimeoutBool = true;
+                }
+
+                function evaluateNextInput () {
                     if (true === that.isStopRequested()) {
                         return;
                     }
@@ -668,16 +682,22 @@
                         inputEl = formInputs.eq(i);
 
                         if (true === that.hasBeenParsed(inputEl)) { // if already parsed, go to next formInput
-                            return that.trigger('INPUT_DONE_HANDLING');
+                            return that.trigger('INPUT_DONE_HANDLING', inputEl);
                         } else {
                             console.log('handling form input ' + i);
-                            parseInput(inputEl);
+                            return parseInput(inputEl);
                         }
                     } else {
                         that.removeListener('INPUT_DONE_HANDLING');
                         return $$('OfferFormSubmit').submit(formEl, formInputs);
                     }
-                }, 1000);
+                }
+
+                if (true === setTimeoutBool) {
+                    setTimeout(evaluateNextInput, 1000);
+                } else {
+                    evaluateNextInput();
+                }
             });
 
             parseInput(formInputs.eq(i));

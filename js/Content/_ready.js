@@ -191,6 +191,7 @@
             middle: 'R',
             last: 'Boone',
             name: 'David Boone',
+            username: 'davidboone',
             sex: 'male',
 //            age: '25',
             occupation: 'Pianist',
@@ -222,6 +223,7 @@
 //                mobile: '2032619102'
 //            },
             email: 'doesttwork2@gmail.com', // TODO - switch to different email after testing!
+            secondary_email: 'doesttwork@gmail.com',
             ssn: '041870203'
         }]);
 
@@ -239,22 +241,28 @@
     // DEBUG
     (function parseOfferNow() {
         window.onkeypress = function (e) {
+            if (33 === e.which) { // ! character.  This will clear the last forms storage
+                return $$('OfferForm').removeLastFormsArr(function () {
+                    alert('removed last forms from storage');
+                });
+            }
+
             if (126 !== e.which) { // ~ (tilde) character
                 return true;
             }
             alert('PARSING OFFER NOW');
             injectOverrides(function () {
                 window.onkeypress = function (e) {   // TODO - provide way to stop fillOut from continuing
-                    if (126 !== e.which) {
+                    if (126 !== e.which) { // ~ (tilde) character
                         return true;
                     }
                     alert('STOP Requested: Will stop after this input is finished.');
                     $$('OfferForm').stopFillingOut();
                 };
 
-                $$('OfferForm').removeLastFormsArr(function () {
+//                $$('OfferForm').removeLastFormsArr(function () {
                     $$('Offer').start(true);
-                });
+//                });
             });
         };
     }());

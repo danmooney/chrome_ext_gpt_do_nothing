@@ -111,30 +111,6 @@
         this.getPopupCheckingInterval = function () {
             return popupCheckingInterval;
         };
-
-        /**
-         * Get the attributes of an element
-         * @param {jQuery} el
-         * @return {Array}
-         */
-//        this.getAttributesOfEl = function (el) {
-//            var attrs = el.attributes,
-//                attr,
-//                attrsArr = [];
-//
-//            for (i = 0; i < attrs.length; i += 1) {
-//                attr = attrs.item(i);
-//
-//                attrsArr.push({
-//                    'name': attr.nodeName,
-//                    'value': attr.nodeValue
-//                });
-//
-//                formSelectorStr += '[' + attr.nodeName + '=' + '\\"' + attr.nodeValue + '\\"]';
-//            }
-//        };
-
-
     }, {
         _static: true,
         init: function () {
@@ -254,7 +230,7 @@
         injectSubmit: function (formEl, submitButtonEls) {
             var scriptToEvalStr,
                 formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"'),
-                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit]';
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button[onclick]';
 
 
             scriptToEvalStr = '(function submitForm() {' +

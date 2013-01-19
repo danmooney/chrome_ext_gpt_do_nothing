@@ -6,8 +6,19 @@
 
 !! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
 
-?! What about forms inside iframes?  Sometimes the submit button is inside an iframe, and when it gets manually clicked it tells the parent window to redirect.
-     They have to be the same origin, so is it possible to query the child from the parent and find the rest of the form that way?
+!! Forms inside iframes!  Sometimes the form / submit button is inside an iframe! Open in new window and fill out there?
+
+!! If there's any recaptcha (https://www.google.com/recaptcha/api/js/recaptcha.js or derivative script), just forget it and skip offer
+
+!! Parse the offer description on the GPT site for the word 'click'.  This indicates that there should be no form to fill out, and I should click around based on button square pixelage (???)
+
+!! Fill out random checkbox values, not every single one!
+
+!! Fill out random radio value, not always the first one!
+
+!! If a radio button has already been filled out of a list of radio buttons that share the same name, decrease the setTimeout milliseconds or skip them entirely somehow.
+
+?? Some date inputs pop up and have a javascript calendar-type widget... how to handle that?
 
 ?? How to pass e.which to jQuery's triggers?
 

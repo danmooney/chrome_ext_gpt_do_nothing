@@ -12,8 +12,9 @@
 /**
  * @param {Object} win global to nest DRM in
  * @param {String} applicationGlobal
+ * @param {undefined}
  */
-(function(win, applicationGlobal) {
+(function(win, applicationGlobal, undefined) {
     'use strict';
 
     /**

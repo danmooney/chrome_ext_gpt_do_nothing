@@ -214,6 +214,7 @@
             }
 
             return (($.trim(bodyText) === '' ||
+                     body.find('*').length === 0 ||
                      bodyText.toLowerCase().indexOf('expir') !== -1 ||
                      bodyText.toLowerCase().indexOf('no longer') !== -1) &&
                 body.html().length < 2500 // the body html length must be under 2500 characters because some pages can say "no longer" and still be valid??...

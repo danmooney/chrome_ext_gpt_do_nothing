@@ -89,7 +89,7 @@
          * @return {jQuery}
          */
         evaluateSubmitEls: function (formEl) {
-            var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick]').filter(':visible');
+            var submitEls = formEl.find('input[type="submit"], input[type="image"], input[onsubmit], input[onclick], button[onclick], button[type="submit"]').filter(':visible');
 
             if (submitEls.length === 0 && true === this.isForm(formEl)) { // then try buttons
                 submitEls = formEl.find('button');
