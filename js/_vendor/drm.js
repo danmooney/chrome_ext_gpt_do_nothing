@@ -1075,7 +1075,7 @@
 
         /**
          * Convert JSON-stringified values in object or array to JSON-parsed values
-         * @param {Array|Object}
+         * @param {Array|Object} obj
          */
         Util.jsonParseThroughObj = function (obj) {
             var newObj = Util.isObject(obj)
@@ -1105,16 +1105,30 @@
          */
         Util.makeJQuerySelector = function (arr) {
             var selectorStr = '',
+                attrs,
+                attr,
                 i;
 
-            for (i in arr) {
-                if (!arr.hasOwnProperty(i)) {
-                    continue;
+            if (arr instanceof Array) {
+                for (i in arr) {
+                    if (!arr.hasOwnProperty(i)) {
+                        continue;
+                    }
+                    if (!Util.isString(arr[i]) && !Util.isNumber(arr[i])) {
+                        continue;
+                    }
+                    selectorStr += '[' + i + '="' + arr[i] + '"]';
                 }
-                if (!Util.isString(arr[i]) && !Util.isNumber(arr[i])) {
-                    continue;
+            } else {
+                if (arr instanceof jQuery) {
+                    arr = arr[0];
                 }
-                selectorStr += '[' + i + '="' + arr[i] + '"]';
+
+                attrs = arr.attributes;
+                for (i = 0; i < attrs.length; i += 1) {
+                    attr = attrs.item(i);
+                    selectorStr += '[' + attr.nodeName + '=' + '"' + attr.nodeValue + '"]';
+                }
             }
 
             return selectorStr;

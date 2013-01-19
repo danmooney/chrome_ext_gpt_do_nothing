@@ -192,13 +192,14 @@
             last: 'Boone',
             name: 'David Boone',
             sex: 'male',
-            age: '25',
+//            age: '25',
             occupation: 'Pianist',
+            employer: 'Marty Heinz',
             month: {
                 short: '5',
                 long: 'March'
             },
-            day: '3',
+            date: '3',
             year: '1978',
             address: '407 Main Street',
             address2: '#101',
@@ -220,7 +221,7 @@
 //                home: '2032619103',
 //                mobile: '2032619102'
 //            },
-            email: 'doesttwork2@gmail.com',
+            email: 'doesttwork2@gmail.com', // TODO - switch to different email after testing!
             ssn: '041870203'
         }]);
 

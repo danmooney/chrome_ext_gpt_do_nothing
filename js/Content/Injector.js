@@ -110,6 +110,29 @@
             return popupCheckingInterval;
         };
 
+        /**
+         * Get the attributes of an element
+         * @param {jQuery} el
+         * @return {Array}
+         */
+//        this.getAttributesOfEl = function (el) {
+//            var attrs = el.attributes,
+//                attr,
+//                attrsArr = [];
+//
+//            for (i = 0; i < attrs.length; i += 1) {
+//                attr = attrs.item(i);
+//
+//                attrsArr.push({
+//                    'name': attr.nodeName,
+//                    'value': attr.nodeValue
+//                });
+//
+//                formSelectorStr += '[' + attr.nodeName + '=' + '\\"' + attr.nodeValue + '\\"]';
+//            }
+//        };
+
+
     }, {
         _static: true,
         init: function () {
@@ -162,6 +185,54 @@
                     popupEl.remove();
                 });
             }, that.getPopupCheckingInterval());
+        },
+        /**
+         * Inject click trigger on an input
+         * @param {jQuery|String} inputEl or jQuery selector string
+         * @param {jQuery} [parentEl]
+         */
+        injectClickInput: function (inputEl, parentEl) {
+            var inputElSelectorStr,
+                parentElSelectorStr,
+                scriptToEvalStr;
+
+            if (!$$.util.isString(inputEl)) {
+                inputElSelectorStr = $$.util.makeJQuerySelector(inputEl);
+            } else {
+                inputElSelectorStr = inputEl;
+            }
+
+            if ($$.util.isDefined(parentEl)) {
+                if (!$$.util.isString(parentEl)) {
+                    parentElSelectorStr = $$.util.makeJQuerySelector(parentEl);
+                } else {
+                    parentElSelectorStr = parentEl;
+                }
+            }
+
+            inputElSelectorStr = inputElSelectorStr.replace(/"/g, '\\"');
+
+            if ($$.util.isDefined(parentEl)) {
+                parentElSelectorStr = parentElSelectorStr.replace(/"/g, '\\"');
+                scriptToEvalStr = '' +
+                    '(function clickInput() {' +
+                    '    var $ = window.gptJQuery,' +
+                    '        parentEl = $(\'' + parentElSelectorStr + '\'),' +
+                    '        inputEl = parentEl.find(\'' + inputElSelectorStr + '\').filter(\\":visible\\");' +
+                    '     inputEl.trigger(\\"focus\\").trigger(\\"click\\").attr(\\"checked\\",\\"checked\\").trigger(\\"blur\\");' +
+                    '}());'
+                ;
+            } else {
+                scriptToEvalStr = '' +
+                    '(function clickInput() {' +
+                    '    var $ = window.gptJQuery,' +
+                    '        inputEl = $(\'' + inputElSelectorStr + '\').filter(\\":visible\\");' +
+                    '     inputEl.trigger(\\"focus\\").trigger(\\"click\\").attr(\\"checked\\",\\"checked\\").trigger(\\"blur\\");' +
+                    '}());'
+                ;
+            }
+
+            this.inject('evalScript', scriptToEvalStr);
         },
         /**
          * Submit the form from the content window context.
@@ -222,6 +293,7 @@
             scriptStrToEval = scriptStrToEval || '';
 
             var script = document.createElement('script');
+            script.setAttribute('class', 'gpt-script');
             script.appendChild(document.createTextNode('('+ this.getScript(fnStr) +'(\"' + scriptStrToEval + '\"));'));
             document.documentElement.appendChild(script);
 

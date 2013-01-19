@@ -51,6 +51,8 @@
                 ],
                 sex: [
                     'gender',
+                    'male-female',
+                    'female-male',
                     'mf',
                     'm-f',
                     'm_f'
@@ -58,17 +60,20 @@
                 month: [
 
                 ],
-                day: [
-                    'date'
+                date: [
+                    'day'
                 ],
                 year: [
 
                 ],
-                age: [
-
-                ],
+//                age: [
+//
+//                ],
                 occupation: [
                     'job'
+                ],
+                employer: [
+                    'boss'
                 ],
                 address: [
 
@@ -519,7 +524,7 @@
                 }
 
                 if (!$$.util.isString(matchedFormNameStr)) {
-                    console.log('could not find match for ' + matchedFormNameStr);
+                    console.log('could not find match for ' + /*matchedFormNameStr*/ formNameStr);
                     return '';
                 }
 
