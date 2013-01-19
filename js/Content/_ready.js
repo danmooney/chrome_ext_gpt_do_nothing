@@ -249,21 +249,26 @@
 
             if (126 !== e.which) { // ~ (tilde) character
                 return true;
-            }
-            alert('PARSING OFFER NOW');
-            injectOverrides(function () {
-                window.onkeypress = function (e) {   // TODO - provide way to stop fillOut from continuing
-                    if (126 !== e.which) { // ~ (tilde) character
-                        return true;
-                    }
-                    alert('STOP Requested: Will stop after this input is finished.');
-                    $$('OfferForm').stopFillingOut();
-                };
+            } else {
+//                alert('PARSING OFFER NOW');
+                var c = confirm('Would you like to parse this offer?');
+                if (false === c) {
+                    window.onkeypress = null;
+                    return;
+                }
 
-//                $$('OfferForm').removeLastFormsArr(function () {
+                injectOverrides(function () {
+                    window.onkeypress = function (e) {   // TODO - provide way to stop fillOut from continuing
+                        if (126 !== e.which) { // ~ (tilde) character
+                            return true;
+                        }
+                        alert('STOP Requested: Will stop after this input is finished.');
+                        $$('OfferForm').stopFillingOut();
+                    };
+
                     $$('Offer').start(true);
-//                });
-            });
+                });
+            }
         };
     }());
     // END DEBUG

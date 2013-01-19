@@ -652,6 +652,7 @@
                 handleInput(typeStr, inputEl, key, value, labelEl);
             }
 
+            // TODO - implement setTimeoutBool in the triggers in the various input klasses.  setTimeoutBool should be false when there's enough inputs of the same name that are filled out (in radio's case, 1, and >= 1 in checkbox's case)
             this.listen('INPUT_DONE_HANDLING', function (setTimeoutBool) {
                 i += 1;
 
