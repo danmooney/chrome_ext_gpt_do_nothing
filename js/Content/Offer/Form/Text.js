@@ -2,32 +2,34 @@
     'use strict';
     $$.klass(function OfferFormText () {
         var valueChangeSpeed = 20,
+            /**
+             * Associative array of multi field inputs and their associated value fillOut count
+             * @param {Array}
+             */
+            multiValuesFilledArr = [],
             randomStrArr = [
                 'Yes',
                 'OK'
             ],
-            inputWidthMinForPhoneNum = 80,
-            phoneValuesFilledNum = 0,
-            isMultiValuedPhoneFormBool = false;
+            inputWidthMinForMultiValue = 80;
 
-        this.setMultiValuedPhoneFormBool = function (multiValueFormBool) {
-            isMultiValuedPhoneFormBool = multiValueFormBool;
+        this.getMultiValueFillCount = function (multiValueFormNameStr) {
+            return multiValuesFilledArr[multiValueFormNameStr];
         };
 
-        this.isMultiValuedPhoneForm = function () {
-            return isMultiValuedPhoneFormBool;
+        /**
+         * Initiate the count
+         */
+        this.setMultiValueFillCount = function (multiValueFormNameStr) {
+            multiValuesFilledArr[multiValueFormNameStr] = multiValuesFilledArr[multiValueFormNameStr] || 0;
         };
 
-        this.getInputWidthMinForPhoneNum = function () {
-            return inputWidthMinForPhoneNum;
+        this.addMultiValueFillCount = function (multiValueFormNameStr) {
+            multiValuesFilledArr[multiValueFormNameStr] += 1;
         };
 
-        this.addPhoneValuesFilledNum = function () {
-            phoneValuesFilledNum += 1;
-        };
-
-        this.getPhoneValuesFilledNum = function () {
-            return phoneValuesFilledNum;
+        this.getInputWidthMinForMulltiValue = function () {
+            return inputWidthMinForMultiValue;
         };
 
         this.getValueChangeSpeed = function () {
@@ -41,6 +43,10 @@
     }, {
         _static: true,
 
+        getMultiInputValue: function () {
+
+        },
+
         /**
          * Fill out text/textarea fields
          */
@@ -51,6 +57,8 @@
 
             var emptyKeyBool   = (key === '' || $$.util.isUndefined(key)),
                 emptyValueBool = (value === '' || $$.util.isUndefined(value)),
+                multiValueNameStr,
+                multiValueFilloutCount,
                 i = 1,
                 j;
 
@@ -67,14 +75,17 @@
 
             // check for phone
             if (key.indexOf('phone') !== -1) {
-                if (inputEl.width() < this.getInputWidthMinForPhoneNum() &&
-                    false === this.isMultiValuedPhoneForm()    // first and second inputs are usually the same width, and the last one is wider to accomodate the extra digit
+                multiValueNameStr = 'phone';
+
+                if (inputEl.width() < this.getInputWidthMinForMulltiValue() &&
+                    $$.util.isUndefined(this.getMultiValueFillCount(multiValueNameStr)) // first and second inputs are usually the same width, and the last one is wider to accomodate the extra digit
                 ) {
-                    this.setMultiValuedPhoneFormBool(true);
+                    this.setMultiValueFillCount(multiValueNameStr);
                 }
 
-                if (true === this.isMultiValuedPhoneForm()) {
-                    switch (this.getPhoneValuesFilledNum()) {
+                multiValueFilloutCount = this.getMultiValueFillCount(multiValueNameStr);
+                if ($$.util.isNumber(multiValueFilloutCount)) {
+                    switch (multiValueFilloutCount) {
                         case 0:
                             value = value.substr(0, 3); // 203
                             break;
@@ -86,8 +97,12 @@
                             break;
                     }
 
-                    this.addPhoneValuesFilledNum();
+                    this.addMultiValueFillCount(multiValueNameStr);
                 }
+            }
+
+            if ('ssn' === key) {
+
             }
 
             /**
