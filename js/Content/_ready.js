@@ -203,7 +203,7 @@
             date: '3',
             year: '1978',
             address: '407 Main Street',
-            address2: '#101',
+            address2: '101',
             city: 'Danbury',
             password: 'A180s1c61cdA', // TODO - make password meet universal requirements? (i.e. special characters??)
             state: {

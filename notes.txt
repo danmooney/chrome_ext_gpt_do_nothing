@@ -2,7 +2,8 @@
      and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
      It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
 
-!! Keep track of form info names already filled out!  It's unlikely you'll have to enter it twice in any offer, so store them so they won't be filled out more than once, even across multiple pages!
+!! Add debug div in case window.onkeypress gets overwritten
+   ex. http://100mcdonalds.giftcertificatedelivery.com/form/iframe/22428/6538/?&sid=400148&ref=22428
 
 !! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
 
@@ -12,17 +13,22 @@
 
 !! Parse the offer description on the GPT site for the word 'click'.  This indicates that there should be no form to fill out, and I should click around based on button square pixelage (???)
 
-!! Fill out random checkbox values, not every single one!
-
-!! Fill out random radio value, not always the first one!
-
-!! If a radio button has already been filled out of a list of radio buttons that share the same name, decrease the setTimeout milliseconds or skip them entirely somehow.
+?! What about fields that are used as placeholders?? When clicked, they show the proper field, which is invisible on page load and will never get parsed!!
 
 ?? Some date inputs pop up and have a javascript calendar-type widget... how to handle that?
 
 ?? How to pass e.which to jQuery's triggers?
 
 ?? What about human verification questions (i.e. 'Enter "2" in this box' type questions)
+
+!? Keep track of form info names already filled out!  It's unlikely you'll have to enter it twice in any offer, so store them so they won't be filled out more than once, even across multiple pages!
+   EDIT: Probably very likely you'll enter it twice every offer.
+
+<> Fill out random checkbox values, not every single one!
+
+<> Fill out random radio value, not always the first one!
+
+<> If a radio button has already been filled out of a list of radio buttons that share the same name, decrease the setTimeout milliseconds or skip them entirely somehow.
 
 <> Multiple textbox fields!!  Are phone and social security the only ones????? Probably make code reusable with other form info names just in case!
 

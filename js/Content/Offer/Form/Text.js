@@ -40,6 +40,10 @@
             multiValuesFilledArr[multiValueFormNameStr] = multiValuesFilledArr[multiValueFormNameStr] || 0;
         };
 
+        this.resetMultiValueFillCount = function (multiValueFormNameStr) {
+            multiValuesFilledArr[multiValueFormNameStr] = 0;
+        };
+
         this.addMultiValueFillCount = function (multiValueFormNameStr) {
             multiValuesFilledArr[multiValueFormNameStr] += 1;
         };
@@ -82,6 +86,12 @@
 
             multiValueFilloutCount = this.getMultiValueFillCount(multiValueNameStr);
             multiValueSubstringArr = this.getMultiValueSubstringMap(multiValueNameStr);
+
+            // could be filling out 2 different types of phone... in which case we have to reset after one phone multifield has been filled!
+            if (multiValueFilloutCount === multiValueSubstringArr.length) {
+                multiValueFilloutCount = 0;
+                this.resetMultiValueFillCount(multiValueNameStr);
+            }
 
             if (0 === multiValueFilloutCount) {
                 fromNum = 0;

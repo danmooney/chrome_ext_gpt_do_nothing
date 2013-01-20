@@ -229,7 +229,7 @@
         injectSubmit: function (formEl) {
             var scriptToEvalStr,
                 formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"'),
-                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button[onclick], button[onsubmit]';
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button';
 
 
             scriptToEvalStr = '(function submitForm() {' +

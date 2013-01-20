@@ -496,7 +496,7 @@
                 if (!$$.util.isString(formNameStr) ||
                     $.trim(formNameStr).length === 0
                 ) {
-                    return '';
+                    return ['', ''];
                 }
 
                 formNameStr = $.trim(formNameStr.toLowerCase());
@@ -554,7 +554,7 @@
 
                 if (!$$.util.isString(matchedFormNameStr)) {
                     console.log('could not find match for ' + /*matchedFormNameStr*/ formNameStr);
-                    return '';
+                    return ['', ''];
                 }
 
                 /**
@@ -618,7 +618,7 @@
                      * Case when 'for' attribute shared with id
                      */
                     if ($$.util.isString(id) &&
-                        labelEls.find('[for="' + id + '"]')
+                        labelEls.find('[for="' + id + '"]').length > 0
                     ) {
                         return labelEls.find('[for="' + id + '"]');
                     }
@@ -653,7 +653,7 @@
                 // if appropriate value not found within form name, use the label element's text if it exists!
                 // TODO - maybe switch around and parse labelTxtStr first if it exists, then try formNameStr if value is empty??
                 if ('' === value && labelTxtStr.length > 0) {
-                    keyValueArr = getValueByName(nameStr);
+                    keyValueArr = getValueByName(labelTxtStr);
                     key         = keyValueArr[0];
                     value       = keyValueArr[1];
                 }
