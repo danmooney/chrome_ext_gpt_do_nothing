@@ -1,10 +1,49 @@
 (function() {
     'use strict';
     $$.klass(function OfferFormRadio () {
-        var namesFilledOutArr = [];
+        var multiValueNamedArr = [],
+            multiValueNameIterator = [],
+            multiValueNameCountArr = [],
+            namesFilledOutArr = [],
+            /**
+             * Map of random radio to fill out
+             * @param {Array}
+             */
+            randomMultiValueFillOutArr = [];
+
+        this.getRandomMultiValueFillOutArr = function (multiValueNameStr) {
+            return randomMultiValueFillOutArr[multiValueNameStr];
+        };
+
+        /**
+         * Generate random n numbers of multivalue checkboxes to be filled out
+         */
+        this.generateRandomFillOutArr = function (multiValueNameStr) {
+            if ($$.util.isNumber(randomMultiValueFillOutArr[multiValueNameStr])) {
+                return;
+            }
+            var count = multiValueNameCountArr[multiValueNameStr];
+
+            randomMultiValueFillOutArr[multiValueNameStr] = Math.floor(Math.random() * (count - 1) + 1);
+        };
 
         this.addToNamesFilledOut = function (nameStr) {
             namesFilledOutArr.push(nameStr);
+        };
+
+        this.setMultiValueNameCount = function (multiValueNameStr, count) {
+            if ($$.util.isNumber(multiValueNameCountArr[multiValueNameStr])) {
+                multiValueNameIterator[multiValueNameStr] += 1;
+            } else {
+                multiValueNameCountArr[multiValueNameStr] = count;
+                multiValueNameIterator[multiValueNameStr] = 0;
+
+                this.generateRandomFillOutArr(multiValueNameStr);
+            }
+        };
+
+        this.getMultiValueNameIteratorIdx = function (multiValueNameStr) {
+            return multiValueNameIterator[multiValueNameStr];
         };
 
         /**
@@ -40,26 +79,41 @@
          */
         fillOut: function (inputEl, key, value, labelEl) {
             var nameStr = inputEl.attr('name'),
-                labelTxtStr = $.trim(labelEl.text().toLowerCase());
+                labelTxtStr = $.trim(labelEl.text().toLowerCase()),
+                formEl = $$('OfferForm').getForm(),
+                nameSelectorStr = '[name="' + nameStr + '"]:visible',
+                nameStrCount = formEl.find(nameSelectorStr).length,
+                multiValueIdx;
 
-            if (this.hasNameAlreadyBeenFilledOut(nameStr)) { // a radio button with the same name has already been filled out, just forget it
-                // TODO - don't always fill out the first one that this app finds; count the number of radios there are (shared by name attr) and randomize which one to press, ESPECIALLY if there are a large number of them
-                return this.trigger('INPUT_DONE_HANDLING');
-            }
+            if ($$.util.isString(nameStr) && nameStrCount > 1) {
+                this.setMultiValueNameCount(nameStr, nameStrCount);
+                multiValueIdx = this.getMultiValueNameIteratorIdx(nameStr);
 
-            this.addToNamesFilledOut(nameStr);
+                if (multiValueIdx === this.getRandomMultiValueFillOutArr(nameStr)) {
+                    $$('Injector').injectClickInput(inputEl);
+                }
 
-            // look for 'no' in the beginning of label and keep unchecked if it exists
-            if ('no' !== labelTxtStr &&
-                false === /^no[^a-zA-Z+]/.test(labelTxtStr)
-            ) {
+                this.trigger('INPUT_DONE_HANDLING', false); // no setTimeout; just fill out quick!
+            } else { // single value
                 $$('Injector').injectClickInput(inputEl);
-//                inputEl.trigger('focus').trigger('click');
-//                inputEl.attr('checked', 'checked');
-//                inputEl.trigger('blur');
+                this.trigger('INPUT_DONE_HANDLING');
             }
 
-            return this.trigger('INPUT_DONE_HANDLING');
+//            if (this.hasNameAlreadyBeenFilledOut(nameStr)) { // a radio button with the same name has already been filled out, just forget it
+//                // TODO - don't always fill out the first one that this app finds; count the number of radios there are (shared by name attr) and randomize which one to press, ESPECIALLY if there are a large number of them
+//                return this.trigger('INPUT_DONE_HANDLING');
+//            }
+//
+//            this.addToNamesFilledOut(nameStr);
+//
+//            // look for 'no' in the beginning of label and keep unchecked if it exists
+//            if ('no' !== labelTxtStr &&
+//                false === /^no[^a-zA-Z+]/.test(labelTxtStr)
+//            ) {
+//                $$('Injector').injectClickInput(inputEl);
+//            }
+//
+//            return this.trigger('INPUT_DONE_HANDLING');
         }
     });
 }());

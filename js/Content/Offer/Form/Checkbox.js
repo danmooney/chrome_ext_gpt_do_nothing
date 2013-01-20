@@ -18,6 +18,13 @@
              */
             randomMultiValueFillOutArr = [];
 
+
+        this.clearNamesFilledOut = function () {
+            multiValueNameCountArr = [];
+            multiValueNameIterator = [];
+            randomMultiValueFillOutArr = [];
+        };
+
         this.getRandomMultiValueFillOutArr = function (multiValueNameStr) {
             return randomMultiValueFillOutArr[multiValueNameStr];
         };
@@ -75,15 +82,26 @@
 
     }, {
         _static: true,
+        init: function () {
+            var that = this;
+
+            // when going onto another form, clear the names that have been filled out,
+            // since they (legitimately) might exist inside another form
+            this.listen('GOING_ONTO_ANOTHER_FORM', function () {
+                that.clearNamesFilledOut();
+            });
+        },
+
         fillOut: function (inputEl, key, value, labelEl) {
             var labelTxtStr = $.trim(labelEl.text().toLowerCase()),
                 nameStr = inputEl.attr('name'),
                 formEl = $$('OfferForm').getForm(),
+                nameSelectorStr = '[name="' + nameStr + '"]:visible',
                 nameStrCount,
                 multiValueIdx;
 
-            if ($$.util.isString(nameStr) && nameStr.length > 1) { // multivalue
-                nameStrCount = formEl.find('[name="' + nameStr + '"]:visible').length;
+            if ($$.util.isString(nameStr) && formEl.find(nameSelectorStr).length > 1) { // multivalue
+                nameStrCount = formEl.find(nameSelectorStr).length;
                 this.setMultiValueNameCount(nameStr, nameStrCount);
 
                 multiValueIdx = this.getMultiValueNameIteratorIdx(nameStr);
