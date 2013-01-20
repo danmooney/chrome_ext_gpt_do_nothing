@@ -225,12 +225,11 @@
          *       It isn't wise to add it because the Google CDN might be down.
          *
          * @param {jQuery} formEl
-         * @param {jQuery} submitButtonEls
          */
-        injectSubmit: function (formEl, submitButtonEls) {
+        injectSubmit: function (formEl) {
             var scriptToEvalStr,
                 formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"'),
-                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button[onclick]';
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button[onclick], button[onsubmit]';
 
 
             scriptToEvalStr = '(function submitForm() {' +
