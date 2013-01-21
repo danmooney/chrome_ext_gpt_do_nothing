@@ -187,6 +187,7 @@
 //        }]);
 
         $$('Storage').setItem('formInfo', [{
+            title: 'Mr',
             first: 'David',
             middle: 'R',
             last: 'Boone',

@@ -33,6 +33,7 @@
              * TODO - phone is going to be tough to do! Sometimes there's 3 inputs, sometimes there's 1!
              */
             formAliases = {
+                title: [],
                 secondary_email: [
                     'secondary-email',
                     'secondary-e-mail',
@@ -574,7 +575,7 @@
                     }
                     // This shouldn't happen!!!!!!!!!!!!
                     throw new AppError('Could not find form info value by name: ' + name);
-                    return ['', ''];
+//                    return ['', ''];
                 }
 
                 return searchForFormInfoValueByName(matchedFormNameStr);
@@ -626,8 +627,8 @@
                     /**
                      * Make shitty guess... find fakeLabelEl for case when there are sibling td tags if in table
                      */
-                    if (inputEl.closest('td').length > 0) {
-                        closestTd = inputEl.closest('td').eq(0);
+                    if (inputEl.closest('td, div').length > 0) {
+                        closestTd = inputEl.closest('td, div').eq(0);
                         closestTdSiblings = closestTd.siblings();
 
                         closestTdSiblings.each(function () {

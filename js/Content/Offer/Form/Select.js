@@ -25,7 +25,7 @@
                     currentVal;
 
                 for (i in value) {
-                    if (!value.hasOwnProperty(i)) {
+                    if (!value.hasOwnProperty(i) || value[i].length === 0) {
                         continue;
                     }
 

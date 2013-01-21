@@ -83,28 +83,30 @@
                 formEl = $$('OfferForm').getForm(),
                 nameSelectorStr = '[name="' + nameStr + '"]:visible',
                 nameStrCount = formEl.find(nameSelectorStr).length,
-                multiValueIdx;
+                multiValueIdx,
+                setTimeoutBool;
 
-            if ($$.util.isString(nameStr) && nameStrCount > 1) {
+            if (this.hasNameAlreadyBeenFilledOut(nameStr)) { // if form inputs are being evaluated again because JS started showing some new ones, forget the ones that were already filled out!
+                return this.trigger('INPUT_DONE_HANDLING');
+            }
+
+            if ($$.util.isString(nameStr) && nameStrCount > 1) { // multi value
                 this.setMultiValueNameCount(nameStr, nameStrCount);
                 multiValueIdx = this.getMultiValueNameIteratorIdx(nameStr);
 
-                if (multiValueIdx === this.getRandomMultiValueFillOutArr(nameStr)) {
-                    $$('Injector').injectClickInput(inputEl);
+                // if multiValueIdx is not the designated random index to fill out, return!
+                if (multiValueIdx !== this.getRandomMultiValueFillOutArr(nameStr)) {
+                    return this.trigger('INPUT_DONE_HANDLING');
                 }
 
-                this.trigger('INPUT_DONE_HANDLING', false); // no setTimeout; just fill out quick!
-            } else { // single value
-                $$('Injector').injectClickInput(inputEl);
-                this.trigger('INPUT_DONE_HANDLING');
+                setTimeoutBool = false; // no setTimeout; just fill out quick!
             }
 
-//            if (this.hasNameAlreadyBeenFilledOut(nameStr)) { // a radio button with the same name has already been filled out, just forget it
-//                // TODO - don't always fill out the first one that this app finds; count the number of radios there are (shared by name attr) and randomize which one to press, ESPECIALLY if there are a large number of them
-//                return this.trigger('INPUT_DONE_HANDLING');
-//            }
-//
-//            this.addToNamesFilledOut(nameStr);
+            $$('Injector').injectClickInput(inputEl);
+            this.addToNamesFilledOut(nameStr);
+
+            this.trigger('INPUT_DONE_HANDLING', setTimeoutBool);
+
 //
 //            // look for 'no' in the beginning of label and keep unchecked if it exists
 //            if ('no' !== labelTxtStr &&

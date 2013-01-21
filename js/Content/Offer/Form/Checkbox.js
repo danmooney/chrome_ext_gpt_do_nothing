@@ -93,6 +93,10 @@
         },
 
         fillOut: function (inputEl, key, value, labelEl) {
+            if (inputEl.is(':checked')) {
+                return;
+            }
+
             var labelTxtStr = $.trim(labelEl.text().toLowerCase()),
                 nameStr = inputEl.attr('name'),
                 formEl = $$('OfferForm').getForm(),
