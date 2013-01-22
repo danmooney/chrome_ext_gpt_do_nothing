@@ -267,7 +267,18 @@
                         $$('OfferForm').stopFillingOut();
                     };
 
-                    $$('Offer').start(true);
+                    $$('Message').sendMessage({
+                        klass: 'Window',
+                        method: 'getCurrentlySelectedWindow'
+                    }, function (windowObj) {
+                        $$('Message').sendMessage({
+                            klass: 'Window',
+                            method: 'storeGptKlassWindowId',
+                            args: [windowObj.id]
+                        }, function () {
+                            $$('Offer').start(true);
+                        });
+                    });
                 });
             }
         };

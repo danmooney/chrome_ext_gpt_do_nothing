@@ -239,6 +239,7 @@
                 '     if (submitEls.length === 0) {' +
                 '         submitEls = formEl.find(\\"button\\"); ' +
                 '     }' +
+                '     console.warn("submitEls: "); console.dir(submitEls);' +
                 '     submitEls.trigger(\\"click\\");' +
                 '}());'
             ;

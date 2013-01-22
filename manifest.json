@@ -27,6 +27,7 @@
             "js": [
                 "js/_vendor/jquery.js",
                 "js/_vendor/drm.js",
+                "js/_vendor/parseUri.js",
                 "js/Content/_setup.js",
                 "js/App/Error.js",
                 "js/App/Type/Error.js",

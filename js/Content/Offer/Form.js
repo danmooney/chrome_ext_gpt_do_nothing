@@ -728,19 +728,21 @@
          * There are absolutely ZERO form elements or inputs... just click around...?
          * TODO - Sort buttons and anchor tags by square pixelage just like what is done with forms
          *        before beginning the clicking process!
+         * TODO - Chrome will open URLs without hostnames (relative paths) in the extension window!  Make the url an absolute path!
          */
         clickAround: function () {
             alert('CLICKING AROUND');
             var hrefsClickedArr = [],
-                windowNum,
-                windowLimitNum = this.getClickAroundWindowLimit();
+                windowNum = 0,
+                windowLimitNum = this.getClickAroundWindowLimit(),
+                clickAroundTimeLimit = this.getClickAroundTimeLimit();
 
             // after a while, if no windows have been popped up, just give up and go to next offer!
             setTimeout(function () {
                 if (0 === windowNum) {
                     $$('Offer').skipOffer();
                 }
-            }, this.getClickAroundTimeLimit);
+            }, clickAroundTimeLimit);
 
             $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
                 $('button, a').each(function () {
