@@ -48,6 +48,7 @@
                 "js/Content/Gpt/Site/Language.js",
                 "js/Content/Gpt/Site/Navigation.js",
                 "js/Content/Gpt/Site/Offer.js",
+                "js/Content/Offer/Url.js",
                 "js/Content/Offer/Form.js",
                 "js/Content/Offer/Form/Text.js",
                 "js/Content/Offer/Form/Checkbox.js",

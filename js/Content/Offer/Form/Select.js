@@ -7,7 +7,7 @@
         fillOut: function (inputEl, key, value, labelEl) {
             var optionEls = inputEl.children('option'),
                 matchFoundBool = false, // setting default
-                matchingValueEl,
+                matchingValueEl = $(),
                 randOptionNum,
                 randOptionEl,
                 i;
@@ -18,10 +18,11 @@
                 };
             }
 
-            optionEls.each(function () {
+            optionEls.each(function (idx) {
                 var el          = $(this),
-                    selectVal   = el.val(),
-                    textVal     = el.text(),
+                    alnumRegex  = /[^a-zA-Z0-9]/g,
+                    selectVal   = $.trim(el.val()).toLowerCase().replace(alnumRegex, ''),
+                    textVal     = $.trim(el.text()).toLowerCase().replace(alnumRegex, ''),
                     currentVal;
 
                 for (i in value) {
@@ -29,10 +30,14 @@
                         continue;
                     }
 
-                    currentVal = value[i].toLowerCase();
+                    currentVal = $.trim(value[i].toLowerCase());
 
-                    if (selectVal.toLowerCase().indexOf(currentVal) !== -1 ||
-                        textVal.toLowerCase().indexOf(currentVal)   !== -1
+                    if (/*(selectVal.indexOf(currentVal) !== -1 ||
+                        textVal.indexOf(currentVal)   !== -1)*/
+                    // using straight matches now
+                       (currentVal === selectVal     ||
+                        currentVal === textVal) &&
+                        idx !== 0
                     ) {
                         // match found
                         matchFoundBool = true;

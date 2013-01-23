@@ -7,6 +7,13 @@
 (function() {
     'use strict';
     $$.klass(function Storage () {
+
+        /**
+         * Lookup of items set in storage during this klass's lifespan
+         * @type {Object}
+         */
+        this.items = {};
+
         /**
          * Array of frozen items with numbers
          * representing their fetch attempts as values
@@ -32,23 +39,26 @@
         },
 
         /**
-         * @param {String} item
+         * @param {String} itemNameStr
          * @param {Function} callback
          * @param {Boolean} allData  - TODO - is this even in use?
          */
-        getItem: function (item, callback, allData) {
+        getItem: function (itemNameStr, callback, allData) {
+
             // check if frozen
-            if (this.isItemFrozen(item)) {
-                this.addFetchAttemptToFrozenItem(item);
+            if (this.isItemFrozen(itemNameStr)) {
+                this.addFetchAttemptToFrozenItem(itemNameStr);
                 return this.setFreezeTimeout.apply(this, arguments);
             } else {
-                this.addFetchAttemptToFrozenItem(item);
+                this.addFetchAttemptToFrozenItem(itemNameStr);
             }
 
-            chrome.storage.local.get(item, function (data) {
+            chrome.storage.local.get(itemNameStr, function (data) {
                 var dataToReturn = (true === allData)
                     ? data
-                    : data[item];
+                    : data[itemNameStr];
+
+
                 if ($$.util.isFunc(callback)) {
                     return callback(dataToReturn);
                 } else {
@@ -57,19 +67,27 @@
             });
         },
         setItem: function (itemNameStr, itemObj, callback) {
-            var itemWrapperObj = {};
+            var itemWrapperObj = {},
+                that = this;
 
             itemWrapperObj[itemNameStr] = itemObj;
 
             chrome.storage.local.set(itemWrapperObj, function () {
+                that.items[itemNameStr] = itemObj;
                 if ($$.util.isFunc(callback)) {
                     return callback();
                 }
             });
         },
 
-        removeItem: function (item, callback) {
-            chrome.storage.local.remove(item, callback);
+        removeItem: function (itemNameStr, callback) {
+            var that = this;
+            chrome.storage.local.remove(itemNameStr, function () {
+                that.items[itemNameStr] = null;
+                if ($$.util.isFunc(callback)) {
+                    callback();
+                }
+            });
         },
 
         /**
@@ -139,7 +157,7 @@
         clearItems: function (callback) {
             alert('CLEARING ITEMS');
             chrome.storage.local.clear(function () {
-                if (typeof callback === 'function') {
+                if ($$.util.isFunc(callback)) {
                     callback();
                 }
             });

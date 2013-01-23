@@ -13,6 +13,9 @@
 
 !! Parse the offer description on the GPT site for the word 'click'.  This indicates that there should be no form to fill out, and I should click around based on button square pixelage (???)
 
+!! For selects, the proper value sometimes seems to be the default 0 index value itself (very common with birthdays where each one says day, month, year, etc.)
+   If a select, look there first!
+
 ?! What about fields that are used as placeholders?? When clicked, they show the proper field, which is invisible on page load and will never get parsed!!
 
 ?? Some date inputs pop up and have a javascript calendar-type widget... how to handle that?
@@ -23,6 +26,12 @@
 
 !? Keep track of form info names already filled out!  It's unlikely you'll have to enter it twice in any offer, so store them so they won't be filled out more than once, even across multiple pages!
    EDIT: Probably very likely you'll enter it twice every offer.
+
+!? A lot of redirects take you to offers that DEFINITELY have NO relationship with what is described on the GPT Site.... down the road maybe check document.title for similarity against the offer?
+
+?? Maybe don't submit if offer is "not available at this time"... will it be available later?
+
+!? Some form inputs don't have names, like the selects in https://www.kelloggsfamilyrewards.com/en_US/promotions/coupons/login.html?referring_source=kfracquisition2013_permissiondata_display_cpa_ron&utm_source=permissiondata&utm_medium=display&utm_content=cpa_ron_codesave5_160x600&utm_campaign=kfracquisition2013
 
 <> Fill out random checkbox values, not every single one!
 
@@ -62,3 +71,6 @@
      -- onclick is triggered but NOT onsubmit when clicked manually
      -- x and y are included in the POST only when clicked manually
      -- if you add x and y hidden inputs to the form and click the input type="image" manually, they will be overwritten!
+
+## For forms inside iframes:
+     -- the url of the iframe is always the same, no matter how many times you refresh, so you can go straight to the source and parse it inside there

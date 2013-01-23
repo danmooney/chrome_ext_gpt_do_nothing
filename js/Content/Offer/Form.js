@@ -11,7 +11,7 @@
              * This is used for filling out the form!
              * @param {String}
              */
-            visibleFillableFormInputSelectorStr = ':visible:input[name][type!="hidden"][type!="submit"]:not(button)',
+            visibleFillableFormInputSelectorStr = ':visible:input' + /*[name] - Some form inputs don't have names!!! */ '' + '[type!="hidden"][type!="submit"]:not(button)',
             /**
              * The selector string for all the form inputs with name attributes.
              * This is used for form serialization and comparison between other forms.
@@ -85,7 +85,8 @@
                     'boss'
                 ],
                 address2: [
-                    'second'
+                    'second',
+                    'address(.)*2'
                 ],
                 address: [
 
@@ -513,6 +514,7 @@
                  */
                 function lookForAlias (formAliasArr) {
                     var matchedAliasStr = '',
+                        regExp,
                         j;
 
                     for (j = 0; j < formAliasArr.length; j += 1) {
@@ -520,6 +522,16 @@
                             if (formNameStr.indexOf(formAliasArr[j]) !== -1) {
                                 matchedAliasStr = formAliasArr[j];
                                 return matchedAliasStr;
+                            } else {
+                                try {  // regex
+                                    regExp = new RegExp(formAliasArr[j]);
+
+                                    if (true === regExp.test(formNameStr)) {
+                                        matchedAliasStr = formAliasArr[j];
+                                        return matchedAliasStr;
+                                    }
+
+                                } catch (e) {}
                             }
                         } else if ($$.util.isObject(formAliasArr[j])) {  // nested object
                             if (matchedAliasStr = lookForAlias(formAliasArr[j])) {
@@ -727,8 +739,9 @@
         /**
          * There are absolutely ZERO form elements or inputs... just click around...?
          * TODO - Sort buttons and anchor tags by square pixelage just like what is done with forms
-         *        before beginning the clicking process!
+         *        before beginning the clicking process!  Or sort by href length (???), since the ones to click on usually have the longest query strings and such....
          * TODO - Chrome will open URLs without hostnames (relative paths) in the extension window!  Make the url an absolute path!
+         *
          */
         clickAround: function () {
             alert('CLICKING AROUND');
@@ -740,12 +753,14 @@
             // after a while, if no windows have been popped up, just give up and go to next offer!
             setTimeout(function () {
                 if (0 === windowNum) {
-                    $$('Offer').skipOffer();
+                    $$('Offer').skipOffer(/*true*/);
                 }
             }, clickAroundTimeLimit);
 
             $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
-                $('button, a').each(function () {
+
+                // if offer says 'click', then filter below, otherwise, there might be a useful page that belongs to the same host to click?????
+                $('a').filter(!$$('Url').hrefPointsToCurrentHost).each(function () {
                     var el = $(this),
                         hrefStr = el.attr('href'),
                         hasHrefBool = ($$.util.isString(hrefStr) && hrefStr.indexOf('mailto:') === -1),
@@ -756,7 +771,6 @@
                     }
 
                     if (true === hasHrefBool &&
-                        window.location.href !== hrefStr &&
                         false === $$.util.inArray(hrefsClickedArr, hrefStr) &&
                         windowNum < windowLimitNum
                     ) {
@@ -775,6 +789,8 @@
                         });
                     }
                 });
+
+                $('button').trigger('click');
             });
         }
     });

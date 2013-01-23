@@ -89,6 +89,10 @@
         this.skipOffer = function (submitBool) {
             alert('skipping offer');
 
+            submitBool = $$.util.isBool(submitBool)
+                ? submitBool
+                : false;
+
             if (true === this.isDebugging()) {
                 alert('ABORTING PARSING OFFER IN DEBUG MODE');
                 return;
@@ -105,9 +109,7 @@
                                 method: 'siteOfferExpired',
                                 tabId: gptTabId,
                                 args: [
-                                    $$.util.isBool(submitBool)
-                                        ? submitBool
-                                        : true
+                                    submitBool
                                 ]
                             }
                         ]
@@ -132,7 +134,7 @@
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
                 if (true === that.seemsLikeOfferExpired()) {
-                    return that.skipOffer();
+                    return that.skipOffer(/*false*/);
                 } else if (false === that.seemsLikeARedirect()) { // this is a legitimate offer... start parsing it!
                     return that.lookForForms.call(that);
                 }
