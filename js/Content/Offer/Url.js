@@ -37,14 +37,11 @@
          * currenthost.com/index => true
          * as well.
          *
-         * @param {Number} i
-         * @param {HTMLElement} el
+         * @param {String} href
          * @return {Boolean}
          */
-        hrefPointsToCurrentHost: function (i, el) {
-            el = $(el);
-            var href = el.attr('href'),
-                parsedUriObj = parseUri(href),
+        hrefPointsToCurrentHost: function (href) {
+            var parsedUriObj = parseUri(href),
                 elDomainStr,
                 winDomainStr;
 

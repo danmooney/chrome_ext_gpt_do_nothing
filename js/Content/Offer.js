@@ -62,7 +62,7 @@
                             $$('OfferForm').fillOutForm();
                         } else {
                             // click in random places
-                            $$('OfferForm').clickAround();
+                            $$('OfferNoform').clickAround();
                         }
                     } else {
                         if (formEls.length === 1) {
@@ -204,23 +204,42 @@
         },
         /**
          * Go by some criteria for seeing if an offer has expired or is unavailable
-         * @return {Boolean}
+         * @param {Boolean} getIdxBool fetch index of expired string occurrence for seemsLikeARedirect to utilize
+         * @return {Boolean|Number}
          * TODO - for now this seems like it is working.  Make doubly sure it is!
          */
-        seemsLikeOfferExpired: function () {
+        seemsLikeOfferExpired: function (getIdxBool) {
+            getIdxBool = $$.util.isBool(getIdxBool)
+                ? getIdxBool
+                : false;
+
             var body = $('body'),
-                bodyText = $.trim(body.text());
+                bodyText = $.trim(body.text()).toLowerCase(),
+                isExpiredBool;
 
             if (body.find('*').length > 25) {  // if there's more than 25 elements, then there's GOTTA be some pertinent info on here...
                 return false;
             }
 
-            return (($.trim(bodyText) === '' ||
-                     body.find('*').length === 0 ||
-                     bodyText.toLowerCase().indexOf('expir') !== -1 ||
-                     bodyText.toLowerCase().indexOf('no longer') !== -1) &&
-                body.html().length < 2500 // the body html length must be under 2500 characters because some pages can say "no longer" and still be valid??...
-            );
+            isExpiredBool = (
+                 $.trim(bodyText) === '' ||
+                 body.find('*').length === 0 ||
+                 bodyText.indexOf('expir') !== -1 ||
+                 bodyText.indexOf('no longer') !== -1
+            ) &&
+                 body.clone().find('script').remove().end().html().length < 2500;  // the body html length must be under 2500 characters because some pages can say "no longer" and still be valid??...
+
+            if (false === getIdxBool) {
+                return isExpiredBool;
+            } else if (false === isExpiredBool) {
+                return -1;
+            } else if (true === isExpiredBool) {
+                return bodyText.indexOf('expir') !== -1
+                    ? bodyText.indexOf('expir')
+                    : bodyText.indexOf('no longer') !== -1
+                        ? bodyText.indexOf('no longer')
+                        : -1;
+            }
         },
 
         /**
@@ -231,14 +250,22 @@
          * TODO - if there is a meta refresh tag, check for the content (seconds before redirect)... there are valid redirect pages that may need to get clickArounds to speed things up!
          */
         seemsLikeARedirect: function () {
-            var redirectBool = ($('meta[http-equiv="refresh"]').length > 0);
+            var redirectBool = ($('meta[http-equiv="refresh"]').length > 0),
+                redirectStrIdxNum,
+                expiredStrIdxNum;
 
             if (false === redirectBool) {
                 $('noscript').each(function () {
-                    var el = $(this);
-                    if (el.text().toLowerCase().indexOf('http-equiv') !== -1 &&
-                        el.text().toLowerCase().indexOf('refresh') !== -1
+                    var el = $(this),
+                        elTxtStr = el.text().toLowerCase();
+                    if (elTxtStr.indexOf('http-equiv') !== -1 &&
+                        elTxtStr.toLowerCase().indexOf('refresh') !== -1
                     ) {
+
+                        redirectStrIdxNum = (elTxtStr.indexOf('refresh') !== -1)
+                                    ? elTxtStr.indexOf('refresh')
+                                    : elTxtStr.indexOf('redirect');
+
                         redirectBool = true;
                         // break out of the loop
                         return false;
@@ -249,10 +276,16 @@
                 if (false === redirectBool) {
                     if ($('a').length <= 2) {
                         $('a').each(function () {
-                            var el = $(this);
-                            if (el.text().toLowerCase().indexOf('refresh')  !== -1 ||
-                                el.text().toLowerCase().indexOf('redirect') !== -1
+                            var el = $(this),
+                                elTxtStr = el.text().toLowerCase();;
+                            if (elTxtStr.indexOf('refresh')  !== -1 ||
+                                elTxtStr.indexOf('redirect') !== -1
                             ) {
+
+                                redirectStrIdxNum = (elTxtStr.indexOf('refresh') !== -1)
+                                    ? elTxtStr.indexOf('refresh')
+                                    : elTxtStr.indexOf('redirect');
+
                                 redirectBool = true;
                                 // break out of loop
                                 return false;
@@ -261,6 +294,7 @@
                     }
                 }
             }
+
             return redirectBool;
         }
     });

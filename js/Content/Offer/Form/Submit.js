@@ -154,7 +154,7 @@
 
                 // TODO - may have to inject/eval clicks into the content window for the anchors/buttons in clickAround
                 setTimeout(function () {
-                    $$('OfferForm').clickAround();
+                    $$('OfferNoform').clickAround();
                 }, 7000);
             }
         }

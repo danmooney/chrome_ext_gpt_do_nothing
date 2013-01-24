@@ -50,6 +50,7 @@
                 "js/Content/Gpt/Site/Offer.js",
                 "js/Content/Offer/Url.js",
                 "js/Content/Offer/Form.js",
+                "js/Content/Offer/Noform.js",
                 "js/Content/Offer/Form/Text.js",
                 "js/Content/Offer/Form/Checkbox.js",
                 "js/Content/Offer/Form/Radio.js",

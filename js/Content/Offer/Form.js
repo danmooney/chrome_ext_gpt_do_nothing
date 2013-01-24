@@ -1,9 +1,7 @@
 (function() {
     'use strict';
     $$.klass(function OfferForm () {
-        var clickAroundWindowLimit = 2,
-            clickAroundTimeLimit = 7000,
-            gptParsedStr  = 'gptParsed',
+        var gptParsedStr  = 'gptParsed',
             gptHandledStr = 'gptHandledStr',
             stopFillingOutBool = false,
             /**
@@ -102,6 +100,7 @@
                 ],
                 zip: [
                     'postal',
+                    'code',
                     'zc'
                 ],
                 home_phone: [
@@ -236,20 +235,6 @@
 
         this.removeLastFormsArr = function (callback) {
             $$('Storage').removeItem('lastForms', callback);
-        };
-
-        /**
-         * @return {Number}
-         */
-        this.getClickAroundWindowLimit = function () {
-            return clickAroundWindowLimit;
-        };
-
-        /**
-         * @return {Number}
-         */
-        this.getClickAroundTimeLimit = function () {
-            return clickAroundTimeLimit;
         };
 
         /**
@@ -734,64 +719,6 @@
             });
 
             parseInput(formInputs.eq(i));
-        },
-
-        /**
-         * There are absolutely ZERO form elements or inputs... just click around...?
-         * TODO - Sort buttons and anchor tags by square pixelage just like what is done with forms
-         *        before beginning the clicking process!  Or sort by href length (???), since the ones to click on usually have the longest query strings and such....
-         * TODO - Chrome will open URLs without hostnames (relative paths) in the extension window!  Make the url an absolute path!
-         *
-         */
-        clickAround: function () {
-            alert('CLICKING AROUND');
-            var hrefsClickedArr = [],
-                windowNum = 0,
-                windowLimitNum = this.getClickAroundWindowLimit(),
-                clickAroundTimeLimit = this.getClickAroundTimeLimit();
-
-            // after a while, if no windows have been popped up, just give up and go to next offer!
-            setTimeout(function () {
-                if (0 === windowNum) {
-                    $$('Offer').skipOffer(/*true*/);
-                }
-            }, clickAroundTimeLimit);
-
-            $$('Storage').getItem('currentGptWindowId', function (gptWindowId) {
-
-                // if offer says 'click', then filter below, otherwise, there might be a useful page that belongs to the same host to click?????
-                $('a').filter(!$$('Url').hrefPointsToCurrentHost).each(function () {
-                    var el = $(this),
-                        hrefStr = el.attr('href'),
-                        hasHrefBool = ($$.util.isString(hrefStr) && hrefStr.indexOf('mailto:') === -1),
-                        hasOnClickBool = $$.util.isString(el.attr('onclick'));
-
-                    if (true === hasOnClickBool) {
-                        el.trigger('click');
-                    }
-
-                    if (true === hasHrefBool &&
-                        false === $$.util.inArray(hrefsClickedArr, hrefStr) &&
-                        windowNum < windowLimitNum
-                    ) {
-                        hrefsClickedArr.push(hrefStr);
-                        windowNum += 1;
-
-                        // open new tab in GPT window
-                        $$('Message').sendMessage({
-                            klass: 'Tab',
-                            method: 'createNewTab',
-//                            active: false,
-                            args: [{
-                                windowId: gptWindowId,
-                                url: hrefStr
-                            }]
-                        });
-                    }
-                });
-
-                $('button').trigger('click');
-            });
         }
     });
 }());
