@@ -112,7 +112,7 @@
          * Fill out text/textarea fields
          */
         fillOut: function (inputEl, key, value, labelEl) {
-            if (inputEl.val() === value) {
+            if (inputEl.val() === value && value.length > 0) {
                 return this.trigger('INPUT_DONE_HANDLING');
             }
 

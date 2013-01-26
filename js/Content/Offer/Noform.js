@@ -1,5 +1,9 @@
-(function () {
+(function() {
    'use strict';
+    /**
+     * TODO - Keep track of the number of elements at any given time, and constantly check if they have changed.  If they have, then clearTimeout and continue going.
+     *        A lot of the forms nowadays seem to be some stupid JS quiz-based thing where the page never refreshes and the anchors usually only have the hash tag in them
+     */
     $$.klass(function OfferNoform () {
         var clickAroundWindowLimit = 2,
             clickAroundTimeLimit = 7000;
@@ -84,4 +88,4 @@
         }
 
     });
-});
+}());

@@ -188,13 +188,14 @@
 
         $$('Storage').setItem('formInfo', [{
             title: 'Mr',
+            message: 'Yes I like this very much',
             first: 'David',
             middle: 'R',
             last: 'Boone',
             name: 'David Boone',
             username: 'davidboone',
             sex: 'male',
-//            age: '25',
+            age: '25',
             occupation: 'Pianist',
             employer: 'Marty Heinz',
             month: {

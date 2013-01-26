@@ -12,11 +12,19 @@
 !! If there's any recaptcha (https://www.google.com/recaptcha/api/js/recaptcha.js or derivative script), just forget it and skip offer
 
 !! Parse the offer description on the GPT site for the word 'click'.  This indicates that there should be no form to fill out, and I should click around based on button square pixelage (???)
+   EDIT: All of the offer's info must be taken into account, including the offer title!
+   Some offers are real cryptic; some hint at the link you are supposed to click on in the title
+
+!! Time to look for errors if the page is the same!  Just look at each form input and find an 'error' class somewhere!
 
 !! For selects, the proper value sometimes seems to be the default 0 index value itself (very common with birthdays where each one says day, month, year, etc.)
    If a select, look there first!
 
 ?! What about fields that are used as placeholders?? When clicked, they show the proper field, which is invisible on page load and will never get parsed!!
+
+?! How to trigger flash object click... like those stupid ads that are in flash??? how to handle that?
+   ex. http://psoriaticarthritisassessment.arthritisconnect.com/?utm_source=cake_2830&utm_medium=monetize&utm_campaign=psa
+   Possible Solution: http://stackoverflow.com/questions/10947254/click-to-flash-object-via-javascript
 
 ?? Some date inputs pop up and have a javascript calendar-type widget... how to handle that?
 

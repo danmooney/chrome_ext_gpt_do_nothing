@@ -32,6 +32,10 @@
              */
             formAliases = {
                 title: [],
+                message: [
+                    'comments',
+                    'thoughts'
+                ],
                 secondary_email: [
                     'secondary-email',
                     'secondary-e-mail',
@@ -73,9 +77,9 @@
                 year: [
 
                 ],
-//                age: [
-//
-//                ],
+                age: [
+
+                ],
                 occupation: [
                     'job'
                 ],
@@ -600,7 +604,6 @@
                  */
                 function getLabelEl () {
                     var id = inputEl.attr('id'),
-                        labelEls = formEl.find('label'),
                         fakeLabelEl = $(),
                         closestTd,
                         closestTdSiblings;
@@ -616,9 +619,9 @@
                      * Case when 'for' attribute shared with id
                      */
                     if ($$.util.isString(id) &&
-                        labelEls.find('[for="' + id + '"]').length > 0
+                        formEl.find('[for="' + id + '"]').length > 0
                     ) {
-                        return labelEls.find('[for="' + id + '"]');
+                        return formEl.find('[for="' + id + '"]');
                     }
 
                     /**
@@ -658,7 +661,8 @@
 
                 if ('select' === tagNameStr) {
                     typeStr = 'select';
-                } else if (!$$.util.isString(typeStr) || 'password' === typeStr) {
+                    // forms are starting to use type="email" and type="number" and random crap.... how to implement?
+                } else if (/*!$$.util.isString(typeStr) || 'password' === typeStr*/ 'radio' !== typeStr && 'checkbox' !== typeStr) {
                     typeStr = 'text';
                 }
 

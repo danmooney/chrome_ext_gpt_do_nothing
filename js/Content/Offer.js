@@ -134,7 +134,7 @@
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
                 if (true === that.seemsLikeOfferExpired()) {
-                    return that.skipOffer(/*false*/);
+                    return that.skipOffer(false);
                 } else if (false === that.seemsLikeARedirect()) { // this is a legitimate offer... start parsing it!
                     return that.lookForForms.call(that);
                 }
@@ -206,7 +206,7 @@
          * Go by some criteria for seeing if an offer has expired or is unavailable
          * @param {Boolean} getIdxBool fetch index of expired string occurrence for seemsLikeARedirect to utilize
          * @return {Boolean|Number}
-         * TODO - for now this seems like it is working.  Make doubly sure it is!
+         * TODO - time to do a loop and make a config file of all the expired keywords!!
          */
         seemsLikeOfferExpired: function (getIdxBool) {
             getIdxBool = $$.util.isBool(getIdxBool)
@@ -225,7 +225,9 @@
                  $.trim(bodyText) === '' ||
                  body.find('*').length === 0 ||
                  bodyText.indexOf('expir') !== -1 ||
-                 bodyText.indexOf('no longer') !== -1
+                 bodyText.indexOf('no longer') !== -1 ||
+                 bodyText.indexOf('reached its cap')
+
             ) &&
                  body.clone().find('script').remove().end().html().length < 2500;  // the body html length must be under 2500 characters because some pages can say "no longer" and still be valid??...
 
@@ -238,7 +240,9 @@
                     ? bodyText.indexOf('expir')
                     : bodyText.indexOf('no longer') !== -1
                         ? bodyText.indexOf('no longer')
-                        : -1;
+                        : bodyText.indexOf('reached its cap') !== -1
+                            ? bodyText.indexOf('reached its cap')
+                            : -1;
             }
         },
 
