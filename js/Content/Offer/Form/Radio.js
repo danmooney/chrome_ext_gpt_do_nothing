@@ -1,15 +1,15 @@
 (function() {
     'use strict';
     $$.klass(function OfferFormRadio () {
-        var multiValueNamedArr = [],
-            multiValueNameIterator = [],
+        var multiValueNameIterator = [],
             multiValueNameCountArr = [],
             namesFilledOutArr = [],
             /**
              * Map of random radio to fill out
              * @param {Array}
              */
-            randomMultiValueFillOutArr = [];
+            randomMultiValueFillOutArr = [],
+            valueExistsBool = false;
 
         this.getRandomMultiValueFillOutArr = function (multiValueNameStr) {
             return randomMultiValueFillOutArr[multiValueNameStr];
@@ -57,6 +57,23 @@
             namesFilledOutArr = [];
         };
 
+        /**
+         * If value actually exists inside one of the radios, then just forget the random aspect and set the appropriate idx
+         * @param inputEls
+         * @param value
+         */
+        this.checkIfValueExists = function (inputEls, value) {
+            inputEls.each(function (i) {
+                var el = $(this),
+                    val = $.trim(el.val().toLowerCase().replace('/[^a-zA-Z0-9]/g', ''));
+
+                if (val === value) {
+                    randomMultiValueFillOutArr[el.attr('name')] = i;
+                    valueExistsBool = true;
+                }
+            });
+        };
+
     }, {
         _static: true,
         init: function () {
@@ -94,9 +111,13 @@
                 this.setMultiValueNameCount(nameStr, nameStrCount);
                 multiValueIdx = this.getMultiValueNameIteratorIdx(nameStr);
 
+                if (0 === multiValueIdx) { // check if value exists in any of the inputEls
+                    this.checkIfValueExists(formEl.find(nameSelectorStr), value);
+                }
+
                 // if multiValueIdx is not the designated random index to fill out, return!
                 if (multiValueIdx !== this.getRandomMultiValueFillOutArr(nameStr)) {
-                    return this.trigger('INPUT_DONE_HANDLING');
+                    return this.trigger('INPUT_DONE_HANDLING', false);
                 }
 
                 setTimeoutBool = false; // no setTimeout; just fill out quick!

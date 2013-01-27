@@ -66,7 +66,7 @@
         /**
          * Find out if it's a multi input type value and re-evaluate the value if true
          * @param {String} multiValueNameStr
-         * @param {jQuery}inputEl
+         * @param {jQuery} inputEl
          * @param {String} value
          * @return {String}
          */
@@ -113,7 +113,7 @@
          */
         fillOut: function (inputEl, key, value, labelEl) {
             if (inputEl.val() === value && value.length > 0) {
-                return this.trigger('INPUT_DONE_HANDLING');
+                return this.trigger('INPUT_DONE_HANDLING', false);
             }
 
             var emptyKeyBool   = (key === '' || $$.util.isUndefined(key)),

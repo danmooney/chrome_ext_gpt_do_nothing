@@ -126,7 +126,7 @@
 
             // remove gpt-script classes, just in case a site is evaluating number of script tags in the DOM
             setInterval(function () {
-                $('script.gpt-script').remove();
+//                $('script.gpt-script').remove();
             }, 1);
         },
         checkForInterceptedPopupsAndTrigger: function () {
@@ -146,13 +146,13 @@
                         case 'gpt-my-jquery':  // jQuery loaded ??
                             if (false === that.hasJQueryBeenInjected()) {
                                 that.setInjectedJQuery(true);
-                                triggerStr = 'onjquery';
                                 that
                                     .inject('addContentToDiv')
                                     .inject('overrideAlert')
                                     .inject('overrideConfirm')
                                     .checkForInterceptedPopupsAndTrigger();
                             }
+                            triggerStr = 'onjquery';
                             break;
                         case 'gpt-offer-alert':
                             triggerStr = 'onalert';
@@ -194,14 +194,19 @@
             }
 
             inputElSelectorStr = inputElSelectorStr.replace(/"/g, '\\"');
+            inputElSelectorStr = inputElSelectorStr.replace(/'/g, '\\\\\'');
+
 
             if ($$.util.isDefined(parentEl)) {
                 parentElSelectorStr = parentElSelectorStr.replace(/"/g, '\\"');
+                parentElSelectorStr = parentElSelectorStr.replace(/'/g, '\\\\\'');
                 scriptToEvalStr = '' +
                     '(function clickInput() {' +
                     '    var $ = window.gptJQuery,' +
                     '        parentEl = $(\'' + parentElSelectorStr + '\'),' +
                     '        inputEl = parentEl.find(\'' + inputElSelectorStr + '\').filter(\\":visible\\");' +
+                    '     console.warn(\\\'' + inputElSelectorStr + '\\\');' +
+                    '     console.warn(inputEl);' +
                     '     inputEl.trigger(\\"focus\\").trigger(\\"click\\").attr(\\"checked\\",\\"checked\\").trigger(\\"blur\\");' +
                     '}());'
                 ;
@@ -210,6 +215,8 @@
                     '(function clickInput() {' +
                     '    var $ = window.gptJQuery,' +
                     '        inputEl = $(\'' + inputElSelectorStr + '\').filter(\\":visible\\");' +
+                    '     console.warn(\\\'' + inputElSelectorStr + '\\\');' +
+                    '     console.warn(inputEl);' +
                     '     inputEl.trigger(\\"focus\\").trigger(\\"click\\").attr(\\"checked\\",\\"checked\\").trigger(\\"blur\\");' +
                     '}());'
                 ;
@@ -228,8 +235,8 @@
          */
         injectSubmit: function (formEl) {
             var scriptToEvalStr,
-                formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"'),
-                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button';
+                formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"').replace(/'/g, '\\\\\''),
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button, .button';
 
 
             scriptToEvalStr = '(function submitForm() {' +

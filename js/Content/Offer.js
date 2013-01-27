@@ -13,7 +13,9 @@
             /**
              * @param {Boolean}
              */
-            debugging = false;
+            debugging = false,
+            preventSuccessiveStartsBool,
+            successiveStartsNum = 0;
 
 
         this.setDebugging = function (debugBool) {
@@ -122,10 +124,24 @@
          * @param {Boolean} [debugBool]
          */
         this.start = function (debugBool) {
-            // this function MUST NOT be executed more than once!
-            this.start = function () {};
+             var that = this;
 
-            var that = this;
+            // this function MUST NOT be executed more than once in a given time period!
+            if (true === preventSuccessiveStartsBool) {
+                successiveStartsNum += 1;
+                console.log('Successive Start #' + successiveStartsNum);
+
+                if (successiveStartsNum > 1) {
+                    return;
+                }
+
+                setTimeout(function () {
+                    successiveStartsNum = 0;
+                    preventSuccessiveStartsBool = false;
+                }, 4000);
+            }
+
+            preventSuccessiveStartsBool = true;
 
             if (true === debugBool) {
                 this.setDebugging(true);
@@ -133,6 +149,11 @@
 
             $$('Storage').getItem('currentOffer', function (offerObj) {
                 offer = offerObj;
+
+                if (location.hostname === 'gpt-tests') {
+                    return that.lookForForms.call(that);
+                }
+
                 if (true === that.seemsLikeOfferExpired()) {
                     return that.skipOffer(false);
                 } else if (false === that.seemsLikeARedirect()) { // this is a legitimate offer... start parsing it!

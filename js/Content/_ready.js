@@ -29,6 +29,7 @@
             .checkForInterceptedPopupsAndTrigger();
 
         $$('EvtBus').listen('onjquery', function() {
+            $$('EvtBus').removeListener('onjquery');
             callback();
         });
     }
@@ -241,7 +242,7 @@
     });
 
     // DEBUG
-    (function parseOfferNow() {
+    function bindDebugKeys() {
         window.onkeypress = function (e) {
             if (33 === e.which) { // ! character.  This will clear the last forms storage
                 return $$('OfferForm').removeLastFormsArr(function () {
@@ -266,6 +267,7 @@
                         }
                         alert('STOP Requested: Will stop after this input is finished.');
                         $$('OfferForm').stopFillingOut();
+                        bindDebugKeys();
                     };
 
                     $$('Message').sendMessage({
@@ -283,6 +285,8 @@
                 });
             }
         };
-    }());
+    }
+
+    bindDebugKeys();
     // END DEBUG
 }());

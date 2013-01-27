@@ -94,7 +94,7 @@
 
         fillOut: function (inputEl, key, value, labelEl) {
             if (inputEl.is(':checked')) {
-                return this.trigger('INPUT_DONE_HANDLING');
+                return this.trigger('INPUT_DONE_HANDLING', false);
             }
 
             var labelTxtStr = $.trim(labelEl.text().toLowerCase()),

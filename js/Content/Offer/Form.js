@@ -49,13 +49,13 @@
 
                 ],
                 first: [
-
+                    'fname'
                 ],
                 middle: [
                     'initial'
                 ],
                 last: [
-
+                    'lname'
                 ],
                 name: [
 
@@ -102,11 +102,6 @@
                 country: [
 
                 ],
-                zip: [
-                    'postal',
-                    'code',
-                    'zc'
-                ],
                 home_phone: [
                     'home',
                     'homephone',
@@ -126,6 +121,11 @@
 //                            'cell'
 //                        ]
 //                    }
+                ],
+                zip: [
+                    'postal',
+                    'code',
+                    'zc'
                 ],
                 ssn: [
                     'social'
@@ -388,10 +388,6 @@
                         return true;
                     });
 
-                    if (true === formExistsInLastFormsBool) {
-//                        alert('One of the last form exists!  This form has already been filled out!');
-                    }
-
                     callback(formEls);
                 });
             }
@@ -490,7 +486,7 @@
                     return ['', ''];
                 }
 
-                formNameStr = $.trim(formNameStr.toLowerCase());
+                formNameStr = $.trim(formNameStr.toLowerCase().replace('/[^a-zA-Z0-9]/g', ''));
 
                 var formAliasNameStr,
                     formAliasArr,
@@ -657,6 +653,13 @@
                     keyValueArr = getValueByName(labelTxtStr);
                     key         = keyValueArr[0];
                     value       = keyValueArr[1];
+                }
+
+                if ('' === value && 'select' === tagNameStr) {
+                    keyValueArr = getValueByName(inputEl.eq(0).val());
+                    if ('' === keyValueArr[0] && '' === keyValueArr[1]) {
+                        keyValueArr = getValueByName(inputEl.eq(0).text());
+                    }
                 }
 
                 if ('select' === tagNameStr) {
