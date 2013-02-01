@@ -76,23 +76,16 @@
                 },
                 
                 /**
-                 * Prevent form.submit from happening more than once if
-                 * GPT Offer site using JS for its submissions
-                 * TODO - Finish!  This will allow us to only submit the form once and to prevent further submits from other forms!
+                 * Listen for window.onbeforeunload
+                 * Stop everything and prevent multiple form submissions or anchor click-thrus
                  */
                 overrideOnBeforeUnload: function () {
-                    var win = window;
+                    var win = window,
+                        $ = gptJQuery;
 
-                    if (win.onbeforeunload !== null) {
-                        return;
-                    }
-
-                    win.onbeforeunload = function () {
-                        var div = document.createElement('div');
-                        div.setAttribute('id', 'gpt-offer-form-submitted');
-                        document.body.appendChild(div);
-                        return true;
-                    };
+                    $(win).unload(function () {
+                        win.addContentToDiv('gpt-offer-window-unloading');
+                    });
                 }
             };
 
@@ -150,6 +143,7 @@
                                     .inject('addContentToDiv')
                                     .inject('overrideAlert')
                                     .inject('overrideConfirm')
+                                    .inject('overrideOnBeforeUnload')
                                     .checkForInterceptedPopupsAndTrigger();
                             }
                             triggerStr = 'onjquery';
@@ -159,6 +153,9 @@
                             break;
                         case 'gpt-offer-confirm':
                             triggerStr = 'onconfirm';
+                            break;
+                        case 'gpt-offer-window-unloading':
+                            triggerStr = 'onunload';
                             break;
                     }
 
@@ -236,7 +233,7 @@
         injectSubmit: function (formEl) {
             var scriptToEvalStr,
                 formSelectorStr = $$.util.makeJQuerySelector(formEl).replace(/"/g, '\\"').replace(/'/g, '\\\\\''),
-                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[onsubmit], button, .button';
+                submitButtonSelectorStr = 'input[type=\\"submit\\"], input[type=\\"image\\"], input[type=\\"button\\"], input[onsubmit], button, .button';
 
 
             scriptToEvalStr = '(function submitForm() {' +
@@ -248,7 +245,19 @@
                 '     }' +
                 '     console.warn(\\"submitEls: \\"); console.dir(submitEls);' +
                 '     window.gptSubmitEls = submitEls;' +
-                '     submitEls.trigger(\\"click\\");' +
+                '     function clickInput (i) {' +
+                '         if (!submitEls.eq(i).length) {' +
+                '             return;' +
+                '         }' +
+                '         setTimeout(function () {' +
+                '             if ($(\'#gpt-offer-window-unloading\').length > 0) {' + // if window unloading, return!
+                '                 return;' +
+                '             }' +
+                '             submitEls.eq(i).trigger(\\"click\\");' +
+                '             clickInput(i + 1);' +
+                '         }, 50);' +
+                '     }' +
+                '     clickInput(0);' +
                 '}());'
             ;
 

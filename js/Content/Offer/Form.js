@@ -269,7 +269,7 @@
             return form;
         };
 
-        this.stopFillingOut= function () {
+        this.stopFillingOut = function () {
             stopFillingOutBool = true;
         };
 
@@ -278,6 +278,14 @@
         };
 
     }, {
+        init: function () {
+            var that = this;
+            this.listen('onunload', function () {
+                console.log('UNLOADING, STOPPING FILLING OUT');
+                that.stopFillingOut();
+            });
+        },
+
         /**
          * Inline forms are not evaluated as visible by jQuery, so force them to be block
          */

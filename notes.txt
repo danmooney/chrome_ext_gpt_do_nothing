@@ -1,3 +1,11 @@
+!! Chrome allows you to inject scripts through their tabs, including script injection into all frames within that tab!  Use this!
+   http://developer.chrome.com/extensions/tabs.html#type-InjectDetails
+
+!! Inject $(window).unload() to content window, and then stop submitting/clicking if it's triggered!
+
+!! Some form names are just random BS that don't correspond to the proper info to fill out, and the labels for those form inputs can't be found!
+   Time to implement OCR to read the label text!
+
 !! Store login username/password in each GptKlass child,
      and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
      It will basically just load one GPT Site, go through all the appropriate offers, and then go on to the next GPT Site and do the same thing without me having to do anything!
