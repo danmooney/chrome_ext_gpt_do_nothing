@@ -1,10 +1,10 @@
 !! Chrome allows you to inject scripts through their tabs, including script injection into all frames within that tab!  Use this!
    http://developer.chrome.com/extensions/tabs.html#type-InjectDetails
 
-!! Inject $(window).unload() to content window, and then stop submitting/clicking if it's triggered!
-
 !! Some form names are just random BS that don't correspond to the proper info to fill out, and the labels for those form inputs can't be found!
    Time to implement OCR to read the label text!
+
+!! Forms inside iframes!  Sometimes the form / submit button is inside an iframe! Open in new window and fill out there?
 
 !! Store login username/password in each GptKlass child,
      and add config setup to allow offer-filling from multiple GPT Sites in one run of the application.
@@ -12,10 +12,6 @@
 
 !! Add debug div in case window.onkeypress gets overwritten
    ex. http://100mcdonalds.giftcertificatedelivery.com/form/iframe/22428/6538/?&sid=400148&ref=22428
-
-!! If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
-
-!! Forms inside iframes!  Sometimes the form / submit button is inside an iframe! Open in new window and fill out there?
 
 !! If there's any recaptcha (https://www.google.com/recaptcha/api/js/recaptcha.js or derivative script), just forget it and skip offer
 
@@ -48,6 +44,11 @@
 ?? Maybe don't submit if offer is "not available at this time"... will it be available later?
 
 !? Some form inputs don't have names, like the selects in https://www.kelloggsfamilyrewards.com/en_US/promotions/coupons/login.html?referring_source=kfracquisition2013_permissiondata_display_cpa_ron&utm_source=permissiondata&utm_medium=display&utm_content=cpa_ron_codesave5_160x600&utm_campaign=kfracquisition2013
+
+!? Inject $(window).unload() to content window, and then stop submitting/clicking if it's triggered!
+   EDIT: TEST!
+
+<> If no labelEl for a form input, check the placeholder attribute or the value of the input itself... Sometimes the info I'm looking for will be set as a value inside the input itself.
 
 <> Fill out random checkbox values, not every single one!
 

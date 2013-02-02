@@ -88,7 +88,12 @@
                 ],
                 address2: [
                     'second',
-                    'address(.)*2'
+                    'address(.)*2',
+                    'a2',
+                    'apt',
+                    'suite',
+                    'unit',
+                    'apartment'
                 ],
                 address: [
 
@@ -281,7 +286,7 @@
         init: function () {
             var that = this;
             this.listen('onunload', function () {
-                console.log('UNLOADING, STOPPING FILLING OUT');
+                console.warn('UNLOADING, STOPPING FILLING OUT');
                 that.stopFillingOut();
             });
         },
@@ -597,13 +602,16 @@
                     typeStr       = inputEl.attr('type'),
                     gptParsedStr  = that.getParsedStr(),
                     keyValueArr,
-                    key,
-                    value,
+                    key = '',
+                    value = '',
                     labelEl,
                     labelTxtStr;
 
                 /**
                  * Try to get the associated label with the form input... hopefully there is a label
+                 * TODO - this is one of the most important things to get straightened out!
+                 *        Either Use OCR or calculate formInput's offsetTop and compare to all elements to that offset and try to make a match
+                 *
                  * @return {jQuery|undefined}
                  */
                 function getLabelEl () {
@@ -651,25 +659,32 @@
                 labelEl     = getLabelEl();
                 labelTxtStr = $.trim(labelEl.text());
 
-                keyValueArr = getValueByName(nameStr);
-                key         = keyValueArr[0];
-                value       = keyValueArr[1];
+                // check placeholder on select tags (value)
+                if ('' === value && 'select' === tagNameStr) {
+                    keyValueArr = getValueByName(inputEl.eq(0).val());
+                    if ('' === keyValueArr[0] && '' === keyValueArr[1]) { // use select text
+                        keyValueArr = getValueByName(inputEl.eq(0).text());
+                    }
 
-                // if appropriate value not found within form name, use the label element's text if it exists!
-                // TODO - maybe switch around and parse labelTxtStr first if it exists, then try formNameStr if value is empty??
+                    key = keyValueArr[0];
+                    value = keyValueArr[1];
+                }
+
+                // use the label element's text if it exists!
                 if ('' === value && labelTxtStr.length > 0) {
                     keyValueArr = getValueByName(labelTxtStr);
                     key         = keyValueArr[0];
                     value       = keyValueArr[1];
                 }
 
-                if ('' === value && 'select' === tagNameStr) {
-                    keyValueArr = getValueByName(inputEl.eq(0).val());
-                    if ('' === keyValueArr[0] && '' === keyValueArr[1]) {
-                        keyValueArr = getValueByName(inputEl.eq(0).text());
-                    }
+                // use the label element's text if it exists!
+                if ('' === value && nameStr.length > 0) {
+                    keyValueArr = getValueByName(nameStr);
+                    key         = keyValueArr[0];
+                    value       = keyValueArr[1];
                 }
 
+                // set typeStr
                 if ('select' === tagNameStr) {
                     typeStr = 'select';
                     // forms are starting to use type="email" and type="number" and random crap.... how to implement?
@@ -684,7 +699,6 @@
                 handleInput(typeStr, inputEl, key, value, labelEl);
             }
 
-            // TODO - implement setTimeoutBool in the triggers in the various input klasses.  setTimeoutBool should be false when there's enough inputs of the same name that are filled out (in radio's case, 1, and >= 1 in checkbox's case)
             this.listen('INPUT_DONE_HANDLING', function (setTimeoutBool) {
                 i += 1;
 

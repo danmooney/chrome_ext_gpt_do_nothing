@@ -4,13 +4,49 @@
 
     }, {
         _static: true,
+        /**
+         * Checks for match between array of values
+         * Using straight matches now
+         * @return {Boolean}
+         */
+        hasMatch: function (valueToSearchForObj, optionElValueObj) {
+            var matchFoundBool = false,
+                i,
+                j;
+
+            for (i in valueToSearchForObj) {
+                if (!valueToSearchForObj.hasOwnProperty(i)) {
+                    continue;
+                }
+
+                valueToSearchForObj[i] = valueToSearchForObj[i].toLowerCase();
+
+                for (j in optionElValueObj) {
+                    if (!optionElValueObj.hasOwnProperty(j)) {
+                        continue;
+                    }
+
+                    if (valueToSearchForObj[i] === optionElValueObj[j]) {
+                        matchFoundBool = true;
+                        break;
+                    }
+                }
+
+                if (true === matchFoundBool) {
+                    break;
+                }
+            }
+
+            return matchFoundBool;
+        },
         fillOut: function (inputEl, key, value, labelEl) {
-            var optionEls = inputEl.children('option'),
+            var optionEls = inputEl.find('option'),
                 matchFoundBool = false, // setting default
                 matchingValueEl = $(),
                 randOptionNum,
                 randOptionEl,
-                i;
+                alnumRegex  = /[^\sa-zA-Z0-9]/g,
+                that = this;
 
             if ($$.util.isString(value)) {
                 value = {
@@ -18,27 +54,23 @@
                 };
             }
 
-            optionEls.each(function (idx) {
-                var el          = $(this),
-                    alnumRegex  = /[^a-zA-Z0-9]/g,
-                    selectVal   = $.trim(el.val()).toLowerCase().replace(alnumRegex, ''),
-                    textVal     = $.trim(el.text()).toLowerCase().replace(alnumRegex, ''),
-                    currentVal;
+            optionEls.not(':first').each(function () {
+                var el       = $(this),
+                    elValObj = {
+                        selectVal: $.trim(el.val()).toLowerCase(),
+                        textVal: $.trim(el.text()).toLowerCase()
+                    };
 
-                for (i in value) {
-                    if (!value.hasOwnProperty(i) || value[i].length === 0) {
-                        continue;
-                    }
-
-                    currentVal = $.trim(value[i].toLowerCase());
-
-                    if (/*(selectVal.indexOf(currentVal) !== -1 ||
-                        textVal.indexOf(currentVal)   !== -1)*/
-                    // using straight matches now
-                       (currentVal === selectVal     ||
-                        currentVal === textVal) &&
-                        idx !== 0
-                    ) {
+                if (true === that.hasMatch(value, elValObj)) {
+                    // match found
+                    matchFoundBool = true;
+                    matchingValueEl = el;
+                    // break out of loop
+                    return false;
+                } else {
+                    elValObj.selectVal = elValObj.selectVal.replace(alnumRegex, '');
+                    elValObj.textVal = elValObj.textVal.replace(alnumRegex, '');
+                    if (true === that.hasMatch(value, elValObj)) {
                         // match found
                         matchFoundBool = true;
                         matchingValueEl = el;

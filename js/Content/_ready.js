@@ -188,7 +188,7 @@
 //        }]);
 
         $$('Storage').setItem('formInfo', [{
-            title: 'Mr',
+            title: 'Mr.',
             message: 'Yes I like this very much',
             first: 'David',
             middle: 'R',
@@ -274,13 +274,23 @@
                         klass: 'Window',
                         method: 'getCurrentlySelectedWindow'
                     }, function (windowObj) {
-                        $$('Message').sendMessage({
-                            klass: 'Window',
-                            method: 'storeGptKlassWindowId',
-                            args: [windowObj.id]
-                        }, function () {
-                            $$('Offer').start(true);
-                        });
+                        function callback (windowId) {
+                            $$('Message').sendMessage({
+                                klass: 'Window',
+                                method: 'storeGptKlassWindowId',
+                                args: [windowId]
+                            },  function () {
+                                $$('Offer').start(true);
+                            });
+                        }
+
+                        if ($$.util.isNumber(windowObj.id)) {
+                            callback(windowObj.id);
+                        } else {
+                            $$('Storage').getItem('currrentGptWindowId', function (windowId) {
+                                callback(windowId);
+                            });
+                        }
                     });
                 });
             }

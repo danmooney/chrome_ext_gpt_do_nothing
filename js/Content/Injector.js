@@ -83,6 +83,8 @@
                     var win = window,
                         $ = gptJQuery;
 
+                    win.onbeforeunload = function () {};  // just overwrite any blocking script
+
                     $(win).unload(function () {
                         win.addContentToDiv('gpt-offer-window-unloading');
                     });
@@ -265,12 +267,12 @@
         },
         /**
          * Inject a function call to be executed within the context of the content window.
-         * Ultra-sneaky solution!
-         *
          * Also allows additional arguments, although it could get messy with string encoding and whatnot (it's only used for evaling as an argument)
          *
-         * @param fnStr
-         * @param [scriptStrToEval]
+         * Edit: Apparently a method exists just like this on chrome.tabs
+         *
+         * @param {String} fnStr
+         * @param {String} [scriptStrToEval]
          */
         inject: function (fnStr, scriptStrToEval) {
             scriptStrToEval = scriptStrToEval || '';
