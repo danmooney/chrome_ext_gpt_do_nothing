@@ -661,9 +661,9 @@
 
                 // check placeholder on select tags (value)
                 if ('' === value && 'select' === tagNameStr) {
-                    keyValueArr = getValueByName(inputEl.eq(0).val());
+                    keyValueArr = getValueByName(/*inputEl.eq(0)*/inputEl.find('option').eq(0).val());
                     if ('' === keyValueArr[0] && '' === keyValueArr[1]) { // use select text
-                        keyValueArr = getValueByName(inputEl.eq(0).text());
+                        keyValueArr = getValueByName(/*inputEl.eq(0)*/inputEl.find('option').eq(0).text());
                     }
 
                     key = keyValueArr[0];
